@@ -1,6 +1,6 @@
 # Bicycle
 
-I develop in-bicycle network.
+I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network).
 
 ## Requirements
 
