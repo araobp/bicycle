@@ -5,9 +5,10 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 ## Requirements
 
 - Very low power consumption
+- Cheap
 - Show current speed, temperature and humidity on character LCD
 - Save time-series data (speed, temperature, humidty, acceleration and location) onto EEPROM (256K bytes)
-- Transfer the data to IoT GW
+- Transfer the data on EEPROM to IoT GW
 
 ## Network
 
