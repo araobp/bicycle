@@ -10,6 +10,9 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - Save time-series data (speed, temperature, humidty, acceleration and location) onto EEPROM (256K bytes)
 - Transfer the data on EEPROM to IoT GW
 
+## Thing: my bicycle
+- http://www.cb-asahi.co.jp/item/69/88/item100000038869.html
+
 ## Network
 
 ```
@@ -19,12 +22,9 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
       |                                                                                                
     --+---+-----------------+-----------------+------------+------------+--- I2C bus
           |                 |                 |            |            |
-   [hall sensor]  [temp/humid sensor]  [accelerometer]   [GPS]      [LCD/LED]
+   [hall sensor]  [temp/humi sensor]  [accelerometer]   [GPS]      [LCD/LED]
     Front spoke      on handlebar       under saddle   rear fendor  on handlebar
 ```
-
-## Thing: my bicycle
-- http://www.cb-asahi.co.jp/item/69/88/item100000038869.html
 
 ## Development tools
 
