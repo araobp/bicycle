@@ -23,6 +23,9 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
     Front spoke      on handlebar       under saddle   rear fendor  on handlebar
 ```
 
+## Thing: my bicycle
+- http://www.cb-asahi.co.jp/item/69/88/item100000038869.html
+
 ## Development tools
 
 ### CAD
