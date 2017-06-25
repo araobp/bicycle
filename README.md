@@ -19,6 +19,6 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
       |                                                                                                
     --+---+-----------------+-----------------+------------+------------+--- I2C bus
           |                 |                 |            |            |
-   [hall sensor]  [temp/humid sensor]  [Accelerometer]   [GPS]      [LCD/LED]
+   [hall sensor]  [temp/humid sensor]  [accelerometer]   [GPS]      [LCD/LED]
     Front spoke      on handlebar       under saddle   rear fendor  on handlebar
 ```
