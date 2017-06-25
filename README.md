@@ -22,3 +22,16 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
    [hall sensor]  [temp/humid sensor]  [accelerometer]   [GPS]      [LCD/LED]
     Front spoke      on handlebar       under saddle   rear fendor  on handlebar
 ```
+
+## Development tools
+
+### CAD
+- PCB design: [Eagle](https://www.autodesk.com/products/eagle/overview)
+- Encloure design: [FreeCAD](https://www.freecadweb.org/)
+
+### IDE
+- 8bit MCU: [MPLAB-X](http://www.microchip.com/mplab/mplab-x-ide)
+- Android Studio
+
+### Documentation
+- PowerPoint
