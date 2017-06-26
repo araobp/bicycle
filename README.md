@@ -16,9 +16,9 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 ## Network
 
 ```
-                                             (       )
- [Controller]--UART/USB--[Android(IoT GW)]--(  Cloud  )
-      |                                      (       )
+                                            (       )
+ [Scheduler]--UART/USB--[Android(IoT GW)]--(  Cloud  )
+      |                                     (       )
       |                                                                                                
     --+---+-----------------+-----------------+------------+------------+--- I2C bus
           |                 |                 |            |            |
