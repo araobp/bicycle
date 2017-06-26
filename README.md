@@ -26,6 +26,10 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
     Front spoke      on handlebar       under saddle   rear fendor  on handlebar
 ```
 
+## IoT gateway
+
+I use Android smart phone (ASUS ZenFone 2 Lazer) as IoT gateway for the sensor network. Android works as USB host with an USB cable supporting USB OTG.
+
 ## Development tools
 
 ### CAD
