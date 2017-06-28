@@ -42,3 +42,6 @@ I use Android smart phone (ASUS ZenFone 2 Lazer) as IoT gateway for the sensor n
 
 ### Documentation
 - PowerPoint
+
+## References
+- [Android USB host mode](http://relativelayout.hatenablog.com/entry/2016/08/12/085051)
