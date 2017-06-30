@@ -30,6 +30,8 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 I use Android smart phone (ASUS ZenFone 2 Lazer) as IoT gateway for the sensor network. Android works as USB host with an USB cable supporting USB OTG.
 
+![screenshot](./doc/Screenshot_20170701-014814.jpg)
+
 ## Development tools
 
 ### CAD
