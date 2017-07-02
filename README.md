@@ -24,8 +24,8 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
       |                                                                                                
     --+---+-----------------+-----------------+------------+--- I2C bus
           |                 |                 |            |      
-   [hall sensor]  [temp/humi sensor]  [accelerometer]   [GPS]
-    front spoke      under saddle         flame      rear fendor
+   [hall sensor]  [temp/humi sensor]  [accelerometer]    [GPS]
+    front spoke      under saddle      under saddle    rear fendor
 ```
 
 ## IoT gateway
