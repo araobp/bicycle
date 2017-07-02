@@ -20,12 +20,12 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
    [EEPROM]      
       | I2C                                 (       )
  [Scheduler]--UART/USB--[Android(IoT GW)]--(  Cloud  )
-      |                                     (       )
+      | flame                               (       )
       |                                                                                                
     --+---+-----------------+-----------------+------------+--- I2C bus
           |                 |                 |            |      
    [hall sensor]  [temp/humi sensor]  [accelerometer]   [GPS]
-    Front spoke      on handlebar       under saddle   rear fendor
+    front spoke         flame              flame      rear fendor
 ```
 
 ## IoT gateway
