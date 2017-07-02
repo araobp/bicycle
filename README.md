@@ -17,14 +17,15 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 ## Network
 
 ```
-                                            (       )
+   [EEPROM]      
+      | I2C                                 (       )
  [Scheduler]--UART/USB--[Android(IoT GW)]--(  Cloud  )
       |                                     (       )
       |                                                                                                
-    --+---+-----------------+-----------------+------------+------------+--- I2C bus
-          |                 |                 |            |            |
-   [hall sensor]  [temp/humi sensor]  [accelerometer]   [GPS]      [LCD/LED]
-    Front spoke      on handlebar       under saddle   rear fendor  on handlebar
+    --+---+-----------------+-----------------+------------+--- I2C bus
+          |                 |                 |            |      
+   [hall sensor]  [temp/humi sensor]  [accelerometer]   [GPS]
+    Front spoke      on handlebar       under saddle   rear fendor
 ```
 
 ## IoT gateway
