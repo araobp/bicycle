@@ -11,7 +11,8 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - Transfer the data on EEPROM to IoT GW
 
 ## Thing: my bicycle
-- http://www.cb-asahi.co.jp/item/69/88/item100000038869.html
+
+![bicycle](./doc/bicycle.jpg)
 
 ## Network
 
