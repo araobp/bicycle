@@ -6,25 +6,27 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 - Very low power consumption
 - Cheap
-- Show current speed, temperature and humidity on character LCD
-- Save time-series data (speed, temperature, humidty, acceleration and location) onto EEPROM (256K bytes)
-- Transfer the data on EEPROM to IoT GW
+- Show current speed, acceleration, temperature and humidity on a character LCD
+- Save time-series data (speed, temperature, humidity, acceleration and location) onto Android smart phone.
 
 ## Thing: my bicycle
 
 ![bicycle](./doc/bicycle.jpg)
 
-## Network
+## Sensor network
+
+![network](./doc/network.jpg)
 
 ```
-                                            (       )
- [Scheduler]--UART/USB--[Android(IoT GW)]--(  Cloud  )
-      |                                     (       )
+
+                         [GPS]
+                           |                                (       )
+ [Scheduler]--UART/USB--[USB hub]--USB--[Android(IoT GW)]--(  Cloud  )
+      |                                                     (       )
       |                                                                                                
-    --+---+-----------------+-----------------+------------+------------+--- I2C bus
-          |                 |                 |            |            |
-   [hall sensor]  [temp/humi sensor]  [accelerometer]   [GPS]      [LCD/LED]
-    Front spoke      on handlebar       under saddle   rear fendor  on handlebar
+    --+-------+-------------------+---------------+------------+--- I2C bus
+              |                   |               |            |
+   [temperature/humidity]  [accelerometer]    [LCD/LED]     [speed]
 ```
 
 ## IoT gateway
@@ -35,13 +37,13 @@ I use Android smart phone (ASUS ZenFone 2 Lazer) as IoT gateway for the sensor n
 
 ## Development tools
 
-### CAD
-- PCB design: [Eagle](https://www.autodesk.com/products/eagle/overview)
-- Encloure design: [FreeCAD](https://www.freecadweb.org/)
-
 ### IDE
 - 8bit MCU: [MPLAB-X](http://www.microchip.com/mplab/mplab-x-ide)
 - Android Studio
+
+### CAD
+- PCB design: [Eagle](https://www.autodesk.com/products/eagle/overview)
+- Encloure design: [FreeCAD](https://www.freecadweb.org/)
 
 ### Documentation
 - PowerPoint

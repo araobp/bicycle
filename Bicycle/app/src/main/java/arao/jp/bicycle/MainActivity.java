@@ -1,6 +1,7 @@
 package arao.jp.bicycle;
 
 import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
         textView.append("-- Device List --\n");
         for(String key: deviceList.keySet()) {
-            String device_name = deviceList.get(key).toString();
+            UsbDevice device = deviceList.get(key);
+            String device_name = device.toString();
             textView.append(device_name + "\n");
         }
-
     }
 }
