@@ -7,7 +7,8 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - Very low power consumption
 - Cheap
 - Show current speed, acceleration, temperature and humidity on a character LCD
-- Save time-series data (speed, temperature, humidity, acceleration and location) onto Android smart phone.
+- Save time-series data (speed, temperature, humidity, acceleration and location) onto EEPROM.
+- Transfer the data to the cloud via WiFi, when I have just arrived at my home.
 
 ## Thing: my bicycle
 
@@ -19,27 +20,23 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 ```
 
-                         [GPS]
-                           |                                (       )
- [Scheduler]--UART/USB--[USB hub]--USB--[Android(IoT GW)]--(  Cloud  )
-      |                                                     (       )
-      |                                                                                                
-    --+-------+-------------------+---------------+------------+--- I2C bus
-              |                   |               |            |
-   [temperature/humidity]  [accelerometer]    [LCD/LED]     [speed]
+  [EEPROM]
+      | I2C                                               (       )
+ [Scheduler]--UART--[ESP-WROOM-02(IoT GW)]---REST/WiFi---(  Cloud  )
+      |                                                   (       )
+      |                                                      
+    --+-----------------+---------------------------+--------------+-- I2C bus
+                        |                           |              |
+           ---+---------+-------+---         ---+---+---+---       |
+              |                 |               |       |          |
+   [temperature/humidity][accelerometer]    [LCD/LED][speed]     [GPS]
 ```
-
-## IoT gateway
-
-I use Android smart phone (ASUS ZenFone 2 Lazer) as IoT gateway for the sensor network. Android works as USB host with an USB cable supporting USB OTG.
-
-![screenshot](./doc/Screenshot_20170701-014814.jpg)
 
 ## Development tools
 
 ### IDE
-- 8bit MCU: [MPLAB-X](http://www.microchip.com/mplab/mplab-x-ide)
-- Android Studio
+- PIC16F1829: [MPLAB-X](http://www.microchip.com/mplab/mplab-x-ide)
+- ESP-WROOM-02: Arduino IDE
 
 ### CAD
 - PCB design: [Eagle](https://www.autodesk.com/products/eagle/overview)
@@ -47,6 +44,4 @@ I use Android smart phone (ASUS ZenFone 2 Lazer) as IoT gateway for the sensor n
 
 ### Documentation
 - PowerPoint
-
-## References
-- [Android USB host mode](http://relativelayout.hatenablog.com/entry/2016/08/12/085051)
+- Atom
