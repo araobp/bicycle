@@ -20,8 +20,8 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 ```
 
-  [EEPROM]
-      | I2C                                               (       )
+                         [SD memory]
+                             | SPI                        (       )
  [Scheduler]--UART--[ESP-WROOM-02(IoT GW)]---REST/WiFi---(  Cloud  )
       |                                                   (       )
       |                                                      
