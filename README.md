@@ -25,4 +25,4 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - Android: Android Studio
 
 ### FTDI lib
-- [Android Java D2XX](http://www.ftdichip.com/Support/SoftwareExamples/Android_JAVA_D2XX_Projects.htm)
+- [Android Java D2XX driver](http://www.ftdichip.com/Drivers/D2XX.htm)
