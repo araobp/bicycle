@@ -1,0 +1,7 @@
+#Thu Jul 20 02:36:35 JST 2017
+base.0=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\2\\d2xx_f6b110bca0d2b4accd7052306413f0f6df5e7cee
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\support-v4-18.0.0_695714aa0fff26424ee8d11fb4ad896208e40ca0\\classes.dex
+base.1=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\support-v4-18.0.0_695714aa0fff26424ee8d11fb4ad896208e40ca0
+file.0=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\2\\d2xx_f6b110bca0d2b4accd7052306413f0f6df5e7cee\\classes.dex
