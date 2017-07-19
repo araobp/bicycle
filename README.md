@@ -7,8 +7,7 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - Very low power consumption
 - Cheap
 - Show current speed, acceleration, temperature and humidity on a character LCD
-- Save time-series data (speed, temperature, humidity, acceleration and location) onto EEPROM.
-- Transfer the data to the cloud via WiFi, when I have just arrived at my home.
+- Save time-series data (speed, temperature, humidity, acceleration and location) onto Android smartphone
 
 ## Thing: my bicycle
 
@@ -21,8 +20,8 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 ## Development tools
 
 ### IDE
-- PIC16F1829: [MPLAB-X](http://www.microchip.com/mplab/mplab-x-ide)
-- Android: Android Studio
+- Android: [Android Studio](https://developer.android.com/studio/index.html)
 
-### FTDI lib
+### FTDI driver
 - [Android Java D2XX driver](http://www.ftdichip.com/Drivers/D2XX.htm)
+- [Android FTDI UART sample](https://github.com/ksksue/Android-FTDI-UART-Sample)
