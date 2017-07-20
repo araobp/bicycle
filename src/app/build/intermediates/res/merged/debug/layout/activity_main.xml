@@ -1,96 +1,150 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_green_dark"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="73dp"
+    android:weightSum="1">
 
-    <EditText
-        android:id="@+id/etWrite"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@android:color/background_dark"
-        android:ems="10"
-        android:textColor="@android:color/holo_green_light"
-        android:layout_margin="@dimen/margin"
-        android:padding="@dimen/padding"
-        android:layout_toStartOf="@+id/btWrite"
-        android:layout_alignRight="@+id/ckBox"
-        android:layout_alignEnd="@+id/ckBox" />
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-    <Button
-        android:id="@+id/btWrite"
-        android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etWrite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="22dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0.49"
+            android:background="@android:color/background_dark"
+            android:ems="10"
+            android:maxLines="1"
+            android:minLines="1"
+            android:padding="@dimen/padding"
+            android:textColor="@android:color/holo_green_light"
+            app:layout_constraintBottom_toTopOf="@+id/btClose"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btWrite"
+            app:layout_constraintTop_toTopOf="@+id/btWrite"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+
+        <Button
+            android:id="@+id/btWrite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="21dp"
+            android:background="@android:color/holo_green_dark"
+            android:elevation="3dp"
+            android:onClick="onClickWrite"
+            android:padding="@dimen/padding"
+            android:text="Write"
+            android:textSize="14sp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_orange_light"
-        android:onClick="onClickWrite"
-        android:text="Write"
-        android:textSize="14sp"
-        android:layout_margin="@dimen/margin"
-        android:padding="@dimen/padding"
-        android:layout_above="@+id/btClose"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_green_dark"
+            android:onClick="onClickOpen"
+            android:padding="@dimen/padding"
+            android:text="Open"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvRead"
+            app:layout_constraintHorizontal_bias="0.54"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btClose"
+            app:layout_constraintTop_toBottomOf="@+id/etWrite"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+
+        <Button
+            android:id="@+id/btClose"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_green_dark"
+            android:onClick="onClickClose"
+            android:padding="@dimen/padding"
+            android:text="Close"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvRead"
+            app:layout_constraintHorizontal_bias="0.482"
+            app:layout_constraintLeft_toLeftOf="@+id/etWrite"
+            app:layout_constraintRight_toRightOf="@+id/etWrite"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
+
+        <CheckBox
+            android:id="@+id/ckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_green_dark"
+            android:padding="@dimen/padding"
+            android:text="9600 kbps"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvRead"
+            app:layout_constraintLeft_toRightOf="@+id/etWrite"
+            app:layout_constraintRight_toRightOf="@+id/etWrite"
+            app:layout_constraintTop_toBottomOf="@+id/etWrite"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvRead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/btOpen"
-        android:layout_margin="@dimen/margin"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
         android:background="@android:color/background_dark"
+        android:gravity="bottom"
+        android:maxLines="16"
+        android:minLines="16"
         android:padding="@dimen/padding"
         android:scrollbars="vertical"
-        android:gravity="bottom"
-        android:textColor="@android:color/background_light" />
-
-    <Button
-        android:id="@+id/btOpen"
-        android:layout_width="wrap_content"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/etWrite"
-        android:layout_margin="@dimen/margin"
-        android:padding="@dimen/padding"
-        android:background="@android:color/holo_orange_light"
-        android:onClick="onClickOpen"
-        android:text="Open"
-        android:textSize="14sp" />
+        android:layout_weight="0.06" />
 
-    <Button
-        android:id="@+id/btClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tvRead"
-        android:layout_margin="@dimen/margin"
-        android:padding="@dimen/padding"
-        android:layout_toRightOf="@+id/btOpen"
-        android:background="@android:color/holo_orange_light"
-        android:onClick="onClickClose"
-        android:text="Close"
-        android:textSize="14sp" />
-
-    <CheckBox
-        android:id="@+id/ckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btClose"
-        android:layout_toLeftOf="@+id/btWrite"
-        android:layout_toStartOf="@+id/btWrite"
-        android:background="@android:color/holo_orange_dark"
-        android:text="9600 kbps"
-        android:layout_margin="@dimen/margin"
-        android:padding="@dimen/padding"
-        android:textSize="14sp" />
-
-</RelativeLayout>
+</LinearLayout>

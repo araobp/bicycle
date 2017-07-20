@@ -19,45 +19,47 @@ public class MainActivity extends ReadListener {
     private static final int DEFAULT_BAUDRATE = 9600;  // 9600kbps
     private static final int SCHEDULER_BAUDRATE = 115200;  // 115200kbps
 
-    private FtdiDevice ftdiDevice = null;
+    private FtdiDevice mFtdiDevice = null;
 
-    private TextView tvRead = null;
-    private EditText etWrite = null;
-    private Button btOpen = null;
-    private Button btWrite = null;
-    private Button btClose = null;
-    private CheckBox ckBox = null;
+    private TextView mTextView = null;
+    private EditText mEditText = null;
+    private Button mButtonOpen = null;
+    private Button mButtonWrite = null;
+    private Button mButtonClose = null;
+    private CheckBox mCheckBox = null;
 
     private int baudrate() {
-        int baudrate = SCHEDULER_BAUDRATE;
-        if (ckBox != null) {
-            baudrate = ckBox.isChecked() ? DEFAULT_BAUDRATE : SCHEDULER_BAUDRATE;
+        if (mCheckBox != null) {
+            return mCheckBox.isChecked() ? DEFAULT_BAUDRATE : SCHEDULER_BAUDRATE;
+        } else {
+            return SCHEDULER_BAUDRATE;
         }
-        return baudrate;
     }
 
     private void updateView(boolean on) {
         if(on) {
-            btOpen.setEnabled(false);
-            btClose.setEnabled(true);
+            mButtonOpen.setEnabled(false);
+            mButtonWrite.setEnabled(true);
+            mButtonClose.setEnabled(true);
         } else {
-            btOpen.setEnabled(true);
-            btClose.setEnabled(false);
+            mButtonOpen.setEnabled(true);
+            mButtonWrite.setEnabled(false);
+            mButtonClose.setEnabled(false);
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        ftdiDevice.openDevice(baudrate());
+        mFtdiDevice.open(baudrate());
     }
 
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                ftdiDevice.openDevice(baudrate());
+                mFtdiDevice.open(baudrate());
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                ftdiDevice.closeDevice();
+                mFtdiDevice.close();
                 updateView(false);
             }
         }
@@ -68,18 +70,18 @@ public class MainActivity extends ReadListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvRead = (TextView) findViewById(R.id.tvRead);
-        etWrite = (EditText) findViewById(R.id.etWrite);
+        mTextView = (TextView) findViewById(R.id.tvRead);
+        mEditText = (EditText) findViewById(R.id.etWrite);
 
-        btOpen = (Button) findViewById(R.id.btOpen);
-        btWrite = (Button) findViewById(R.id.btWrite);
-        btClose = (Button) findViewById(R.id.btClose);
+        mButtonOpen = (Button) findViewById(R.id.btOpen);
+        mButtonWrite = (Button) findViewById(R.id.btWrite);
+        mButtonClose = (Button) findViewById(R.id.btClose);
 
-        ckBox = (CheckBox) findViewById(R.id.ckBox);
+        mCheckBox = (CheckBox) findViewById(R.id.ckBox);
 
         updateView(false);
 
-        ftdiDevice = new FtdiDevice(this);
+        mFtdiDevice = new FtdiDevice(this);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -89,29 +91,29 @@ public class MainActivity extends ReadListener {
 
     public void onClickOpen(View v) {
         boolean update = false;
-        update = ftdiDevice.openDevice(baudrate());
+        update = mFtdiDevice.open(baudrate());
         updateView(update);
     }
 
     public void onClickWrite(View v) {
-        String writeString = etWrite.getText().toString().toUpperCase() + DELIMETER;
-        ftdiDevice.write(writeString);
-        etWrite.setText("");
+        String writeString = mEditText.getText().toString().toUpperCase() + DELIMETER;
+        mFtdiDevice.write(writeString);
+        mEditText.setText("");
     }
 
     public void onRead(String message) {
-        tvRead.append(message);
+        mTextView.append(message);
     }
 
     public void onClickClose(View v) {
-        ftdiDevice.closeDevice();
+        mFtdiDevice.close();
         updateView(false);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ftdiDevice.onDestroy();
+        mFtdiDevice.stop();
         unregisterReceiver(mUsbReceiver);
     }
 }

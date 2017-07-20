@@ -6,41 +6,54 @@ import android.util.Log;
 import com.ftdi.j2xx.D2xxManager;
 import com.ftdi.j2xx.FT_Device;
 
+/*
+* FTDI device
+* */
 public class FtdiDevice {
+
+    // Size of read buffer (the number of characters)
+    public static final int READBUF_SIZE  = 256;
 
     private final String TAG = "Edge";
 
-    private D2xxManager ftD2xx = null;
-    private FT_Device ftDev = null;
+    private D2xxManager mD2xxManager = null;
+    private FT_Device mFtDevice = null;
 
-    private boolean mThreadIsStopped = true;
+    private boolean mReaderIsRunning = false;
 
-    private final int READBUF_SIZE  = 256;
-    private byte[] rbuf  = new byte[READBUF_SIZE];
-    private char[] rchar = new char[READBUF_SIZE];
+    private byte[] mReadBuf = new byte[READBUF_SIZE];
+    private char[] mCharBuf = new char[READBUF_SIZE];
     private int mReadSize=0;
 
     private Handler mHandler = new Handler();
-    private ReadListener readListener = null;
+    private ReadListener mReadListener = null;
 
+    /*
+    * constructor
+    *
+    * @parameter readListener instance of ReadListener
+    * */
     public FtdiDevice(ReadListener readListener) {
-        this.readListener = readListener;
+        this.mReadListener = readListener;
         try {
-            ftD2xx = D2xxManager.getInstance(readListener);
-        } catch (D2xxManager.D2xxException ex) {
-            Log.e(TAG, ex.toString());
+            mD2xxManager = D2xxManager.getInstance(readListener);
+        } catch (D2xxManager.D2xxException e) {
+            Log.e(TAG, e.toString());
         }
     }
 
+    /*
+    * set FTDI device config
+    * */
     private void setConfig(int baudrate, byte dataBits, byte stopBits, byte parity, byte flowControl) {
-        if (!ftDev.isOpen()) {
+        if (!mFtDevice.isOpen()) {
             Log.e(TAG, "setConfig: device not open");
             return;
         }
 
-        ftDev.setBitMode((byte) 0, D2xxManager.FT_BITMODE_RESET);
+        mFtDevice.setBitMode((byte) 0, D2xxManager.FT_BITMODE_RESET);
 
-        ftDev.setBaudRate(baudrate);
+        mFtDevice.setBaudRate(baudrate);
 
         switch (dataBits) {
             case 7:
@@ -87,7 +100,7 @@ public class FtdiDevice {
                 break;
         }
 
-        ftDev.setDataCharacteristics(dataBits, stopBits, parity);
+        mFtDevice.setDataCharacteristics(dataBits, stopBits, parity);
 
         short flowCtrlSetting;
         switch (flowControl) {
@@ -108,87 +121,39 @@ public class FtdiDevice {
                 break;
         }
 
-        ftDev.setFlowControl(flowCtrlSetting, (byte) 0x0b, (byte) 0x0d);
+        mFtDevice.setFlowControl(flowCtrlSetting, (byte) 0x0b, (byte) 0x0d);
     }
 
-    public boolean openDevice(int baudrate) {
-        boolean update = false;
 
-        // check if ftdi device has already benn instantiated
-        if(ftDev != null) {
-            if(ftDev.isOpen()) {
-                if(mThreadIsStopped) {
-                    update = true;
-                    setConfig(baudrate, (byte)8, (byte)1, (byte)0, (byte)0);
-                    ftDev.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
-                    ftDev.restartInTask();
-                    new Thread(mLoop).start();
-                }
-                return update;
-            }
-        }
-
-        int devCount = 0;
-        devCount = ftD2xx.createDeviceInfoList(readListener);
-
-        Log.d(TAG, "Device number : "+ Integer.toString(devCount));
-
-        D2xxManager.FtDeviceInfoListNode[] deviceList = new D2xxManager.FtDeviceInfoListNode[devCount];
-        ftD2xx.getDeviceInfoList(devCount, deviceList);
-
-        if(devCount <= 0) {
-            return update;
-        }
-
-        if(ftDev == null) {
-            ftDev = ftD2xx.openByIndex(readListener, 0);
-        } else {
-            synchronized (ftDev) {
-                ftDev = ftD2xx.openByIndex(readListener, 0);
-            }
-        }
-
-        if(ftDev.isOpen()) {
-            if (mThreadIsStopped) {
-                update = true;
-                setConfig(baudrate, (byte) 8, (byte) 1, (byte) 0, (byte) 0);
-                ftDev.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
-                ftDev.restartInTask();
-                new Thread(mLoop).start();
-            }
-        }
-
-        return update;
-    }
-
-    private Runnable mLoop = new Runnable() {
+    // reader thread
+    private Runnable mReader = new Runnable() {
         @Override
         public void run() {
             int i;
             int readSize;
-            mThreadIsStopped = false;
+            mReaderIsRunning = true;
             while(true) {
-                if(mThreadIsStopped) {
+                if(!mReaderIsRunning) {
                     break;
                 }
 
-                synchronized (ftDev) {
-                    readSize = ftDev.getQueueStatus();
+                synchronized (mFtDevice) {
+                    readSize = mFtDevice.getQueueStatus();
                     if(readSize>0) {
                         mReadSize = readSize;
                         if(mReadSize > READBUF_SIZE) {
                             mReadSize = READBUF_SIZE;
                         }
-                        ftDev.read(rbuf,mReadSize);
+                        mFtDevice.read(mReadBuf,mReadSize);
 
                         for(i=0; i<mReadSize; i++) {
-                            rchar[i] = (char)rbuf[i];
+                            mCharBuf[i] = (char) mReadBuf[i];
                         }
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
-                                readListener.onRead(String.copyValueOf(rchar,0,mReadSize));
+                                mReadListener.onRead(String.copyValueOf(mCharBuf,0,mReadSize));
                             }
                         });
 
@@ -198,31 +163,96 @@ public class FtdiDevice {
         }
     };
 
+    /*
+    * Opens FTDI device and start reader thread
+    *
+    * @parameter baudrate baud rate
+    * @return true if reader thread's state is changed
+    * */
+    public boolean open(int baudrate) {
+        boolean stateChanged = false;
+
+        if(mFtDevice != null) {
+            if(mFtDevice.isOpen()) {
+                if(!mReaderIsRunning) {
+                    stateChanged = true;
+                    setConfig(baudrate, (byte)8, (byte)1, (byte)0, (byte)0);
+                    mFtDevice.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
+                    mFtDevice.restartInTask();
+                    new Thread(mReader).start();
+                }
+                return stateChanged;
+            }
+        }
+
+        int devCount = 0;
+        devCount = mD2xxManager.createDeviceInfoList(mReadListener);
+
+        Log.d(TAG, "Device number : "+ Integer.toString(devCount));
+
+        D2xxManager.FtDeviceInfoListNode[] deviceList = new D2xxManager.FtDeviceInfoListNode[devCount];
+        mD2xxManager.getDeviceInfoList(devCount, deviceList);
+
+        if(devCount <= 0) {
+            return stateChanged;
+        }
+
+        if(mFtDevice == null) {
+            mFtDevice = mD2xxManager.openByIndex(mReadListener, 0);
+        } else {
+            synchronized (mFtDevice) {
+                mFtDevice = mD2xxManager.openByIndex(mReadListener, 0);
+            }
+        }
+
+        if(mFtDevice.isOpen()) {
+            if (!mReaderIsRunning) {
+                stateChanged = true;
+                setConfig(baudrate, (byte) 8, (byte) 1, (byte) 0, (byte) 0);
+                mFtDevice.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
+                mFtDevice.restartInTask();
+                new Thread(mReader).start();
+            }
+        }
+
+        return stateChanged;
+    }
+
+    /*
+    * Sends message to FTDI device
+    * */
     public void write(String message) {
-        if(ftDev == null) {
+        if(mFtDevice == null) {
             return;
         }
 
-        synchronized (ftDev) {
-            if(ftDev.isOpen() == false) {
-                Log.e(TAG, "onClickWrite : Device is not open");
+        synchronized (mFtDevice) {
+            if(mFtDevice.isOpen() == false) {
+                Log.e(TAG, "onClickWrite : device is not open");
                 return;
             }
 
-            ftDev.setLatencyTimer((byte)16);
+            mFtDevice.setLatencyTimer((byte)16);
 
             byte[] writeByte = message.getBytes();
-            ftDev.write(writeByte, message.length());
+            mFtDevice.write(writeByte, message.length());
         }
     }
 
-    public void onDestroy() {
-        mThreadIsStopped = true;
+    /*
+    * Stops reader thread
+    * */
+    public void stop() {
+        mReaderIsRunning = false;
     }
-    public void closeDevice() {
-        mThreadIsStopped = true;
-        if(ftDev != null) {
-            ftDev.close();
+
+    /*
+    * Stops reader thread and closes FTDI device
+    * */
+    public void close() {
+        mReaderIsRunning = false;
+        if(mFtDevice != null) {
+            mFtDevice.close();
         }
     }
 }
