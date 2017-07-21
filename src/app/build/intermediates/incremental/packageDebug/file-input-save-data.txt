@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Fri Jul 21 05:05:32 JST 2017
+#Sat Jul 22 07:26:03 JST 2017
 2.base=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_
 5.file=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_c12648f830c271e1dacb01f74e7217df857213a6\\classes.dex
 5.set=DEX
@@ -20,8 +20,8 @@ count=8
 2.file=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\layout\\activity_main.xml
 6.set=ANDROID_RESOURCE
 0.base=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_
-3.file=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\menu\\main.xml
+3.file=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\drawable-xxhdpi-v4\\ic_launcher.png
 3.set=ANDROID_RESOURCE
 1.base=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_6fc198cba8b5206d90e3315200f2903c25a90a9d
-4.file=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\drawable-xhdpi-v4\\ic_launcher.png
+4.file=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\menu\\main.xml
 0.set=ANDROID_RESOURCE

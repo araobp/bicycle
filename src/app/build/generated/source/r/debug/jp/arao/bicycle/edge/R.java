@@ -459,29 +459,35 @@ containing a value of this type.
     }
     public static final class dimen {
         public static final int activity_horizontal_margin=0x7f050000;
-        public static final int activity_vertical_margin=0x7f050001;
-        public static final int margin=0x7f050002;
-        public static final int padding=0x7f050003;
+        public static final int button_elevation=0x7f050001;
+        public static final int button_text_size=0x7f050002;
+        public static final int margin=0x7f050003;
+        public static final int padding=0x7f050004;
+        public static final int text_size=0x7f050005;
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000f;
+        public static final int action_settings=0x7f090013;
         public static final int all=0x7f090005;
         public static final int basic=0x7f090006;
-        public static final int btClose=0x7f09000a;
-        public static final int btOpen=0x7f09000c;
-        public static final int btWrite=0x7f09000b;
+        public static final int buttonClose=0x7f09000a;
+        public static final int buttonOpen=0x7f090009;
+        public static final int buttonRSC=0x7f09000e;
+        public static final int buttonSTA=0x7f09000c;
+        public static final int buttonSTP=0x7f09000d;
+        public static final int buttonWrite=0x7f090011;
         public static final int chains=0x7f090007;
-        public static final int ckBox=0x7f09000e;
-        public static final int etWrite=0x7f090009;
+        public static final int checkBoxBaudrate=0x7f09000b;
+        public static final int editTextWrite=0x7f090010;
         public static final int none=0x7f090008;
         public static final int packed=0x7f090003;
         public static final int parent=0x7f090000;
         public static final int spread=0x7f090001;
         public static final int spread_inside=0x7f090004;
-        public static final int tvRead=0x7f09000d;
+        public static final int textViewRead=0x7f090012;
+        public static final int textViewSchedule=0x7f09000f;
         public static final int wrap=0x7f090002;
     }
     public static final class layout {
@@ -497,15 +503,8 @@ containing a value of this type.
     public static final class style {
         /**  API 11 theme customizations can go here. 
  API 14 theme customizations can go here. 
-
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
          */
         public static final int AppBaseTheme=0x7f060000;
-        /**  All customizations that are NOT specific to a particular API-level can go here. 
-         */
         public static final int AppTheme=0x7f060001;
     }
     public static final class xml {

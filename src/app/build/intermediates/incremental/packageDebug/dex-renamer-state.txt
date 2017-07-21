@@ -1,4 +1,4 @@
-#Fri Jul 21 05:05:32 JST 2017
+#Sat Jul 22 07:26:03 JST 2017
 base.0=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_c12648f830c271e1dacb01f74e7217df857213a6
 renamed.1=classes2.dex
 renamed.0=classes.dex

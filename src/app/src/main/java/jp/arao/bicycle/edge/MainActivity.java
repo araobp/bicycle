@@ -70,14 +70,14 @@ public class MainActivity extends ReadListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextView = (TextView) findViewById(R.id.tvRead);
-        mEditText = (EditText) findViewById(R.id.etWrite);
+        mTextView = (TextView) findViewById(R.id.textViewRead);
+        mEditText = (EditText) findViewById(R.id.editTextWrite);
 
-        mButtonOpen = (Button) findViewById(R.id.btOpen);
-        mButtonWrite = (Button) findViewById(R.id.btWrite);
-        mButtonClose = (Button) findViewById(R.id.btClose);
+        mButtonOpen = (Button) findViewById(R.id.buttonOpen);
+        mButtonWrite = (Button) findViewById(R.id.buttonWrite);
+        mButtonClose = (Button) findViewById(R.id.buttonClose);
 
-        mCheckBox = (CheckBox) findViewById(R.id.ckBox);
+        mCheckBox = (CheckBox) findViewById(R.id.checkBoxBaudrate);
 
         updateView(false);
 
