@@ -18,23 +18,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="@dimen/button_elevation"
-            android:onClick="onClickOpen"
             android:padding="@dimen/padding"
             android:text="Open"
             android:textSize="@dimen/button_text_size" />
 
-        <Button
-            android:id="@+id/buttonClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/button_elevation"
-            android:onClick="onClickClose"
-            android:padding="@dimen/padding"
-            android:text="Close"
-            android:textSize="@dimen/button_text_size" />
-
         <CheckBox
-            android:id="@+id/checkBoxBaudrate"
+            android:id="@+id/checkBoxBaudrate9600"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="@dimen/padding"
@@ -43,7 +32,7 @@
             android:textSize="@dimen/button_text_size" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buttonDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding"
@@ -79,7 +68,6 @@
             android:id="@+id/textViewScalerValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_light"
             android:padding="@dimen/padding"
             android:text="1"
             android:textSize="@dimen/button_text_size" />
@@ -269,7 +257,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:elevation="@dimen/button_elevation"
-            android:onClick="onClickWrite"
             android:padding="@dimen/padding"
             android:text="Write"
             android:textSize="@dimen/button_text_size" />

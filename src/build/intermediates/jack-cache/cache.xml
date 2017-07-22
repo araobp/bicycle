@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\shiny\AppData\Local\Android\sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.2\constraint-layout-solver-1.0.2.jar"
+        revision="26.0.0"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="C:\Users\shiny\AndroidStudioProjects\bicycle\src\app\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\constraint-layout-solver-1.0.2-c277c8b8908521166784a062927ba7764a487d5d.jar" />
+    </item>
+    <item
+        jar="C:\Users\shiny\AndroidStudioProjects\bicycle\src\app\libs\d2xx.jar"
+        revision="26.0.0"
+        sha1="549d88cce99830dc2ae951a13d5a8b897362351b">
+        <dex dex="C:\Users\shiny\AndroidStudioProjects\bicycle\src\app\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\d2xx-f6b110bca0d2b4accd7052306413f0f6df5e7cee.jar" />
+    </item>
+    <item
+        jar="C:\Users\shiny\.android\build-cache\781f00346a2a7a71ce0d51e6e1710b8bcf483bf9\output\jars\classes.jar"
+        revision="26.0.0"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="C:\Users\shiny\AndroidStudioProjects\bicycle\src\app\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-9f5c6d7a4ea64cccad2aa3c6d38af09737f164ab.jar" />
+    </item>
+    <item
+        jar="C:\Users\shiny\AppData\Local\Android\Sdk\platforms\android-23\optional\org.apache.http.legacy.jar"
+        revision="26.0.0"
+        sha1="017030d11901291abf8f83a812984276b643ea0f">
+        <dex dex="C:\Users\shiny\AndroidStudioProjects\bicycle\src\app\build\intermediates\transforms\preJackRuntimeLibraries\debug\jars\8000\40\org.apache.http.legacy-97d9e3a702b7036764330701f74fcdfcbd0f38af.jar" />
+    </item>
+    <item
+        jar="C:\Users\shiny\AppData\Local\Android\Sdk\platforms\android-23\android.jar"
+        revision="26.0.0"
+        sha1="eee3e49de0e3c71c5f278ba7e4fe847483f9084c">
+        <dex dex="C:\Users\shiny\AndroidStudioProjects\bicycle\src\app\build\intermediates\transforms\preJackRuntimeLibraries\debug\jars\8000\40\android-8469a21c80355904d79c7fa0bf83f16db478bca1.jar" />
+    </item>
+
+</items>
