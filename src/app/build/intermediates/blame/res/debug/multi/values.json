@@ -601,8 +601,8 @@
                     "startLine": 98,
                     "startColumn": 4,
                     "startOffset": 9373,
-                    "endColumn": 40,
-                    "endOffset": 9409
+                    "endColumn": 49,
+                    "endOffset": 9418
                 },
                 "from": {
                     "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\dimens.xml"
@@ -612,21 +612,21 @@
                 "to": {
                     "startLine": 99,
                     "startColumn": 4,
-                    "startOffset": 9414,
-                    "endColumn": 52,
-                    "endOffset": 9462
+                    "startOffset": 9423,
+                    "endColumn": 40,
+                    "endOffset": 9459
                 },
                 "from": {
-                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\strings.xml"
+                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\dimens.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 100,
                     "startColumn": 4,
-                    "startOffset": 9467,
-                    "endColumn": 40,
-                    "endOffset": 9503
+                    "startOffset": 9464,
+                    "endColumn": 52,
+                    "endOffset": 9512
                 },
                 "from": {
                     "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\strings.xml"
@@ -636,26 +636,66 @@
                 "to": {
                     "startLine": 101,
                     "startColumn": 4,
-                    "startOffset": 9508,
-                    "endLine": 103,
-                    "endColumn": 12,
-                    "endOffset": 9586
+                    "startOffset": 9517,
+                    "endColumn": 55,
+                    "endOffset": 9568
                 },
                 "from": {
-                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\styles.xml"
+                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\strings.xml"
                 }
             },
             {
                 "to": {
-                    "startLine": 104,
+                    "startLine": 102,
                     "startColumn": 4,
-                    "startOffset": 9591,
-                    "endLine": 106,
-                    "endColumn": 12,
-                    "endOffset": 9658
+                    "startOffset": 9573,
+                    "endColumn": 52,
+                    "endOffset": 9621
                 },
                 "from": {
-                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\styles.xml"
+                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 103,
+                    "startColumn": 4,
+                    "startOffset": 9626,
+                    "endLine": 109,
+                    "endColumn": 12,
+                    "endOffset": 9912
+                },
+                "from": {
+                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 192,
+                        "endLine": 12,
+                        "endColumn": 12,
+                        "endOffset": 484
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 110,
+                    "startColumn": 4,
+                    "startOffset": 9917,
+                    "endLine": 112,
+                    "endColumn": 12,
+                    "endOffset": 10072
+                },
+                "from": {
+                    "file": "C:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 15,
+                        "startColumn": 4,
+                        "startOffset": 525,
+                        "endLine": 17,
+                        "endColumn": 12,
+                        "endOffset": 682
+                    }
                 }
             }
         ]

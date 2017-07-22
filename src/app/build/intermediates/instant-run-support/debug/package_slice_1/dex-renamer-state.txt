@@ -1,4 +1,4 @@
-#Sat Jul 22 07:26:03 JST 2017
+#Sat Jul 22 16:39:46 JST 2017
 base.0=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_1
 renamed.0=classes.dex
 file.0=C\:\\Users\\shiny\\AndroidStudioProjects\\bicycle\\src\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_1\\classes.dex

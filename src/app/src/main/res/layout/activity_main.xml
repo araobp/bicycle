@@ -38,8 +38,17 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="@dimen/padding"
-            android:text="9600 kbps (default: 115200 kbps)"
+            android:text="9600kbps"
+            android:layout_weight="1"
             android:textSize="@dimen/button_text_size" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:textSize="@dimen/button_text_size"
+            android:text="Devices" />
 
     </LinearLayout>
 
@@ -50,55 +59,183 @@
         android:orientation="horizontal"
         android:padding="@dimen/padding">
 
-        <Button
-            android:id="@+id/buttonSTA"
+        <Switch
+            android:id="@+id/switchStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/button_elevation"
-            android:onClick="onClickClose"
             android:padding="@dimen/padding"
-            android:text="Start"
+            android:text="Switch"
             android:textSize="@dimen/button_text_size" />
-
-        <Button
-            android:id="@+id/buttonSTP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/button_elevation"
-            android:onClick="onClickClose"
-            android:padding="@dimen/padding"
-            android:text="Stop"
-            android:textSize="@dimen/button_text_size" />
-
-        <Button
-            android:id="@+id/buttonRSC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/button_elevation"
-            android:onClick="onClickClose"
-            android:padding="@dimen/padding"
-            android:text="Schedule"
-            android:textSize="@dimen/button_text_size" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
-        android:padding="@dimen/padding">
 
         <TextView
-            android:id="@+id/textViewSchedule"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewScaler"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/black"
             android:padding="@dimen/padding"
-            android:text=""
-            android:textColor="@android:color/holo_orange_light"
-            android:textSize="@dimen/text_size" />
+            android:textSize="@dimen/button_text_size"
+            android:text="Scaler(8msec*X): " />
+
+        <TextView
+            android:id="@+id/textViewScalerValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_light"
+            android:padding="@dimen/padding"
+            android:text="1"
+            android:textSize="@dimen/button_text_size" />
 
     </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="Period" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="2" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="6" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="12" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="60" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="120" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="600" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewScheduleTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="Schedule" />
+
+            <TextView
+                android:id="@+id/textViewSchedule1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+        </TableRow>>
+    </TableLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -108,11 +245,19 @@
         android:padding="@dimen/padding"
         android:weightSum="1">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:layout_weight="0.1"
+            android:textSize="@dimen/button_text_size"
+            android:text="Command:" />
+
         <EditText
             android:id="@+id/editTextWrite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_weight="0.7"
             android:ems="10"
             android:padding="@dimen/padding"
             android:textColor="@android:color/holo_green_light"
