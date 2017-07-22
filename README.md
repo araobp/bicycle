@@ -1,17 +1,19 @@
-# Bicycle
+# Sensor network with Android
 
 ![flow-based-programming](./doc/flow_based_programming.jpg)
 
+## Use case: bicycle
+
 I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network).
 
-## Requirements
+### Technical requirements
 
 - Very low power consumption
 - Cheap
 - Show current speed, acceleration, temperature and humidity on a character LCD
 - Save time-series data (speed, temperature, humidity, acceleration and location) onto Android smartphone
 
-## Thing: my bicycle
+### Thing: my bicycle
 
 ![network](./doc/network.jpg)
 
