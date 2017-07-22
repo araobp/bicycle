@@ -1,5 +1,7 @@
 # Bicycle
 
+![flow-based-programming](./doc/flow_based_programming.jpg)
+
 I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network).
 
 ## Requirements
