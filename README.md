@@ -8,7 +8,7 @@ I devise Node-RED-like flow-based programming over very cheap sensor network.
 
 Node-RED is a great tool, and I have been using Node-RED a lot in my IoT prototyping projects. However, Node-RED is heavy and slow on my tiny single board computers such as Raspberry Pi.
 
-So I have developed a flow-based programming framework and hardware/software components for PIC16F1-based sensor network. This time, I will develop a framework and software components for Android to add edge computing capabilities to my PIC16F1-based sensor network.
+So I have developed a flow-based programming framework for PIC16F1-based sensor network. This time, I will develop a framework for Android to add edge computing capabilities to my sensor network.
 
 ## Use case: bicycle
 
