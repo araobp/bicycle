@@ -13,10 +13,6 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 ## Thing: my bicycle
 
-![bicycle](./doc/bicycle.jpg)
-
-## Sensor network
-
 ![network](./doc/network.jpg)
 
 ## Development tools
