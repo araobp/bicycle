@@ -4,7 +4,7 @@
 
 ## Background and motivation
 
-I devise Node-RED-like flow-based programming over sensor network.
+I devise Node-RED-like flow-based programming over very cheap sensor network.
 
 Node-RED is a great tool, and I have been using Node-RED a lot in my IoT prototyping projects. However, Node-RED is heavy and slow on my tiny single board computers such as Raspberry Pi.
 
