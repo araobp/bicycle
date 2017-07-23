@@ -28,6 +28,8 @@ public class FtdiDevice {
     private Handler mHandler = new Handler();
     private ReadListener mReadListener = null;
 
+    public static final String DELIMITER = "\n";
+
     /*
     * constructor
     *
@@ -222,6 +224,7 @@ public class FtdiDevice {
     * Sends message to FTDI device
     * */
     public void write(String message) {
+        String data = message + DELIMITER;
         if(mFtDevice == null) {
             return;
         }
@@ -234,8 +237,8 @@ public class FtdiDevice {
 
             mFtDevice.setLatencyTimer((byte)16);
 
-            byte[] writeByte = message.getBytes();
-            mFtDevice.write(writeByte, message.length());
+            byte[] writeByte = data.getBytes();
+            mFtDevice.write(writeByte, data.length());
         }
     }
 

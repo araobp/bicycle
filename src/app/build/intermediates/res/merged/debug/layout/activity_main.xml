@@ -13,31 +13,34 @@
         android:orientation="horizontal"
         android:padding="@dimen/padding">
 
-        <Button
-            android:id="@+id/buttonOpen"
+        <Switch
+            android:id="@+id/switchStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/button_elevation"
             android:padding="@dimen/padding"
-            android:text="Open"
+            android:text="Sensor Network"
+            android:textOff="OFF"
+            android:textOn="ON"
             android:textSize="@dimen/button_text_size" />
 
         <CheckBox
             android:id="@+id/checkBoxBaudrate9600"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:padding="@dimen/padding"
             android:text="9600kbps"
-            android:layout_weight="1"
             android:textSize="@dimen/button_text_size" />
 
         <Button
-            android:id="@+id/buttonDevices"
+            android:id="@+id/buttonOpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="@dimen/button_elevation"
             android:padding="@dimen/padding"
-            android:textSize="@dimen/button_text_size"
-            android:text="Devices" />
+            android:text="Open"
+            android:textSize="@dimen/button_text_size" />
 
     </LinearLayout>
 
@@ -48,21 +51,26 @@
         android:orientation="horizontal"
         android:padding="@dimen/padding">
 
-        <Switch
-            android:id="@+id/switchStart"
+        <TextView
+            android:id="@+id/textViewDevicesTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding"
-            android:text="Switch"
-            android:textSize="@dimen/button_text_size" />
+            android:text="Devices:" />
+
+        <TextView
+            android:id="@+id/textViewDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_light" />
 
         <TextView
             android:id="@+id/textViewScaler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding"
-            android:textSize="@dimen/button_text_size"
-            android:text="Scaler(8msec*X): " />
+            android:text="Scaler(8msec*X): "
+            android:textSize="@dimen/button_text_size" />
 
         <TextView
             android:id="@+id/textViewScalerValue"
@@ -88,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding"
                 android:textSize="@dimen/schedule_text_size"
-                android:text="Period" />
+                android:text="Period(X)" />
 
             <TextView
                 android:id="@+id/textViewScheduleScaleTitle1"
@@ -248,7 +256,7 @@
             android:layout_weight="0.7"
             android:ems="10"
             android:padding="@dimen/padding"
-            android:textColor="@android:color/holo_green_light"
+            android:textColor="@android:color/holo_blue_dark"
             android:textSize="@dimen/text_size" />
 
         <Button

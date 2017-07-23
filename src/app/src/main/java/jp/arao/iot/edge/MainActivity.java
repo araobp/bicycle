@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 // IoT gateway for bicycle
@@ -28,7 +29,6 @@ public class MainActivity extends ReadListener {
     private int mBaudrate = 0;
 
     private static final String TAG = "CLI";
-    private static final String DELIMITER = "\n";
 
     private FtdiDevice mFtdiDevice = null;
 
@@ -38,9 +38,10 @@ public class MainActivity extends ReadListener {
     private Button mButtonWrite = null;
     private CheckBox mCheckBox9600 = null;
     private Switch mSwitch = null;
-    private Button mButtonDevices = null;
     private TextView mTextViewScaler = null;
     private TextView mTextViewScalerValue = null;
+    private TextView mTextViewDevices = null;
+    private List<TextView> mListSchedules = new ArrayList<>();
 
     private static String sButtonOpenOpen = "Open";
     private static String sButtonOpenClose = "Close";
@@ -50,10 +51,15 @@ public class MainActivity extends ReadListener {
     List<String> mSchedule = new ArrayList<>();
     List<String> mDeviceMap = new ArrayList<>();
 
+    private void log(String message) {
+        mTextView.append(message + "\n");
+    }
+
     private boolean startCommunication() {
         boolean update = false;
         if (mFtdiDevice != null) {
             update = mFtdiDevice.open(mBaudrate);
+            log(update ? "FTDI device connected": "Unable to connect FTDI device");
             try {
                 Thread.sleep(500);
                 mFtdiDevice.write(Protocol.GET);
@@ -108,12 +114,20 @@ public class MainActivity extends ReadListener {
 
         mCheckBox9600 = (CheckBox) findViewById(R.id.checkBoxBaudrate9600);
 
-        mButtonDevices = (Button) findViewById(R.id.buttonDevices);
-
         mSwitch = (Switch) findViewById(R.id.switchStart);
         mTextViewScaler = (TextView) findViewById(R.id.textViewScaler);
         mTextViewScalerValue = (TextView) findViewById(R.id.textViewScalerValue);
         mTextViewScalerValue.setText(mTimerScaler);
+
+        mTextViewDevices = (TextView) findViewById(R.id.textViewDevices);
+
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule1) );
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule2) );
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule3) );
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule4) );
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule5) );
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule6) );
+        mListSchedules.add( (TextView) findViewById(R.id.textViewSchedule7) );
 
         updateButtonText(false);
 
@@ -129,25 +143,16 @@ public class MainActivity extends ReadListener {
             }
         });
 
-        mButtonDevices.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFtdiDevice != null) {
-                    mFtdiDevice.write(Protocol.RSC);
-                }
-            }
-        });
-
         mButtonWrite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String writeString = mEditText.getText().toString().toUpperCase() + DELIMITER;
+                String writeString = mEditText.getText().toString().toUpperCase();
                 mFtdiDevice.write(writeString);
                 mEditText.setText("");
             }
         });
 
-        mBaudrate = mCheckBox9600.isChecked() ? SCHEDULER_BAUDRATE : DEFAULT_BAUDRATE;
+        mBaudrate = mCheckBox9600.isChecked() ? DEFAULT_BAUDRATE : SCHEDULER_BAUDRATE;
 
         mCheckBox9600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -166,9 +171,11 @@ public class MainActivity extends ReadListener {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mFtdiDevice != null) {
                     if (isChecked) {
+                        log("Switch on");
                         mFtdiDevice.write(Protocol.STA);
                     } else {
                         mFtdiDevice.write(Protocol.STP);
+                        log("Switch off");
                     }
                 }
             }
@@ -185,6 +192,7 @@ public class MainActivity extends ReadListener {
     public void onRead(String message) {
         if (message.startsWith("$")) {
             String[] response = message.split(":");
+            log("Response: " + response);
             switch (response[1]) {
                 case Protocol.GET:
                     mTimerScaler = response[2];
@@ -193,10 +201,15 @@ public class MainActivity extends ReadListener {
                 case Protocol.MAP:
                     mDeviceMap.clear();
                     mDeviceMap = Arrays.asList(response[2], ",");
+                    mTextViewDevices.setText(mDeviceMap.toString());
                     break;
                 case Protocol.RSC:
                     mSchedule.clear();
                     mSchedule = Arrays.asList(response[2], "|");
+                    Iterator<TextView> iterator = mListSchedules.iterator();
+                    for (String sch: mSchedule) {
+                        iterator.next().setText(sch);
+                    }
                     break;
             }
         }
