@@ -1,9 +1,0 @@
-<resources>
-
-    <dimen name="margin">5dp</dimen>
-    <dimen name="padding">3dp</dimen>
-    <dimen name="text_size">18sp</dimen>
-    <dimen name="button_text_size">12sp</dimen>
-    <dimen name="button_elevation">5dp</dimen>
-    <dimen name="schedule_text_size">10sp</dimen>
-</resources>
