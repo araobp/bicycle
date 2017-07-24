@@ -1,0 +1,294 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding">
+
+        <Switch
+            android:id="@+id/switchStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:text="Sensor Network"
+            android:textOff="OFF"
+            android:textOn="ON"
+            android:textSize="@dimen/button_text_size" />
+
+        <CheckBox
+            android:id="@+id/checkBoxBaudrate9600"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/padding"
+            android:text="9600kbps"
+            android:textSize="@dimen/button_text_size" />
+
+        <Button
+            android:id="@+id/buttonOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="@dimen/button_elevation"
+            android:padding="@dimen/padding"
+            android:text="Open"
+            android:textSize="@dimen/button_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding">
+
+        <TextView
+            android:id="@+id/textViewDevicesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Devices:" />
+
+        <TextView
+            android:id="@+id/textViewDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_light" />
+
+        <TextView
+            android:id="@+id/textViewScaler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:text="Scaler(8msec*X): "
+            android:textSize="@dimen/button_text_size" />
+
+        <TextView
+            android:id="@+id/textViewScalerValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:text="1"
+            android:textSize="@dimen/button_text_size" />
+
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="Period(X)" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="2" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="6" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="12" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="60" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="120" />
+
+            <TextView
+                android:id="@+id/textViewScheduleScaleTitle7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="600" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewScheduleTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding"
+                android:textSize="@dimen/schedule_text_size"
+                android:text="Schedule" />
+
+            <TextView
+                android:id="@+id/textViewSchedule1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_orange_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <TextView
+                android:id="@+id/textViewSchedule7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:padding="@dimen/padding"
+                android:text="@string/schedule_default"
+                android:textSize="@dimen/schedule_text_size" />
+
+        </TableRow>>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:layout_weight="0.1"
+            android:textSize="@dimen/button_text_size"
+            android:text="Command:" />
+
+        <EditText
+            android:id="@+id/editTextWrite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:ems="10"
+            android:padding="@dimen/padding"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="@dimen/text_size" />
+
+        <Button
+            android:id="@+id/buttonWrite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:elevation="@dimen/button_elevation"
+            android:padding="@dimen/padding"
+            android:text="Write"
+            android:textSize="@dimen/button_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/padding">
+
+        <TextView
+            android:id="@+id/textViewRead"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:gravity="bottom"
+            android:padding="@dimen/padding"
+            android:scrollbars="vertical"
+            android:textColor="@android:color/holo_orange_light" />
+
+    </LinearLayout>
+
+</LinearLayout>
