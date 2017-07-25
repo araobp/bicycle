@@ -1,4 +1,4 @@
-package jp.arao.iot.edge;
+package jp.arao.iot.cli;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +25,7 @@ public class MainActivity extends ReadListener {
 
     public static final int DEFAULT_BAUDRATE = 9600;  // 9600kbps
     public static final int SCHEDULER_BAUDRATE = 115200;  // 115200kbps
+    public static final int CMD_SEND_INTERVAL = 250;  // 250msec
 
     private int mBaudrate = 0;
 
@@ -61,12 +62,14 @@ public class MainActivity extends ReadListener {
             update = mFtdiDevice.open(mBaudrate);
             log(update ? "FTDI device connected": "Unable to connect FTDI device");
             try {
-                Thread.sleep(500);
+                /*
+                Thread.sleep(CMD_SEND_INTERVAL);
                 mFtdiDevice.write(Protocol.GET);
-                Thread.sleep(250);
+                Thread.sleep(CMD_SEND_INTERVAL);
                 mFtdiDevice.write(Protocol.MAP);
-                Thread.sleep(250);
+                Thread.sleep(CMD_SEND_INTERVAL);
                 mFtdiDevice.write(Protocol.RSC);
+                */
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
@@ -190,30 +193,41 @@ public class MainActivity extends ReadListener {
     }
 
     public void onRead(String message) {
+        log(message);
         if (message.startsWith("$")) {
             String[] response = message.split(":");
-            log("Response: " + response);
             switch (response[1]) {
                 case Protocol.GET:
-                    mTimerScaler = response[2];
-                    mTextViewScaler.setText(mTimerScaler);
+                    try {
+                        mTimerScaler = response[2];
+                        mTextViewScalerValue.setText(mTimerScaler);
+                    } catch (Exception e) {
+                        log(e.toString());
+                    }
                     break;
                 case Protocol.MAP:
-                    mDeviceMap.clear();
-                    mDeviceMap = Arrays.asList(response[2], ",");
-                    mTextViewDevices.setText(mDeviceMap.toString());
+                    try {
+                        mDeviceMap.clear();
+                        mDeviceMap = Arrays.asList(response[2], ",");
+                        mTextViewDevices.setText(mDeviceMap.toString());
+                    } catch (Exception e) {
+                        log("No device found");
+                    }
                     break;
                 case Protocol.RSC:
-                    mSchedule.clear();
-                    mSchedule = Arrays.asList(response[2], "|");
-                    Iterator<TextView> iterator = mListSchedules.iterator();
-                    for (String sch: mSchedule) {
-                        iterator.next().setText(sch);
+                    try {
+                        mSchedule.clear();
+                        mSchedule = Arrays.asList(response[2], "|");
+                        Iterator<TextView> iterator = mListSchedules.iterator();
+                        for (String sch : mSchedule) {
+                            iterator.next().setText(sch);
+                        }
+                    } catch (Exception e) {
+                        log(e.toString());
                     }
                     break;
             }
         }
-        mTextView.append(message);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package jp.arao.iot.edge;
+package jp.arao.iot.cli;
 
 import android.os.Handler;
 import android.util.Log;
@@ -12,23 +12,24 @@ import com.ftdi.j2xx.FT_Device;
 public class FtdiDevice {
 
     // Size of read buffer (the number of characters)
-    public static final int READBUF_SIZE  = 256;
+    public static final int READBUF_SIZE  = 1024;
 
-    private final String TAG = "Edge";
+    private final String TAG = "CLI";
 
     private D2xxManager mD2xxManager = null;
-    private FT_Device mFtDevice = null;
+    private FT_Device mFtdiDevice = null;
 
     private boolean mReaderIsRunning = false;
 
     private byte[] mReadBuf = new byte[READBUF_SIZE];
     private char[] mCharBuf = new char[READBUF_SIZE];
-    private int mReadSize=0;
+    private int mReadLen =0;
 
     private Handler mHandler = new Handler();
     private ReadListener mReadListener = null;
 
     public static final String DELIMITER = "\n";
+    private static final char sDelimiter = '\n';
 
     /*
     * constructor
@@ -48,14 +49,14 @@ public class FtdiDevice {
     * set FTDI device config
     * */
     private void setConfig(int baudrate, byte dataBits, byte stopBits, byte parity, byte flowControl) {
-        if (!mFtDevice.isOpen()) {
+        if (!mFtdiDevice.isOpen()) {
             Log.e(TAG, "setConfig: device not open");
             return;
         }
 
-        mFtDevice.setBitMode((byte) 0, D2xxManager.FT_BITMODE_RESET);
+        mFtdiDevice.setBitMode((byte) 0, D2xxManager.FT_BITMODE_RESET);
 
-        mFtDevice.setBaudRate(baudrate);
+        mFtdiDevice.setBaudRate(baudrate);
 
         switch (dataBits) {
             case 7:
@@ -102,7 +103,7 @@ public class FtdiDevice {
                 break;
         }
 
-        mFtDevice.setDataCharacteristics(dataBits, stopBits, parity);
+        mFtdiDevice.setDataCharacteristics(dataBits, stopBits, parity);
 
         short flowCtrlSetting;
         switch (flowControl) {
@@ -123,42 +124,54 @@ public class FtdiDevice {
                 break;
         }
 
-        mFtDevice.setFlowControl(flowCtrlSetting, (byte) 0x0b, (byte) 0x0d);
+        mFtdiDevice.setFlowControl(flowCtrlSetting, (byte) 0x0b, (byte) 0x0d);
     }
-
 
     // reader thread
     private Runnable mReader = new Runnable() {
+        int offset = 0;
+        int j;
+        char c;
         @Override
         public void run() {
             int i;
-            int readSize;
+            int len;
             mReaderIsRunning = true;
             while(true) {
                 if(!mReaderIsRunning) {
                     break;
                 }
 
-                synchronized (mFtDevice) {
-                    readSize = mFtDevice.getQueueStatus();
-                    if(readSize>0) {
-                        mReadSize = readSize;
-                        if(mReadSize > READBUF_SIZE) {
-                            mReadSize = READBUF_SIZE;
+                synchronized (mFtdiDevice) {
+                    len = mFtdiDevice.getQueueStatus();
+                    if(len>0) {
+                        mReadLen = len;
+                        if(mReadLen > READBUF_SIZE) {
+                            mReadLen = READBUF_SIZE;
                         }
-                        mFtDevice.read(mReadBuf,mReadSize);
+                        mFtdiDevice.read(mReadBuf, mReadLen);
 
-                        for(i=0; i<mReadSize; i++) {
-                            mCharBuf[i] = (char) mReadBuf[i];
-                        }
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mReadListener.onRead(String.copyValueOf(mCharBuf,0,mReadSize));
+                        j = offset;
+                        for(i=0; i<mReadLen; i++) {
+                            c = (char) mReadBuf[i];
+                            mCharBuf[j++] = c;
+                            if (c == sDelimiter) {
+                                if (j >= 3) {
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                mReadListener.onRead(String.copyValueOf(mCharBuf, 0, j - 2));
+                                            } catch (Exception e) {
+                                                mReadListener.onRead(e.toString());
+                                            }
+                                        }
+                                    });
+                                }
+                                j = 0;
                             }
-                        });
-
+                        }
+                        offset = j;
                     }
                 }
             }
@@ -174,13 +187,13 @@ public class FtdiDevice {
     public boolean open(int baudrate) {
         boolean stateChanged = false;
 
-        if(mFtDevice != null) {
-            if(mFtDevice.isOpen()) {
+        if(mFtdiDevice != null) {
+            if(mFtdiDevice.isOpen()) {
                 if(!mReaderIsRunning) {
                     stateChanged = true;
                     setConfig(baudrate, (byte)8, (byte)1, (byte)0, (byte)0);
-                    mFtDevice.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
-                    mFtDevice.restartInTask();
+                    mFtdiDevice.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
+                    mFtdiDevice.restartInTask();
                     new Thread(mReader).start();
                 }
                 return stateChanged;
@@ -199,20 +212,20 @@ public class FtdiDevice {
             return stateChanged;
         }
 
-        if(mFtDevice == null) {
-            mFtDevice = mD2xxManager.openByIndex(mReadListener, 0);
+        if(mFtdiDevice == null) {
+            mFtdiDevice = mD2xxManager.openByIndex(mReadListener, 0);
         } else {
-            synchronized (mFtDevice) {
-                mFtDevice = mD2xxManager.openByIndex(mReadListener, 0);
+            synchronized (mFtdiDevice) {
+                mFtdiDevice = mD2xxManager.openByIndex(mReadListener, 0);
             }
         }
 
-        if(mFtDevice.isOpen()) {
+        if(mFtdiDevice.isOpen()) {
             if (!mReaderIsRunning) {
                 stateChanged = true;
                 setConfig(baudrate, (byte) 8, (byte) 1, (byte) 0, (byte) 0);
-                mFtDevice.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
-                mFtDevice.restartInTask();
+                mFtdiDevice.purge((byte) (D2xxManager.FT_PURGE_TX | D2xxManager.FT_PURGE_RX));
+                mFtdiDevice.restartInTask();
                 new Thread(mReader).start();
             }
         }
@@ -225,20 +238,20 @@ public class FtdiDevice {
     * */
     public void write(String message) {
         String data = message + DELIMITER;
-        if(mFtDevice == null) {
+        if(mFtdiDevice == null) {
             return;
         }
 
-        synchronized (mFtDevice) {
-            if(mFtDevice.isOpen() == false) {
+        synchronized (mFtdiDevice) {
+            if(mFtdiDevice.isOpen() == false) {
                 Log.e(TAG, "onClickWrite : device is not open");
                 return;
             }
 
-            mFtDevice.setLatencyTimer((byte)16);
+            mFtdiDevice.setLatencyTimer((byte)16);
 
             byte[] writeByte = data.getBytes();
-            mFtDevice.write(writeByte, data.length());
+            mFtdiDevice.write(writeByte, data.length());
         }
     }
 
@@ -254,8 +267,8 @@ public class FtdiDevice {
     * */
     public void close() {
         mReaderIsRunning = false;
-        if(mFtDevice != null) {
-            mFtDevice.close();
+        if(mFtdiDevice != null) {
+            mFtdiDevice.close();
         }
     }
 }

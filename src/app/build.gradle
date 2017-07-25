@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "26.0.0"
     defaultConfig {
-        applicationId "jp.arao.bicycle.edge"
+        applicationId "jp.arao.iot.cli"
         minSdkVersion 23
         targetSdkVersion 23
     }

@@ -1,4 +1,4 @@
-package jp.arao.iot.edge;
+package jp.arao.iot.cli;
 
 import android.app.Activity;
 
