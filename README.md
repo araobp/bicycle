@@ -10,6 +10,12 @@ I devise Node-RED-like flow-based programming over very cheap sensor network.
 
 So I have developed a flow-based programming framework for [PIC16F1-based sensor network](https://github.com/araobp/sensor-network). This time, I will develop a framework for Android to add edge computing capabilities to my sensor network.
 
+## Android apps
+
+### CLI
+
+![screenshot_cli](./doc/screenshot_cli.png)
+
 ## Use case: bicycle
 
 I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network).
