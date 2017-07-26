@@ -55,29 +55,30 @@
             android:id="@+id/textViewDevicesTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Devices:" />
+            android:textSize="@dimen/button_text_size"
+            android:text="Devices " />
 
         <TextView
             android:id="@+id/textViewDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="@dimen/button_text_size"
             android:background="@android:color/holo_green_light" />
+
+        <TextView
+            android:id="@+id/textViewScalerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:text="  Scaler(8msec*X): "
+            android:textSize="@dimen/button_text_size" />
 
         <TextView
             android:id="@+id/textViewScaler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding"
-            android:text="Scaler(8msec*X): "
-            android:textSize="@dimen/button_text_size" />
-
-        <TextView
-            android:id="@+id/textViewScalerValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding"
-            android:text="1"
             android:textSize="@dimen/button_text_size" />
 
     </LinearLayout>

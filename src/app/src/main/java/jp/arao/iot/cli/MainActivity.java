@@ -16,11 +16,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-// IoT gateway for bicycle
+/*
+* Sensor Network CLI
+*
+* @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
+* */
 public class MainActivity extends ReadListener {
 
     public static final int DEFAULT_BAUDRATE = 9600;  // 9600kbps
@@ -39,8 +41,8 @@ public class MainActivity extends ReadListener {
     private Button mButtonWrite = null;
     private CheckBox mCheckBox9600 = null;
     private Switch mSwitch = null;
+    private TextView mTextViewScalerTitle = null;
     private TextView mTextViewScaler = null;
-    private TextView mTextViewScalerValue = null;
     private TextView mTextViewDevices = null;
     private List<TextView> mListSchedules = new ArrayList<>();
 
@@ -48,9 +50,6 @@ public class MainActivity extends ReadListener {
     private static String sButtonOpenClose = "Close";
 
     String mTimerScaler = "unknown";
-
-    List<String> mSchedule = new ArrayList<>();
-    List<String> mDeviceMap = new ArrayList<>();
 
     private void log(String message) {
         mTextView.append(message + "\n");
@@ -62,14 +61,13 @@ public class MainActivity extends ReadListener {
             update = mFtdiDevice.open(mBaudrate);
             log(update ? "FTDI device connected": "Unable to connect FTDI device");
             try {
-                /*
                 Thread.sleep(CMD_SEND_INTERVAL);
                 mFtdiDevice.write(Protocol.GET);
                 Thread.sleep(CMD_SEND_INTERVAL);
+                mFtdiDevice.write(Protocol.SCN);
                 mFtdiDevice.write(Protocol.MAP);
                 Thread.sleep(CMD_SEND_INTERVAL);
                 mFtdiDevice.write(Protocol.RSC);
-                */
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
@@ -118,9 +116,9 @@ public class MainActivity extends ReadListener {
         mCheckBox9600 = (CheckBox) findViewById(R.id.checkBoxBaudrate9600);
 
         mSwitch = (Switch) findViewById(R.id.switchStart);
+        mTextViewScalerTitle = (TextView) findViewById(R.id.textViewScalerTitle);
         mTextViewScaler = (TextView) findViewById(R.id.textViewScaler);
-        mTextViewScalerValue = (TextView) findViewById(R.id.textViewScalerValue);
-        mTextViewScalerValue.setText(mTimerScaler);
+        mTextViewScaler.setText(mTimerScaler);
 
         mTextViewDevices = (TextView) findViewById(R.id.textViewDevices);
 
@@ -198,32 +196,16 @@ public class MainActivity extends ReadListener {
             String[] response = message.split(":");
             switch (response[1]) {
                 case Protocol.GET:
-                    try {
-                        mTimerScaler = response[2];
-                        mTextViewScalerValue.setText(mTimerScaler);
-                    } catch (Exception e) {
-                        log(e.toString());
-                    }
+                    mTimerScaler = response[2];
+                    mTextViewScaler.setText(mTimerScaler);
                     break;
                 case Protocol.MAP:
-                    try {
-                        mDeviceMap.clear();
-                        mDeviceMap = Arrays.asList(response[2], ",");
-                        mTextViewDevices.setText(mDeviceMap.toString());
-                    } catch (Exception e) {
-                        log("No device found");
-                    }
+                    mTextViewDevices.append(response[2]);
                     break;
                 case Protocol.RSC:
-                    try {
-                        mSchedule.clear();
-                        mSchedule = Arrays.asList(response[2], "|");
-                        Iterator<TextView> iterator = mListSchedules.iterator();
-                        for (String sch : mSchedule) {
-                            iterator.next().setText(sch);
-                        }
-                    } catch (Exception e) {
-                        log(e.toString());
+                    String[] schs = response[2].split("\\|");
+                    for (int i=0;i<schs.length;i++) {
+                        mListSchedules.get(i).setText(schs[i]);
                     }
                     break;
             }

@@ -1,6 +1,7 @@
 package jp.arao.iot.cli;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.ftdi.j2xx.D2xxManager;
@@ -25,7 +26,7 @@ public class FtdiDevice {
     private char[] mCharBuf = new char[READBUF_SIZE];
     private int mReadLen =0;
 
-    private Handler mHandler = new Handler();
+    private Handler mHandler = null;
     private ReadListener mReadListener = null;
 
     public static final String DELIMITER = "\n";
@@ -40,6 +41,12 @@ public class FtdiDevice {
         this.mReadListener = readListener;
         try {
             mD2xxManager = D2xxManager.getInstance(readListener);
+            mHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    mReadListener.onRead((String)msg.obj);
+                }
+            };
         } catch (D2xxManager.D2xxException e) {
             Log.e(TAG, e.toString());
         }
@@ -129,13 +136,12 @@ public class FtdiDevice {
 
     // reader thread
     private Runnable mReader = new Runnable() {
-        int offset = 0;
-        int j;
-        char c;
         @Override
         public void run() {
             int i;
             int len;
+            int offset = 0;
+            char c;
             mReaderIsRunning = true;
             while(true) {
                 if(!mReaderIsRunning) {
@@ -151,27 +157,18 @@ public class FtdiDevice {
                         }
                         mFtdiDevice.read(mReadBuf, mReadLen);
 
-                        j = offset;
                         for(i=0; i<mReadLen; i++) {
                             c = (char) mReadBuf[i];
-                            mCharBuf[j++] = c;
+                            mCharBuf[offset++] = c;
                             if (c == sDelimiter) {
-                                if (j >= 3) {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                mReadListener.onRead(String.copyValueOf(mCharBuf, 0, j - 2));
-                                            } catch (Exception e) {
-                                                mReadListener.onRead(e.toString());
-                                            }
-                                        }
-                                    });
+                                if (offset >= 3) {
+                                    Message msg = Message.obtain();
+                                    msg.obj = String.copyValueOf(mCharBuf, 0, offset-1);
+                                    mHandler.sendMessage(msg);
                                 }
-                                j = 0;
+                                offset = 0;
                             }
                         }
-                        offset = j;
                     }
                 }
             }

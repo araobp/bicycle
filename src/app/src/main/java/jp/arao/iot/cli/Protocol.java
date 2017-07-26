@@ -14,5 +14,6 @@ public final class Protocol {
     public static final String I2C = "I2C";
     public static final String WHO = "WHO";
     public static final String MAP = "MAP";
+    public static final String SCN = "SCN";
 
 }
