@@ -14,7 +14,7 @@ First, I have developed Plug&Play protocol for [PIC16F1-based sensor network](ht
 
 ## Use case: bicycle
 
-I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network).
+I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network). It is like a cheap version of [CANopen](https://www.can-cia.org/canopen/) :-)
 
 ### Technical requirements
 
