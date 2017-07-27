@@ -1,4 +1,4 @@
-package jp.arao.iot.cli;
+package jp.arao.iot.driver.imp;
 
 import android.os.Handler;
 import android.os.Message;
@@ -7,10 +7,14 @@ import android.util.Log;
 import com.ftdi.j2xx.D2xxManager;
 import com.ftdi.j2xx.FT_Device;
 
+import jp.arao.iot.driver.ISensorNetworkDriver;
+import jp.arao.iot.driver.ReadListener;
+import jp.arao.iot.driver.Util;
+
 /*
 * FTDI device
 * */
-public class FtdiDevice {
+public class SensorNetworkDriverImpl implements ISensorNetworkDriver {
 
     // Size of read buffer (the number of characters)
     public static final int READBUF_SIZE  = 1024;
@@ -32,21 +36,22 @@ public class FtdiDevice {
     public static final String DELIMITER = "\n";
     private static final char sDelimiter = '\n';
 
-    /*
-    * constructor
-    *
-    * @parameter readListener instance of ReadListener
-    * */
-    public FtdiDevice(ReadListener readListener) {
-        this.mReadListener = readListener;
+    private Util mUtil = null;
+
+    public void setReadListener(ReadListener readListener) {
+        mReadListener = readListener;
+        mUtil = new Util();
         try {
             mD2xxManager = D2xxManager.getInstance(readListener);
             mHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    mReadListener.onRead((String)msg.obj);
+                    if (mReadListener != null) {
+                        mReadListener.onRead((String) msg.obj);
+                    }
                 }
             };
+            mUtil.setHandler(mHandler);
         } catch (D2xxManager.D2xxException e) {
             Log.e(TAG, e.toString());
         }

@@ -1,4 +1,4 @@
-package jp.arao.iot.cli;
+package jp.arao.iot.protocol;
 
 /*
 * Plug&Play protocol
@@ -11,6 +11,7 @@ public final class Protocol {
     public static final String STP = "STP";
     public static final String RSC = "RSC";
     public static final String GET = "GET";
+    public static final String SET = "SET";
     public static final String I2C = "I2C";
     public static final String WHO = "WHO";
     public static final String MAP = "MAP";

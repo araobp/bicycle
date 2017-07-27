@@ -18,6 +18,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.arao.iot.driver.imp.SensorNetworkDriverImpl;
+import jp.arao.iot.driver.ISensorNetworkDriver;
+import jp.arao.iot.driver.ReadListener;
+import jp.arao.iot.driver.imp.SensorNetworkSimulator;
+import jp.arao.iot.protocol.Protocol;
+
 /*
 * Sensor Network CLI
 *
@@ -33,13 +39,14 @@ public class MainActivity extends ReadListener {
 
     private static final String TAG = "CLI";
 
-    private FtdiDevice mFtdiDevice = null;
+    private ISensorNetworkDriver mDriver = null;
 
     private TextView mTextView = null;
     private EditText mEditText = null;
     private Button mButtonOpen = null;
     private Button mButtonWrite = null;
-    private CheckBox mCheckBox9600 = null;
+    private CheckBox mCheckBoxBaudrate9600 = null;
+    private CheckBox mCheckBoxSimualtor = null;
     private Switch mSwitch = null;
     private TextView mTextViewScalerTitle = null;
     private TextView mTextViewScaler = null;
@@ -57,17 +64,25 @@ public class MainActivity extends ReadListener {
 
     private boolean startCommunication() {
         boolean update = false;
-        if (mFtdiDevice != null) {
-            update = mFtdiDevice.open(mBaudrate);
-            log(update ? "FTDI device connected": "Unable to connect FTDI device");
+        if (mCheckBoxSimualtor.isChecked()) {
+            log("Initializing sensor network simulator");
+            mDriver = new SensorNetworkSimulator();
+        } else {
+            log("Initializing sensor network driver");
+            mDriver = new SensorNetworkDriverImpl();
+        }
+        if (mDriver != null) {
+            mDriver.setReadListener(this);
+            update = mDriver.open(mBaudrate);
+            log(update ? "Sensor network connected": "Unable to connect sensor network");
             try {
                 Thread.sleep(CMD_SEND_INTERVAL);
-                mFtdiDevice.write(Protocol.GET);
+                mDriver.write(Protocol.GET);
                 Thread.sleep(CMD_SEND_INTERVAL);
-                mFtdiDevice.write(Protocol.SCN);
-                mFtdiDevice.write(Protocol.MAP);
+                mDriver.write(Protocol.SCN);
+                mDriver.write(Protocol.MAP);
                 Thread.sleep(CMD_SEND_INTERVAL);
-                mFtdiDevice.write(Protocol.RSC);
+                mDriver.write(Protocol.RSC);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
@@ -87,16 +102,16 @@ public class MainActivity extends ReadListener {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        startCommunication();
+        updateButtonText(startCommunication());
     }
 
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                startCommunication();
+                updateButtonText(startCommunication());
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                mFtdiDevice.close();
+                mDriver.close();
                 updateButtonText(false);
             }
         }
@@ -113,7 +128,8 @@ public class MainActivity extends ReadListener {
         mButtonOpen = (Button) findViewById(R.id.buttonOpen);
         mButtonWrite = (Button) findViewById(R.id.buttonWrite);
 
-        mCheckBox9600 = (CheckBox) findViewById(R.id.checkBoxBaudrate9600);
+        mCheckBoxBaudrate9600 = (CheckBox) findViewById(R.id.checkBoxBaudrate9600);
+        mCheckBoxSimualtor = (CheckBox) findViewById(R.id.checkBoxSimulator);
 
         mSwitch = (Switch) findViewById(R.id.switchStart);
         mTextViewScalerTitle = (TextView) findViewById(R.id.textViewScalerTitle);
@@ -138,7 +154,7 @@ public class MainActivity extends ReadListener {
                 if (mButtonOpen.getText().equals(sButtonOpenOpen)) {
                     updateButtonText(startCommunication());
                 } else {
-                    mFtdiDevice.close();
+                    mDriver.close();
                     updateButtonText(false);
                 }
             }
@@ -148,17 +164,17 @@ public class MainActivity extends ReadListener {
             @Override
             public void onClick(View v) {
                 String writeString = mEditText.getText().toString().toUpperCase();
-                mFtdiDevice.write(writeString);
+                mDriver.write(writeString);
                 mEditText.setText("");
             }
         });
 
-        mBaudrate = mCheckBox9600.isChecked() ? DEFAULT_BAUDRATE : SCHEDULER_BAUDRATE;
+        mBaudrate = mCheckBoxBaudrate9600.isChecked() ? DEFAULT_BAUDRATE : SCHEDULER_BAUDRATE;
 
-        mCheckBox9600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mCheckBoxBaudrate9600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mCheckBox9600.isChecked()) {
+                if (mCheckBoxBaudrate9600.isChecked()) {
                     mBaudrate = DEFAULT_BAUDRATE;
                 } else {
                     mBaudrate = SCHEDULER_BAUDRATE;
@@ -170,19 +186,17 @@ public class MainActivity extends ReadListener {
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mFtdiDevice != null) {
+                if (mDriver != null) {
                     if (isChecked) {
                         log("Switch on");
-                        mFtdiDevice.write(Protocol.STA);
+                        mDriver.write(Protocol.STA);
                     } else {
-                        mFtdiDevice.write(Protocol.STP);
+                        mDriver.write(Protocol.STP);
                         log("Switch off");
                     }
                 }
             }
         });
-
-        mFtdiDevice = new FtdiDevice(this);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -216,7 +230,7 @@ public class MainActivity extends ReadListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mFtdiDevice.stop();
+        mDriver.stop();
         unregisterReceiver(mUsbReceiver);
     }
 }

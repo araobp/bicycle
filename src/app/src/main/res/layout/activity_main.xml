@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -16,27 +15,42 @@
         <Switch
             android:id="@+id/switchStart"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="@dimen/padding"
-            android:text="Sensor Network"
-            android:textOff="OFF"
-            android:textOn="ON"
+            android:textOff="Stop"
+            android:textOn="Start"
+            android:text="Sensor network"
             android:textSize="@dimen/button_text_size" />
 
-        <CheckBox
-            android:id="@+id/checkBoxBaudrate9600"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="@dimen/padding"
-            android:text="9600kbps"
-            android:textSize="@dimen/button_text_size" />
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/checkBoxBaudrate9600"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding"
+                android:text="9600kbps"
+                android:layout_weight="0.5"
+                android:textSize="@dimen/schedule_text_size" />
+
+            <CheckBox
+                android:id="@+id/checkBoxSimulator"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding"
+                android:text="Simulator"
+                android:layout_weight="0.5"
+                android:textSize="@dimen/schedule_text_size" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/buttonOpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:elevation="@dimen/button_elevation"
             android:padding="@dimen/padding"
             android:text="Open"
@@ -254,7 +268,7 @@
             android:id="@+id/editTextWrite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:layout_weight="0.8"
             android:ems="10"
             android:padding="@dimen/padding"
             android:textColor="@android:color/holo_blue_dark"
@@ -264,7 +278,7 @@
             android:id="@+id/buttonWrite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_weight="0.1"
             android:elevation="@dimen/button_elevation"
             android:padding="@dimen/padding"
             android:text="Write"
