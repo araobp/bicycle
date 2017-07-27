@@ -288,6 +288,7 @@
             android:gravity="bottom"
             android:padding="@dimen/padding"
             android:scrollbars="vertical"
+            android:maxLines="25"
             android:textColor="@android:color/holo_orange_light" />
 
     </LinearLayout>

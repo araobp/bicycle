@@ -200,6 +200,7 @@ public class MainActivity extends ReadListener {
                     mTextViewScaler.setText(mTimerScaler);
                     break;
                 case Protocol.MAP:
+                    mTextViewDevices.setText("");
                     mTextViewDevices.append(response[2]);
                     break;
                 case Protocol.RSC:
