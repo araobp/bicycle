@@ -1,5 +1,8 @@
 package jp.arao.iot.driver;
 
+/*
+* Sensor network driver interface
+* */
 public interface ISensorNetworkDriver {
 
     public void setReadListener(ReadListener readListener);

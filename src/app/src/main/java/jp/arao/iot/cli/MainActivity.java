@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +46,21 @@ public class MainActivity extends ReadListener {
     private EditText mEditText = null;
     private Button mButtonOpen = null;
     private Button mButtonWrite = null;
+    private ToggleButton mToggleButton = null;
     private CheckBox mCheckBoxBaudrate9600 = null;
     private CheckBox mCheckBoxSimualtor = null;
     private Switch mSwitch = null;
-    private TextView mTextViewScalerTitle = null;
     private TextView mTextViewScaler = null;
     private TextView mTextViewDevices = null;
     private List<TextView> mListSchedules = new ArrayList<>();
 
     private static String sButtonOpenOpen = "Open";
     private static String sButtonOpenClose = "Close";
+
+    private boolean mResponseLoggingEnabled = false;
+
+    private boolean mOpened = false;
+    private boolean mStarted = false;
 
     String mTimerScaler = "unknown";
 
@@ -66,10 +72,14 @@ public class MainActivity extends ReadListener {
         boolean update = false;
         if (mCheckBoxSimualtor.isChecked()) {
             log("Initializing sensor network simulator");
-            mDriver = new SensorNetworkSimulator();
+            if (mDriver == null) {
+                mDriver = new SensorNetworkSimulator();
+            }
         } else {
             log("Initializing sensor network driver");
-            mDriver = new SensorNetworkDriverImpl();
+            if (mDriver == null) {
+                mDriver = new SensorNetworkDriverImpl();
+            }
         }
         if (mDriver != null) {
             mDriver.setReadListener(this);
@@ -112,6 +122,7 @@ public class MainActivity extends ReadListener {
                 updateButtonText(startCommunication());
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 mDriver.close();
+                mSwitch.setChecked(false);
                 updateButtonText(false);
             }
         }
@@ -127,12 +138,12 @@ public class MainActivity extends ReadListener {
 
         mButtonOpen = (Button) findViewById(R.id.buttonOpen);
         mButtonWrite = (Button) findViewById(R.id.buttonWrite);
+        mToggleButton = (ToggleButton) findViewById(R.id.toggleButton);
 
         mCheckBoxBaudrate9600 = (CheckBox) findViewById(R.id.checkBoxBaudrate9600);
         mCheckBoxSimualtor = (CheckBox) findViewById(R.id.checkBoxSimulator);
 
         mSwitch = (Switch) findViewById(R.id.switchStart);
-        mTextViewScalerTitle = (TextView) findViewById(R.id.textViewScalerTitle);
         mTextViewScaler = (TextView) findViewById(R.id.textViewScaler);
         mTextViewScaler.setText(mTimerScaler);
 
@@ -153,9 +164,17 @@ public class MainActivity extends ReadListener {
             public void onClick(View v) {
                 if (mButtonOpen.getText().equals(sButtonOpenOpen)) {
                     updateButtonText(startCommunication());
+                    mOpened = true;
+                    if (mStarted) {
+                        mSwitch.setChecked(true);
+                    }
                 } else {
                     mDriver.close();
+                    mOpened = false;
                     updateButtonText(false);
+                    if (mStarted) {
+                        mSwitch.setChecked(false);
+                    }
                 }
             }
         });
@@ -190,11 +209,32 @@ public class MainActivity extends ReadListener {
                     if (isChecked) {
                         log("Switch on");
                         mDriver.write(Protocol.STA);
+                        mSwitch.setChecked(true);
+                        mStarted = true;
                     } else {
-                        mDriver.write(Protocol.STP);
                         log("Switch off");
+                        if (mOpened) {
+                            mDriver.write(Protocol.STP);
+                            mStarted = false;
+                        }
+                        mSwitch.setChecked(false);
                     }
                 }
+            }
+        });
+
+        mToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {  // OFF
+                    log("Logging disabled");
+                    mResponseLoggingEnabled = false;
+                } else {  // ON
+                    log("Logging enabled");
+                    mTextView.setText("");
+                    mResponseLoggingEnabled = true;
+                }
+
             }
         });
 
@@ -205,7 +245,9 @@ public class MainActivity extends ReadListener {
     }
 
     public void onRead(String message) {
-        log(message);
+        if (mResponseLoggingEnabled) {
+            log(message);
+        }
         if (message.startsWith("$")) {
             String[] response = message.split(":");
             switch (response[1]) {

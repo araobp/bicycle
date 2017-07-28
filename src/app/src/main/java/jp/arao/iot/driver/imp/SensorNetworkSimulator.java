@@ -31,7 +31,7 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
                 @Override
                 public void run() {
                     while (true) {
-                        if (mHandler != null && mStarted) {
+                        if (mHandler != null && mOpened && mStarted) {
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
@@ -110,7 +110,6 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
     }
 
     public void close() {
-        mStarted = false;
         mOpened = false;
     }
 

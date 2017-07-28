@@ -3,6 +3,9 @@ package jp.arao.iot.driver;
 import android.os.Handler;
 import android.os.Message;
 
+/*
+* Utilities
+* */
 public class Util {
 
     private Handler mHandler = null;
