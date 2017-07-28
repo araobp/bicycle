@@ -20,6 +20,12 @@ Actor Model is the basis of concurrent computing in the area of telecommunicatio
 
 ![screenshot_cli](./doc/screenshot_cli.png)
 
+### Edge computing
+
+### Visualizer
+
+### DB client
+
 ## Use case: bicycle
 
 I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network). It is like a cheap version of [CANopen](https://www.can-cia.org/canopen/) :-)
