@@ -38,4 +38,5 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 ## Links
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
 - [Dragon board (Quallcomm)](https://developer.qualcomm.com/hardware/dragonboard-410c)
+- [EventBus](https://github.com/greenrobot/EventBus#add-eventbus-to-your-project)
 - [CANopen](https://www.can-cia.org/canopen/)
