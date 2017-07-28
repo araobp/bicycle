@@ -72,12 +72,12 @@ public class MainActivity extends ReadListener {
         boolean update = false;
         if (mCheckBoxSimualtor.isChecked()) {
             log("Initializing sensor network simulator");
-            if (mDriver == null) {
+            if (mDriver == null || mDriver instanceof SensorNetworkDriverImpl) {
                 mDriver = new SensorNetworkSimulator();
             }
         } else {
             log("Initializing sensor network driver");
-            if (mDriver == null) {
+            if (mDriver == null || mDriver instanceof SensorNetworkSimulator) {
                 mDriver = new SensorNetworkDriverImpl();
             }
         }

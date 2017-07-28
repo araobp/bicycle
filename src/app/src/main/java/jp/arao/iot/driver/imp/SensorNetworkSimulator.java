@@ -4,6 +4,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import jp.arao.iot.driver.ISensorNetworkDriver;
 import jp.arao.iot.driver.ReadListener;
 import jp.arao.iot.driver.Util;
@@ -19,13 +22,18 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
 
     private boolean mStarted = false;
     private boolean mOpened = false;
-    private String mValue = "1";
+    private int mValue = 1000;
     private static final String sDevices = "16,18,19";
     private static final String sSchedule = "0,0,0,0|19,0,0,0|0,0,0,0|0,0,0,0|0,0,0,0|18,0,0,0|0,0,0,0";
 
+    public static final String DEVICE_NAME = "SENSOR_SIMULATOR";
+
+    public static final int TIMER = 8;  // 8msec
+    private int mSleep = TIMER * mValue;
+
     public SensorNetworkSimulator() {
         mUtil = new Util();
-        mUtil.returnResponse("Sensor network simulator started");
+        mSleep = TIMER * mValue;
         try {
             new Thread(new Runnable() {
                 @Override
@@ -33,7 +41,7 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
                     while (true) {
                         if (mHandler != null && mOpened && mStarted) {
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(mSleep);
                             } catch (InterruptedException e) {
                                 Log.e(TAG, e.toString());
                             }
@@ -47,12 +55,6 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-    }
-
-    private void log(String message) {
-        Message msg = Message.obtain();
-        msg.obj = message;
-        mHandler.sendMessage(msg);
     }
 
     public void setReadListener(ReadListener readListener) {
@@ -78,7 +80,11 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
     public void write(String message) {
         if (mOpened) {
             mUtil.returnResponse("#" + message);
-            switch (message) {
+            String cmd[] = message.split(":");
+            switch (cmd[0]) {
+                case Protocol.WHO:
+                    mUtil.returnResponse("$:WHO:" + DEVICE_NAME);
+                    break;
                 case Protocol.STA:
                     mStarted = true;
                     break;
@@ -86,11 +92,13 @@ public class SensorNetworkSimulator implements ISensorNetworkDriver{
                     mStarted = false;
                     break;
                 case Protocol.GET:
-                    mUtil.returnResponse("$:GET:" + mValue);
+                    mUtil.returnResponse("$:GET:" + String.valueOf(mValue));
                     break;
                 case Protocol.SET:
                     try {
-                        mValue = message.split(":")[1];
+                        mValue = Integer.parseInt(cmd[1]);
+                        mSleep = TIMER * mValue;
+                        Log.e(TAG, "mValue: " + String.valueOf(mValue));
                     } catch (Exception e) {
                         Log.e(TAG, e.toString());
                     }
