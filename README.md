@@ -8,10 +8,11 @@
 
 I have developed Plug&Play protocol for [PIC16F1-based sensor network](https://github.com/araobp/sensor-network). Next, I will develop a framework for Android to add edge computing capabilities to my sensor network.
 
-### Why Android
+### Why I chose Android
 
-Android framework is based on [Actor model](https://en.wikipedia.org/wiki/Actor_model). Actor Model is the basis of concurrent computing in the area of telecommunication systems. Once, I developed [a messaging capability for network controller (i.e., SDN controller)](https://github.com/o3project/odenos/tree/develop/src/main/java/org/o3project/odenos/remoteobject/messagingclient) based on Actor Model to avoid thread collision. In the past (25 years ago), I also developed [a messaging capability for central office switch](https://github.com/araobp/neutron-lan/blob/master/doc/sdn_in_the_past.md).
+I soloved thread collision problems in my past projects by adopting [Actor model](https://en.wikipedia.org/wiki/Actor_model) mehodology, and Android framework (Looper and Handler)[https://blog.mindorks.com/android-core-looper-handler-and-handlerthread-bd54d69fe91a] is based on Actor model.
 
+Actor Model is the basis of concurrent computing in the area of telecommunication systems. Once, I developed [a messaging capability for network controller (i.e., SDN controller)](https://github.com/o3project/odenos/tree/develop/src/main/java/org/o3project/odenos/remoteobject/messagingclient) based on Actor Model to avoid thread collision. In the past (25 years ago), I also developed [a messaging capability for central office switch](https://github.com/araobp/neutron-lan/blob/master/doc/sdn_in_the_past.md).
 
 ## Android apps
 
