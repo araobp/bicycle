@@ -12,6 +12,10 @@ I have developed Plug&Play protocol for [PIC16F1-based sensor network](https://g
 
 Android provides a lot of tools and facilities to Sunday programmers like me: Android Studio, Google Play... Android seems to me the best choise for IoT gateway prototyping. Smartphone can supply electric power to my sensor network via USB, which is also great to simplify the system.
 
+### New technologies
+
+I want to learn new language "Kotlin" and new programming styles such as "RxJava" by programming Android.
+
 ## Android apps
 
 ### CLI
