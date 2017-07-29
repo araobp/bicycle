@@ -1,16 +1,13 @@
-package jp.arao.iot.driver.imp;
+package jp.araobp.iot.driver.imp;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import jp.arao.iot.driver.ISensorNetworkDriver;
-import jp.arao.iot.driver.ReadListener;
-import jp.arao.iot.driver.Util;
-import jp.arao.iot.protocol.Protocol;
+import jp.araobp.iot.driver.ISensorNetworkDriver;
+import jp.araobp.iot.driver.ReadListener;
+import jp.araobp.iot.driver.Util;
+import jp.araobp.iot.protocol.Protocol;
 
 public class SensorNetworkSimulator implements ISensorNetworkDriver{
 

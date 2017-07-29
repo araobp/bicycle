@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jp.arao.iot.cli"
+    package="jp.araobp.iot.cli"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.01" >
 
     <uses-sdk
         android:minSdkVersion="13"
@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="jp.araobp.iot.cli.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:configChanges="orientation" >

@@ -1,4 +1,4 @@
-package jp.arao.iot.driver;
+package jp.araobp.iot.driver;
 
 import android.app.Activity;
 

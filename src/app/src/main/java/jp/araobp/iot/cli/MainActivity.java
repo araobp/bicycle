@@ -1,4 +1,4 @@
-package jp.arao.iot.cli;
+package jp.araobp.iot.cli;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,11 +19,11 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.arao.iot.driver.imp.SensorNetworkDriverImpl;
-import jp.arao.iot.driver.ISensorNetworkDriver;
-import jp.arao.iot.driver.ReadListener;
-import jp.arao.iot.driver.imp.SensorNetworkSimulator;
-import jp.arao.iot.protocol.Protocol;
+import jp.araobp.iot.driver.imp.SensorNetworkDriverImpl;
+import jp.araobp.iot.driver.ISensorNetworkDriver;
+import jp.araobp.iot.driver.ReadListener;
+import jp.araobp.iot.driver.imp.SensorNetworkSimulator;
+import jp.araobp.iot.protocol.Protocol;
 
 /*
 * Sensor Network CLI

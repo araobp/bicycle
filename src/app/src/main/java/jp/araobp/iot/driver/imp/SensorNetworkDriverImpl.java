@@ -1,4 +1,4 @@
-package jp.arao.iot.driver.imp;
+package jp.araobp.iot.driver.imp;
 
 import android.os.Handler;
 import android.os.Message;
@@ -7,9 +7,9 @@ import android.util.Log;
 import com.ftdi.j2xx.D2xxManager;
 import com.ftdi.j2xx.FT_Device;
 
-import jp.arao.iot.driver.ISensorNetworkDriver;
-import jp.arao.iot.driver.ReadListener;
-import jp.arao.iot.driver.Util;
+import jp.araobp.iot.driver.ISensorNetworkDriver;
+import jp.araobp.iot.driver.ReadListener;
+import jp.araobp.iot.driver.Util;
 
 /*
 * FTDI device
@@ -42,7 +42,7 @@ public class SensorNetworkDriverImpl implements ISensorNetworkDriver {
         mReadListener = readListener;
         mUtil = new Util();
         try {
-            mD2xxManager = D2xxManager.getInstance(readListener);
+            mD2xxManager = D2xxManager.getInstance(readListener.getApplicationContext());
             mHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
