@@ -1,4 +1,4 @@
-package jp.araobp.iot.driver.imp;
+package jp.araobp.iot.driver.impl;
 
 import android.os.Handler;
 import android.os.Message;

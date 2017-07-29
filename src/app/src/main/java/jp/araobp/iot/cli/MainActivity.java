@@ -19,10 +19,10 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.araobp.iot.driver.imp.SensorNetworkDriverImpl;
+import jp.araobp.iot.driver.impl.SensorNetworkDriverImpl;
 import jp.araobp.iot.driver.ISensorNetworkDriver;
 import jp.araobp.iot.driver.ReadListener;
-import jp.araobp.iot.driver.imp.SensorNetworkSimulator;
+import jp.araobp.iot.driver.impl.SensorNetworkSimulator;
 import jp.araobp.iot.protocol.Protocol;
 
 /*

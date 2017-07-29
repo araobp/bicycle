@@ -1,4 +1,4 @@
-package jp.araobp.iot.driver.imp;
+package jp.araobp.iot.driver.impl;
 
 import android.os.Handler;
 import android.os.Message;
@@ -12,7 +12,8 @@ import jp.araobp.iot.driver.ReadListener;
 import jp.araobp.iot.driver.Util;
 
 /*
-* FTDI device
+* FTDI device driver
+*
 * */
 public class SensorNetworkDriverImpl implements ISensorNetworkDriver {
 
