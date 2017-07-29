@@ -12,6 +12,8 @@ I have developed Plug&Play protocol for [PIC16F1-based sensor network](https://g
 
 Android provides a lot of tools and facilities to Sunday programmers like me: Android Studio, Google Play... Android seems to me the best choise for IoT gateway prototyping. Smartphone can supply electric power to my sensor network via USB, which is also great to simplify the system.
 
+Once I used RasPi/Arduino for IoT prototyping, ending up with unsatisfying results: complicated physical wiring problems. I stopped using RasPi/Arduino, and I started thinking of the combination of PIC16F1 and Android to simplify physical wirling.
+
 ### New technologies
 
 I want to learn new language "Kotlin" and new programming styles such as "RxJava" by programming Android.
@@ -55,4 +57,3 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
 - [Dragon board (Quallcomm)](https://developer.qualcomm.com/hardware/dragonboard-410c)
 - [CANopen](https://www.can-cia.org/canopen/)
-- [EventBus](http://greenrobot.org/eventbus/)
