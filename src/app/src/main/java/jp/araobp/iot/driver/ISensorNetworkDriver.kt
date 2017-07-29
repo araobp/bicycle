@@ -1,33 +1,33 @@
-package jp.araobp.iot.driver;
+package jp.araobp.iot.driver
 
 /*
 * Sensor network driver interface
 * */
-public interface ISensorNetworkDriver {
+interface ISensorNetworkDriver {
 
     /*
     * sets callback method that receives messages one by one from Handler/Looper
     * */
-    public void setReadListener(ReadListener readListener);
+    fun setReadListener(readListener: ReadListener)
 
     /*
     * opens the device driver
     * */
-    public boolean open(int baudrate);
+    fun open(baudrate: Int): Boolean
 
     /*
     * writes a message to the device driver
     * */
-    public void write(String message);
+    fun write(message: String)
 
     /*
     * stops running the device driver
     * */
-    public void stop();
+    fun stop()
 
     /*
     * closes the device driver
     * */
-    public void close();
+    fun close()
 
 }

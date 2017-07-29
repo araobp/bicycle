@@ -214,7 +214,7 @@ public class MainActivity extends ReadListener {
                     } else {
                         log("Switch off");
                         if (mOpened) {
-                            mDriver.write(Protocol.STP);
+                            mDriver.write(Protocol.INSTANCE.STP);
                             mStarted = false;
                         }
                         mSwitch.setChecked(false);
@@ -251,7 +251,7 @@ public class MainActivity extends ReadListener {
         if (message.startsWith("$")) {
             String[] response = message.split(":");
             switch (response[1]) {
-                case Protocol.GET:
+                case Protocol.STA:
                     mTimerScaler = response[2];
                     mTextViewScaler.setText(mTimerScaler);
                     break;
