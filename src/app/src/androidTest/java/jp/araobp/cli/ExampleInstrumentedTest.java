@@ -1,2 +1,0 @@
-package jp.araobp.cli;
-

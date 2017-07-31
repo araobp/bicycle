@@ -5,7 +5,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "26.0.0"
     defaultConfig {
-        applicationId "jp.arao.iot.cli"
+        applicationId "jp.araobp.iot.cli"
         minSdkVersion 23
         targetSdkVersion 23
     }
@@ -24,6 +24,7 @@ dependencies {
     compile files('libs/d2xx.jar')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
 repositories {
     mavenCentral()
