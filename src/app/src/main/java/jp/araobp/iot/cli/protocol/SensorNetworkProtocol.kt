@@ -5,7 +5,7 @@ package jp.araobp.iot.cli.protocol
 *
 * @see <a href="https://github.com/araobp/sensor-network">https://github.com/araobp/sensor-network</a>
 * */
-object Protocol {
+object SensorNetworkProtocol {
 
     const val STA = "STA"
     const val STP = "STP"

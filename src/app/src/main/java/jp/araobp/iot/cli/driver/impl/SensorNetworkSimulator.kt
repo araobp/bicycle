@@ -7,7 +7,7 @@ import android.util.Log
 import jp.araobp.iot.cli.driver.ISensorNetworkDriver
 import jp.araobp.iot.cli.driver.ReadListener
 import jp.araobp.iot.cli.driver.Util
-import jp.araobp.iot.cli.protocol.Protocol
+import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 
 class SensorNetworkSimulator : ISensorNetworkDriver {
     private var mReadListener: ReadListener? = null
@@ -69,11 +69,11 @@ class SensorNetworkSimulator : ISensorNetworkDriver {
             mUtil.returnResponse("#" + message)
             val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             when (cmd[0]) {
-                Protocol.WHO -> mUtil.returnResponse("$:WHO:$DEVICE_NAME")
-                Protocol.STA -> mStarted = true
-                Protocol.STP -> mStarted = false
-                Protocol.GET -> mUtil.returnResponse("$:GET:" + mValue.toString())
-                Protocol.SET -> try {
+                SensorNetworkProtocol.WHO -> mUtil.returnResponse("$:WHO:$DEVICE_NAME")
+                SensorNetworkProtocol.STA -> mStarted = true
+                SensorNetworkProtocol.STP -> mStarted = false
+                SensorNetworkProtocol.GET -> mUtil.returnResponse("$:GET:" + mValue.toString())
+                SensorNetworkProtocol.SET -> try {
                     mValue = Integer.parseInt(cmd[1])
                     mSleep = TIMER * mValue
                     Log.e(TAG, "mValue: " + mValue.toString())
@@ -81,8 +81,8 @@ class SensorNetworkSimulator : ISensorNetworkDriver {
                     Log.e(TAG, e.toString())
                 }
 
-                Protocol.MAP -> mUtil.returnResponse("$:MAP:$sDevices")
-                Protocol.RSC -> mUtil.returnResponse("$:RSC:$sSchedule")
+                SensorNetworkProtocol.MAP -> mUtil.returnResponse("$:MAP:$sDevices")
+                SensorNetworkProtocol.RSC -> mUtil.returnResponse("$:RSC:$sSchedule")
             }
         }
     }

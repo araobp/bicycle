@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ToggleButton
 import jp.araobp.iot.cli.CliActivity
+import jp.araobp.iot.cli.CliService
 
 import jp.araobp.iot.cli.R
 
@@ -47,6 +48,8 @@ class ManagerActivity : Activity() {
                 Log.d(TAG, "CLI Off")
             } else {  // ON
                 Log.d(TAG, "CLI On")
+                var intent = Intent(this, CliService::class.java)
+                startService(intent)
             }
         }
 

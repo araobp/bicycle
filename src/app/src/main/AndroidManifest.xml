@@ -32,8 +32,8 @@
             android:name="jp.araobp.iot.cli.CliActivity"
             android:configChanges="orientation"
             android:label="@string/app_name_cli"
-            android:parentActivityName="jp.araobp.iot.manager.ManagerActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:parentActivityName="jp.araobp.iot.manager.ManagerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,6 +47,12 @@
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
+
+        <service
+            android:name="jp.araobp.iot.cli.CliService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>

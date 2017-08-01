@@ -20,7 +20,7 @@ import jp.araobp.iot.cli.driver.impl.SensorNetworkDriverImpl
 import jp.araobp.iot.cli.driver.ISensorNetworkDriver
 import jp.araobp.iot.cli.driver.ReadListener
 import jp.araobp.iot.cli.driver.impl.SensorNetworkSimulator
-import jp.araobp.iot.cli.protocol.Protocol
+import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 
 /*
 * Sensor Network CLI
@@ -75,12 +75,12 @@ class CliActivity : ReadListener() {
             log(if (update) "Sensor network connected" else "Unable to connect sensor network")
             try {
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mDriver!!.write(Protocol.GET)
+                mDriver!!.write(SensorNetworkProtocol.GET)
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mDriver!!.write(Protocol.SCN)
-                mDriver!!.write(Protocol.MAP)
+                mDriver!!.write(SensorNetworkProtocol.SCN)
+                mDriver!!.write(SensorNetworkProtocol.MAP)
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mDriver!!.write(Protocol.RSC)
+                mDriver!!.write(SensorNetworkProtocol.RSC)
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
             }
@@ -184,13 +184,13 @@ class CliActivity : ReadListener() {
             if (mDriver != null) {
                 if (isChecked) {
                     log("Switch on")
-                    mDriver!!.write(Protocol.STA)
+                    mDriver!!.write(SensorNetworkProtocol.STA)
                     mSwitch!!.isChecked = true
                     mStarted = true
                 } else {
                     log("Switch off")
                     if (mOpened) {
-                        mDriver!!.write(Protocol.STP)
+                        mDriver!!.write(SensorNetworkProtocol.STP)
                         mStarted = false
                     }
                     mSwitch!!.isChecked = false
@@ -222,15 +222,15 @@ class CliActivity : ReadListener() {
         if (message.startsWith("$")) {
             val response = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             when (response[1]) {
-                Protocol.STA -> {
+                SensorNetworkProtocol.STA -> {
                     mTimerScaler = response[2]
                     mTextViewScaler!!.text = mTimerScaler
                 }
-                Protocol.MAP -> {
+                SensorNetworkProtocol.MAP -> {
                     mTextViewDevices!!.text = ""
                     mTextViewDevices!!.append(response[2])
                 }
-                Protocol.RSC -> {
+                SensorNetworkProtocol.RSC -> {
                     val schs = response[2].split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                     for (i in schs.indices) {
                         mListSchedules[i].text = schs[i]
