@@ -1,13 +1,13 @@
-package jp.araobp.iot.driver.impl
+package jp.araobp.iot.cli.driver.impl
 
 import android.os.Handler
 import android.os.Message
 import android.util.Log
 
-import jp.araobp.iot.driver.ISensorNetworkDriver
-import jp.araobp.iot.driver.ReadListener
-import jp.araobp.iot.driver.Util
-import jp.araobp.iot.protocol.Protocol
+import jp.araobp.iot.cli.driver.ISensorNetworkDriver
+import jp.araobp.iot.cli.driver.ReadListener
+import jp.araobp.iot.cli.driver.Util
+import jp.araobp.iot.cli.protocol.Protocol
 
 class SensorNetworkSimulator : ISensorNetworkDriver {
     private var mReadListener: ReadListener? = null

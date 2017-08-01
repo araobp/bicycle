@@ -7,10 +7,8 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
@@ -18,18 +16,18 @@ import android.widget.ToggleButton
 
 import java.util.ArrayList
 
-import jp.araobp.iot.driver.impl.SensorNetworkDriverImpl
-import jp.araobp.iot.driver.ISensorNetworkDriver
-import jp.araobp.iot.driver.ReadListener
-import jp.araobp.iot.driver.impl.SensorNetworkSimulator
-import jp.araobp.iot.protocol.Protocol
+import jp.araobp.iot.cli.driver.impl.SensorNetworkDriverImpl
+import jp.araobp.iot.cli.driver.ISensorNetworkDriver
+import jp.araobp.iot.cli.driver.ReadListener
+import jp.araobp.iot.cli.driver.impl.SensorNetworkSimulator
+import jp.araobp.iot.cli.protocol.Protocol
 
 /*
 * Sensor Network CLI
 *
 * @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
 * */
-class MainActivity : ReadListener() {
+class CliActivity : ReadListener() {
 
     private var mBaudrate = 0
 
@@ -120,7 +118,7 @@ class MainActivity : ReadListener() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_cli)
 
         mTextView = findViewById(R.id.textViewRead) as TextView
         mEditText = findViewById(R.id.editTextWrite) as EditText
@@ -244,7 +242,7 @@ class MainActivity : ReadListener() {
 
     public override fun onDestroy() {
         super.onDestroy()
-        mDriver!!.stop()
+        mDriver?.stop()
         unregisterReceiver(mUsbReceiver)
     }
 
