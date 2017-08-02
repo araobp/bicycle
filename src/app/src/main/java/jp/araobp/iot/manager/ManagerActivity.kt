@@ -1,6 +1,8 @@
 package jp.araobp.iot.manager
 
 import android.app.Activity
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,11 @@ import jp.araobp.iot.cli.CliActivity
 import jp.araobp.iot.cli.CliService
 
 import jp.araobp.iot.cli.R
+import android.content.Context.BIND_AUTO_CREATE
+import android.content.ServiceConnection
+import android.os.IBinder
+import jp.araobp.iot.cli.CliService.CliServiceBinder
+
 
 class ManagerActivity : Activity() {
 
@@ -27,6 +34,9 @@ class ManagerActivity : Activity() {
     var mToggleButtonVisualizer: ToggleButton? = null
     var mToggleButtonDbClient: ToggleButton? = null
 
+    var mCliService: CliService? = null
+    var mCliServiceBound = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manager)
@@ -42,6 +52,9 @@ class ManagerActivity : Activity() {
         mToggleButtonEdgeComputing = findViewById(R.id.toggleButtonEdgeComputing) as ToggleButton
         mToggleButtonVisualizer = findViewById(R.id.toggleButtonVisualizer) as ToggleButton
         mToggleButtonDbClient = findViewById(R.id.toggleButtonDbClient) as ToggleButton
+
+        val intent = Intent(this, CliService::class.java)
+        bindService(intent, mCliServiceConnection, Context.BIND_AUTO_CREATE)
 
         mToggleButtonCli!!.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {  // OFF
@@ -59,4 +72,17 @@ class ManagerActivity : Activity() {
             startActivity(intent)
         }
     }
+
+    private val mCliServiceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as CliServiceBinder
+            mCliService = binder.getService()
+            mCliServiceBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mCliServiceBound = false
+        }
+    }
+
 }

@@ -8,10 +8,10 @@ import android.util.Log
 
 class CliService : Service() {
 
-    val mBinder:IBinder = LocalBinder()
+    val mBinder:IBinder = CliServiceBinder()
 
-    inner class LocalBinder : Binder() {
-        fun getLocalService(): CliService {
+    inner class CliServiceBinder : Binder() {
+        fun getService(): CliService {
             return this@CliService
         }
     }
