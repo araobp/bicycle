@@ -6,17 +6,17 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 
-class CliService : Service() {
+class EdgeService : Service() {
 
-    val mBinder:IBinder = CliServiceBinder()
+    val mBinder:IBinder = EdgeServiceBinder()
 
-    inner class CliServiceBinder : Binder() {
-        fun getService(): CliService {
-            return this@CliService
+    inner class EdgeServiceBinder : Binder() {
+        fun getService(): EdgeService {
+            return this@EdgeService
         }
     }
 
-    val TAG = "CliService"
+    val TAG = "EdgeService"
 
     override fun onBind(intent: Intent): IBinder? {
         return mBinder
@@ -35,5 +35,9 @@ class CliService : Service() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         super.onDestroy()
+    }
+
+    fun test(message: String) {
+        Log.d(TAG, message)
     }
 }

@@ -17,9 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="@dimen/padding"
+            android:text="Sensor network"
             android:textOff="Stop"
             android:textOn="Start"
-            android:text="Sensor network"
             android:textSize="@dimen/button_text_size" />
 
         <LinearLayout
@@ -247,6 +247,16 @@
 
         </TableRow>>
     </TableLayout>
+
+    <Switch
+        android:id="@+id/switchEdgeComputing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:textOff="Stop"
+        android:textOn="Start"
+        android:text="Edge Computing"
+        android:textSize="@dimen/button_text_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
