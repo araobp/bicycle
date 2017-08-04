@@ -28,7 +28,7 @@ CLI is the entry of sensor data from sensor network. CLI is also a main user int
 
 ### Edge computing
 
-Edge computing has multiple worker thread in a thread pool to work on CPU-intensive computing with multiple CPU cores.
+Edge computing has multiple worker threads in a thread pool to work on CPU-intensive computing with multiple CPU cores.
 
 ### Visualizer
 
