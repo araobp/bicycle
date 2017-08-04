@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbManager
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
@@ -21,6 +22,11 @@ import jp.araobp.iot.cli.driver.ISensorNetworkDriver
 import jp.araobp.iot.cli.driver.ReadListener
 import jp.araobp.iot.cli.driver.impl.SensorNetworkSimulator
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
+import jp.araobp.iot.edge_computing.EdgeService
+import android.content.ComponentName
+import android.content.ServiceConnection
+
+
 
 /*
 * Sensor Network CLI
@@ -37,7 +43,8 @@ class CliActivity : ReadListener() {
     private var mEditText: EditText? = null
     private var mButtonOpen: Button? = null
     private var mButtonWrite: Button? = null
-    private var mToggleButton: ToggleButton? = null
+    private var mToggleButtonLog: ToggleButton? = null
+    private var mToggleButtonEdge: ToggleButton? = null
     private var mCheckBoxBaudrate9600: CheckBox? = null
     private var mCheckBoxSimualtor: CheckBox? = null
     private var mSwitch: Switch? = null
@@ -51,6 +58,9 @@ class CliActivity : ReadListener() {
     private var mStarted = false
 
     internal var mTimerScaler = "unknown"
+
+    private var mEdgeService: EdgeService? = null
+    private var mEdgeServiceBound = false
 
     private fun log(message: String) {
         mTextView!!.append(message + "\n")
@@ -125,7 +135,8 @@ class CliActivity : ReadListener() {
 
         mButtonOpen = findViewById(R.id.buttonOpen) as Button
         mButtonWrite = findViewById(R.id.buttonWrite) as Button
-        mToggleButton = findViewById(R.id.toggleButton) as ToggleButton
+        mToggleButtonLog = findViewById(R.id.toggleButtonLog) as ToggleButton
+        mToggleButtonEdge = findViewById(R.id.toggleButtonEdge) as ToggleButton
 
         mCheckBoxBaudrate9600 = findViewById(R.id.checkBoxBaudrate9600) as CheckBox
         mCheckBoxSimualtor = findViewById(R.id.checkBoxSimulator) as CheckBox
@@ -198,14 +209,28 @@ class CliActivity : ReadListener() {
             }
         }
 
-        mToggleButton!!.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {  // OFF
+        mToggleButtonEdge!!.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                log("Edge computing enabled")
+                // Bind to LocalService
+                val intent = Intent(this, EdgeService::class.java)
+                bindService(intent, mEdgeServiceConnection, Context.BIND_AUTO_CREATE)
+            } else {
+                log("Edge computing disabled")
+                if (mEdgeServiceBound) {
+                    unbindService(mEdgeServiceConnection)
+                    mEdgeServiceBound = false
+                }
+            }
+        }
+
+        mToggleButtonLog!!.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                log("Logging enabled")
+                mResponseLoggingEnabled = true
+            } else {
                 log("Logging disabled")
                 mResponseLoggingEnabled = false
-            } else {  // ON
-                log("Logging enabled")
-                mTextView!!.text = ""
-                mResponseLoggingEnabled = true
             }
         }
 
@@ -213,6 +238,30 @@ class CliActivity : ReadListener() {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
         registerReceiver(mUsbReceiver, filter)
+    }
+
+    private val mEdgeServiceConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName,
+                                        service: IBinder) {
+            val binder = service as EdgeService.EdgeServiceBinder
+            mEdgeService = binder.getService()
+            if (mEdgeService != null) {
+                log("Edge computing started")
+                mEdgeService?.test("Hello")
+            } else {
+                log("Failed to start edge computing")
+            }
+            mEdgeServiceBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mEdgeServiceBound = false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     override fun onRead(message: String) {
@@ -237,6 +286,14 @@ class CliActivity : ReadListener() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mEdgeServiceBound) {
+            unbindService(mEdgeServiceConnection)
+            mEdgeServiceBound = false
         }
     }
 

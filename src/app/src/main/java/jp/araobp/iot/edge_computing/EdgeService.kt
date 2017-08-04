@@ -1,4 +1,4 @@
-package jp.araobp.iot.cli
+package jp.araobp.iot.edge_computing
 
 import android.app.Service
 import android.content.Intent
