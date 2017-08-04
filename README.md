@@ -22,13 +22,17 @@ I want to learn new language "Kotlin" and new programming styles such as "RxJava
 
 ### CLI
 
+CLI is the entry of sensor data from sensor network. CLI is also a main user interface of this Android application.
+
 ![screenshot_cli](./doc/screenshot_cli.png)
 
 ### Edge computing
 
+Edge computing has multiple worker thread in a thread pool to work on CPU-intensive computing with multiple CPU cores.
+
 ### Visualizer
 
-### DB client
+Visualizer visualizes the output from edge computing.
 
 ## Use case: bicycle
 
