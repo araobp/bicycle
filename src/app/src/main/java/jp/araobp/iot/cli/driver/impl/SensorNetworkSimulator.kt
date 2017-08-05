@@ -5,12 +5,12 @@ import android.os.Message
 import android.util.Log
 
 import jp.araobp.iot.cli.driver.ISensorNetworkDriver
-import jp.araobp.iot.cli.driver.ReadListener
+import jp.araobp.iot.messaging.MessageListenerActivity
 import jp.araobp.iot.cli.driver.Util
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 
 class SensorNetworkSimulator : ISensorNetworkDriver {
-    private var mReadListener: ReadListener? = null
+    private var mMessageListenerActivity: MessageListenerActivity? = null
     private var mHandler: Handler? = null
 
     private val mUtil = Util()
@@ -44,12 +44,12 @@ class SensorNetworkSimulator : ISensorNetworkDriver {
 
     }
 
-    override fun setReadListener(readListener: ReadListener) {
-        this.mReadListener = readListener
+    override fun setReadListener(messageListenerActivity: MessageListenerActivity) {
+        this.mMessageListenerActivity = messageListenerActivity
         try {
             mHandler = object : Handler() {
                 override fun handleMessage(msg: Message) {
-                    mReadListener!!.onRead(msg.obj as String)
+                    mMessageListenerActivity!!.onMessage(msg.obj as String)
                 }
             }
             mUtil.setHandler(mHandler!!)

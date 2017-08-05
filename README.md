@@ -1,34 +1,24 @@
 # Sensor network with Android
 
-![flow-based-programming](./doc/flow_based_programming.jpg)
+![architecture](./doc/architecture.jpg)
 
 ## Background and motivation
 
-### Edge computing
+Once I used RasPi/Arduino for IoT prototyping, ending up with unsatisfying results: complicated physical wiring problems.
 
-I have developed Plug&Play protocol for [PIC16F1-based sensor network](https://github.com/araobp/sensor-network). Next, I will develop a framework for Android to add edge computing capabilities to my sensor network.
-
-### Android as IoT gateway
-
-Android provides a lot of tools and facilities to Sunday programmers like me: Android Studio, Google Play... Android seems to me the best choise for IoT gateway prototyping. Smartphone can supply electric power to my sensor network via USB, which is also great to simplify the system.
-
-Once I used RasPi/Arduino for IoT prototyping, ending up with unsatisfying results: complicated physical wiring problems. I stopped using RasPi/Arduino, and I started thinking of the combination of PIC16F1 and Android to simplify physical wirling.
-
-### New technologies
-
-I want to learn new language "Kotlin" and new programming styles such as "RxJava" by programming Android.
+I stopped using RasPi/Arduino for IoT prototyping, and I started thinking of a combination of [PIC16F1-based sensor network](https://github.com/araobp/sensor-network) and Android to simplify physical wiring.
 
 ## Android apps
 
-### CLI
+### Driver Service
+
+### Edge computing Service
+
+### CLI Activity
 
 ![screenshot_cli](./doc/screenshot_cli.png)
 
-### Edge computing
-
-### Visualizer
-
-### DB client
+### Visualizer Activity
 
 ## Use case: bicycle
 

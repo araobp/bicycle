@@ -1,5 +1,7 @@
 package jp.araobp.iot.cli.driver
 
+import jp.araobp.iot.messaging.MessageListenerActivity
+
 /*
 * Sensor network driver interface
 * */
@@ -8,7 +10,7 @@ interface ISensorNetworkDriver {
     /*
     * sets callback method that receives messages one by one from Handler/Looper
     * */
-    fun setReadListener(readListener: ReadListener)
+    fun setReadListener(messageListenerActivity: MessageListenerActivity)
 
     /*
     * opens the device driver

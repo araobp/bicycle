@@ -8,9 +8,11 @@ import com.ftdi.j2xx.D2xxManager
 import com.ftdi.j2xx.FT_Device
 
 import jp.araobp.iot.cli.driver.ISensorNetworkDriver
-import jp.araobp.iot.cli.driver.ReadListener
+import jp.araobp.iot.messaging.MessageListenerActivity
 import jp.araobp.iot.cli.driver.Util
 import kotlin.experimental.or
+
+
 
 /*
 * FTDI device driver
@@ -30,19 +32,19 @@ class SensorNetworkDriverImpl : ISensorNetworkDriver {
     private var mReadLen = 0
 
     private var mHandler: Handler? = null
-    private var mReadListener: ReadListener? = null
+    private var mMessageListenerActivity: MessageListenerActivity? = null
 
     private var mUtil: Util? = null
 
-    override fun setReadListener(readListener: ReadListener) {
-        mReadListener = readListener
+    override fun setReadListener(messageListenerActivity: MessageListenerActivity) {
+        mMessageListenerActivity = messageListenerActivity
         mUtil = Util()
         try {
-            mD2xxManager = D2xxManager.getInstance(readListener.applicationContext)
+            mD2xxManager = D2xxManager.getInstance(messageListenerActivity.applicationContext)
             mHandler = object : Handler() {
                 override fun handleMessage(msg: Message) {
-                    if (mReadListener != null) {
-                        mReadListener!!.onRead(msg.obj as String)
+                    if (mMessageListenerActivity != null) {
+                        mMessageListenerActivity!!.onMessage(msg.obj as String)
                     }
                 }
             }
@@ -166,7 +168,7 @@ class SensorNetworkDriverImpl : ISensorNetworkDriver {
             }
         }
 
-        var devCount = mD2xxManager!!.createDeviceInfoList(mReadListener)
+        var devCount = mD2xxManager!!.createDeviceInfoList(mMessageListenerActivity)
 
         Log.d(TAG, "Device number : " + Integer.toString(devCount))
 
@@ -178,10 +180,10 @@ class SensorNetworkDriverImpl : ISensorNetworkDriver {
         }
 
         if (mFtdiDevice == null) {
-            mFtdiDevice = mD2xxManager!!.openByIndex(mReadListener, 0)
+            mFtdiDevice = mD2xxManager!!.openByIndex(mMessageListenerActivity, 0)
         } else {
             synchronized(mFtdiDevice as FT_Device) {
-                mFtdiDevice = mD2xxManager!!.openByIndex(mReadListener, 0)
+                mFtdiDevice = mD2xxManager!!.openByIndex(mMessageListenerActivity, 0)
             }
         }
 

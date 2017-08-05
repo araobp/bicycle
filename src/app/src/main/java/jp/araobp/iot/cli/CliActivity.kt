@@ -19,21 +19,19 @@ import java.util.ArrayList
 
 import jp.araobp.iot.cli.driver.impl.SensorNetworkDriverImpl
 import jp.araobp.iot.cli.driver.ISensorNetworkDriver
-import jp.araobp.iot.cli.driver.ReadListener
+import jp.araobp.iot.messaging.MessageListenerActivity
 import jp.araobp.iot.cli.driver.impl.SensorNetworkSimulator
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 import jp.araobp.iot.edge_computing.EdgeService
 import android.content.ComponentName
 import android.content.ServiceConnection
 
-
-
 /*
 * Sensor Network CLI
 *
 * @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
 * */
-class CliActivity : ReadListener() {
+class CliActivity : MessageListenerActivity() {
 
     private var mBaudrate = 0
 
@@ -260,11 +258,11 @@ class CliActivity : ReadListener() {
         }
     }
 
-    override fun onStart() {
+    public override fun onStart() {
         super.onStart()
     }
 
-    override fun onRead(message: String) {
+    override fun onMessage(message: String) {
         if (mResponseLoggingEnabled) {
             log(message)
         }
