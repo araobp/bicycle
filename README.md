@@ -10,29 +10,7 @@ I stopped using RasPi/Arduino for IoT prototyping, and I started thinking of a c
 
 ## Android apps
 
-### Driver Service
-
-<<<<<<< HEAD
-### Edge computing Service
-=======
-CLI is the entry of sensor data from sensor network. CLI is also a main user interface of this Android application.
-
 ![screenshot_cli](./doc/screenshot_cli.png)
->>>>>>> origin/master
-
-### CLI Activity
-
-<<<<<<< HEAD
-![screenshot_cli](./doc/screenshot_cli.png)
-
-### Visualizer Activity
-=======
-Edge computing has multiple worker threads in a thread pool to work on CPU-intensive computing with multiple CPU cores.
-
-### Visualizer
-
-Visualizer visualizes the output from edge computing.
->>>>>>> origin/master
 
 ## Use case: bicycle
 
