@@ -17,14 +17,14 @@ import android.widget.ToggleButton
 
 import java.util.ArrayList
 
-import jp.araobp.iot.cli.driver.impl.DriverService
+import jp.araobp.iot.cli.sensor_network.impl.FtdiDriverService
 import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.driver.impl.SimulatorService
+import jp.araobp.iot.cli.sensor_network.impl.DriverSimulatorService
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 import jp.araobp.iot.edge_computing.EdgeService
 import android.content.ComponentName
 import android.content.ServiceConnection
-import jp.araobp.iot.cli.driver.SensorNetworkService
+import jp.araobp.iot.cli.sensor_network.SensorNetworkService
 
 /*
 * Sensor Network CLI
@@ -79,9 +79,9 @@ class CliActivity : MessageListenerActivity() {
         log("start communication")
         var intent: Intent? = null
         if (mCheckBoxSimualtor!!.isChecked) {
-            intent = Intent(this, SimulatorService::class.java)!!
+            intent = Intent(this, DriverSimulatorService::class.java)!!
         } else {
-            intent = Intent(this, DriverService::class.java)!!
+            intent = Intent(this, FtdiDriverService::class.java)!!
         }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }

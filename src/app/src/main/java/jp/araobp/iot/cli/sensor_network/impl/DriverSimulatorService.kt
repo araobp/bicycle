@@ -1,15 +1,15 @@
-package jp.araobp.iot.cli.driver.impl
+package jp.araobp.iot.cli.sensor_network.impl
 
 import android.os.Handler
 import android.os.Message
 import android.util.Log
-import jp.araobp.iot.cli.driver.SensorNetworkService
+import jp.araobp.iot.cli.sensor_network.SensorNetworkService
 
 import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.driver.Util
+import jp.araobp.iot.cli.sensor_network.Util
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 
-class SimulatorService : SensorNetworkService() {
+class DriverSimulatorService : SensorNetworkService() {
     private var mMessageListenerActivity: MessageListenerActivity? = null
     private var mHandler: Handler? = null
 

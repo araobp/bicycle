@@ -1,4 +1,4 @@
-package jp.araobp.iot.cli.driver.impl
+package jp.araobp.iot.cli.sensor_network.impl
 
 import android.os.Handler
 import android.os.Message
@@ -7,10 +7,9 @@ import android.util.Log
 import com.ftdi.j2xx.D2xxManager
 import com.ftdi.j2xx.FT_Device
 
-import jp.araobp.iot.cli.driver.ISensorNetworkDriver
-import jp.araobp.iot.cli.driver.SensorNetworkService
+import jp.araobp.iot.cli.sensor_network.SensorNetworkService
 import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.driver.Util
+import jp.araobp.iot.cli.sensor_network.Util
 import kotlin.experimental.or
 
 
@@ -19,7 +18,7 @@ import kotlin.experimental.or
 * FTDI device driver
 *
 * */
-class DriverService : SensorNetworkService(), ISensorNetworkDriver {
+class FtdiDriverService : SensorNetworkService() {
 
     private val TAG = "CLI"
 
