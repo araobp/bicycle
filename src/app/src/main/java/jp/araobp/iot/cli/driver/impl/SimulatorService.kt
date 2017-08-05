@@ -3,13 +3,13 @@ package jp.araobp.iot.cli.driver.impl
 import android.os.Handler
 import android.os.Message
 import android.util.Log
+import jp.araobp.iot.cli.driver.SensorNetworkService
 
-import jp.araobp.iot.cli.driver.ISensorNetworkDriver
 import jp.araobp.iot.messaging.MessageListenerActivity
 import jp.araobp.iot.cli.driver.Util
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 
-class SensorNetworkSimulator : ISensorNetworkDriver {
+class SimulatorService : SensorNetworkService() {
     private var mMessageListenerActivity: MessageListenerActivity? = null
     private var mHandler: Handler? = null
 
@@ -20,7 +20,10 @@ class SensorNetworkSimulator : ISensorNetworkDriver {
     private var mValue = 1000
     private var mSleep = TIMER * mValue
 
-    init {
+
+    override fun onCreate() {
+        super.onCreate()
+
         mSleep = TIMER * mValue
         try {
             Thread(Runnable {
@@ -41,10 +44,13 @@ class SensorNetworkSimulator : ISensorNetworkDriver {
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
         }
-
     }
 
-    override fun setReadListener(messageListenerActivity: MessageListenerActivity) {
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    override fun setMessageHandler(messageListenerActivity: MessageListenerActivity) {
         this.mMessageListenerActivity = messageListenerActivity
         try {
             mHandler = object : Handler() {
@@ -64,7 +70,7 @@ class SensorNetworkSimulator : ISensorNetworkDriver {
         return true
     }
 
-    override fun write(message: String) {
+    override fun send(message: String) {
         if (mOpened) {
             mUtil.returnResponse("#" + message)
             val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

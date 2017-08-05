@@ -37,7 +37,16 @@
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
-
+        <service
+            android:name="jp.araobp.iot.cli.driver.impl.SimulatorService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+        <service
+            android:name="jp.araobp.iot.cli.driver.impl.DriverService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
         <service
             android:name="jp.araobp.iot.edge_computing.EdgeService"
             android:enabled="true"

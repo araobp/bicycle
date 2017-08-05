@@ -8,6 +8,7 @@ import com.ftdi.j2xx.D2xxManager
 import com.ftdi.j2xx.FT_Device
 
 import jp.araobp.iot.cli.driver.ISensorNetworkDriver
+import jp.araobp.iot.cli.driver.SensorNetworkService
 import jp.araobp.iot.messaging.MessageListenerActivity
 import jp.araobp.iot.cli.driver.Util
 import kotlin.experimental.or
@@ -18,7 +19,7 @@ import kotlin.experimental.or
 * FTDI device driver
 *
 * */
-class SensorNetworkDriverImpl : ISensorNetworkDriver {
+class DriverService : SensorNetworkService(), ISensorNetworkDriver {
 
     private val TAG = "CLI"
 
@@ -36,7 +37,7 @@ class SensorNetworkDriverImpl : ISensorNetworkDriver {
 
     private var mUtil: Util? = null
 
-    override fun setReadListener(messageListenerActivity: MessageListenerActivity) {
+    override fun setMessageHandler(messageListenerActivity: MessageListenerActivity) {
         mMessageListenerActivity = messageListenerActivity
         mUtil = Util()
         try {
@@ -203,7 +204,7 @@ class SensorNetworkDriverImpl : ISensorNetworkDriver {
     /*
     * Sends message to FTDI device
     * */
-    override fun write(message: String) {
+    override fun send(message: String) {
         val data = message + DELIMITER
         if (mFtdiDevice == null) {
             return

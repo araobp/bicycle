@@ -17,14 +17,14 @@ import android.widget.ToggleButton
 
 import java.util.ArrayList
 
-import jp.araobp.iot.cli.driver.impl.SensorNetworkDriverImpl
-import jp.araobp.iot.cli.driver.ISensorNetworkDriver
+import jp.araobp.iot.cli.driver.impl.DriverService
 import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.driver.impl.SensorNetworkSimulator
+import jp.araobp.iot.cli.driver.impl.SimulatorService
 import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
 import jp.araobp.iot.edge_computing.EdgeService
 import android.content.ComponentName
 import android.content.ServiceConnection
+import jp.araobp.iot.cli.driver.SensorNetworkService
 
 /*
 * Sensor Network CLI
@@ -34,8 +34,6 @@ import android.content.ServiceConnection
 class CliActivity : MessageListenerActivity() {
 
     private var mBaudrate = 0
-
-    private var mDriver: ISensorNetworkDriver? = null
 
     private var mTextView: TextView? = null
     private var mEditText: EditText? = null
@@ -57,44 +55,42 @@ class CliActivity : MessageListenerActivity() {
 
     internal var mTimerScaler = "unknown"
 
+    private var mSensorNetworkService: SensorNetworkService? = null
+    private var mSensorNetworkServiceBound = false
+
     private var mEdgeService: EdgeService? = null
     private var mEdgeServiceBound = false
+
+    private val sButtonOpenOpen = "Open"
+    private val sButtonOpenClose = "Close"
+    private val TAG = "CLI"
+
+    companion object {
+        const val DEFAULT_BAUDRATE = 9600  // 9600kbps
+        const val SCHEDULER_BAUDRATE = 115200  // 115200kbps
+        const val CMD_SEND_INTERVAL = 250  // 250msec
+    }
 
     private fun log(message: String) {
         mTextView!!.append(message + "\n")
     }
 
-    private fun startCommunication(): Boolean {
-        var update = false
+    private fun startCommunication() {
+        log("start communication")
+        var intent: Intent? = null
         if (mCheckBoxSimualtor!!.isChecked) {
-            log("Initializing sensor network simulator")
-            if (mDriver == null || mDriver is SensorNetworkDriverImpl) {
-                mDriver = SensorNetworkSimulator()
-            }
+            intent = Intent(this, SimulatorService::class.java)!!
         } else {
-            log("Initializing sensor network driver")
-            if (mDriver == null || mDriver is SensorNetworkSimulator) {
-                mDriver = SensorNetworkDriverImpl()
-            }
+            intent = Intent(this, DriverService::class.java)!!
         }
-        if (mDriver != null) {
-            mDriver!!.setReadListener(this)
-            update = mDriver!!.open(mBaudrate)
-            log(if (update) "Sensor network connected" else "Unable to connect sensor network")
-            try {
-                Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mDriver!!.write(SensorNetworkProtocol.GET)
-                Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mDriver!!.write(SensorNetworkProtocol.SCN)
-                mDriver!!.write(SensorNetworkProtocol.MAP)
-                Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mDriver!!.write(SensorNetworkProtocol.RSC)
-            } catch (e: Exception) {
-                Log.e(TAG, e.toString())
-            }
+        bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
+    }
 
+    private fun stopCommunication() {
+        if (mSensorNetworkService != null) {
+            val intent = Intent(this, SensorNetworkService::class.java)
+            stopService(intent)
         }
-        return update
     }
 
     private fun updateButtonText(on: Boolean) {
@@ -108,16 +104,16 @@ class CliActivity : MessageListenerActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        updateButtonText(startCommunication())
+        //startCommunication()
     }
 
     internal var mUsbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED == action) {
-                updateButtonText(startCommunication())
+                //startCommunication()
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
-                mDriver!!.close()
+                mSensorNetworkService?.close()
                 mSwitch!!.isChecked = false
                 updateButtonText(false)
             }
@@ -157,24 +153,25 @@ class CliActivity : MessageListenerActivity() {
 
         mButtonOpen!!.setOnClickListener {
             if (mButtonOpen!!.text == sButtonOpenOpen) {
-                updateButtonText(startCommunication())
+                startCommunication()
                 mOpened = true
                 if (mStarted) {
                     mSwitch!!.isChecked = true
                 }
             } else {
-                mDriver!!.close()
+                mSensorNetworkService?.close()
                 mOpened = false
                 updateButtonText(false)
                 if (mStarted) {
                     mSwitch!!.isChecked = false
                 }
+                stopCommunication()
             }
         }
 
         mButtonWrite!!.setOnClickListener {
             val writeString = mEditText!!.text.toString().toUpperCase()
-            mDriver!!.write(writeString)
+            mSensorNetworkService?.send(writeString)
             mEditText!!.setText("")
         }
 
@@ -190,16 +187,16 @@ class CliActivity : MessageListenerActivity() {
         }
 
         mSwitch!!.setOnCheckedChangeListener { _, isChecked ->
-            if (mDriver != null) {
+            if (mSensorNetworkService != null) {
                 if (isChecked) {
                     log("Switch on")
-                    mDriver!!.write(SensorNetworkProtocol.STA)
+                    mSensorNetworkService!!.send(SensorNetworkProtocol.STA)
                     mSwitch!!.isChecked = true
                     mStarted = true
                 } else {
                     log("Switch off")
                     if (mOpened) {
-                        mDriver!!.write(SensorNetworkProtocol.STP)
+                        mSensorNetworkService!!.send(SensorNetworkProtocol.STP)
                         mStarted = false
                     }
                     mSwitch!!.isChecked = false
@@ -238,6 +235,39 @@ class CliActivity : MessageListenerActivity() {
         registerReceiver(mUsbReceiver, filter)
     }
 
+    private val mSensorNetworkServiceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as SensorNetworkService.ServiceBinder
+            mSensorNetworkService = binder.getService()
+            mSensorNetworkService!!.setMessageHandler(this@CliActivity)
+            var update: Boolean = mSensorNetworkService!!.open(mBaudrate)
+            log(if (update) "Sensor network connected" else "Unable to connect sensor network")
+            try {
+                Thread.sleep(CMD_SEND_INTERVAL.toLong())
+                mSensorNetworkService!!.send(SensorNetworkProtocol.GET)
+                Thread.sleep(CMD_SEND_INTERVAL.toLong())
+                mSensorNetworkService!!.send(SensorNetworkProtocol.SCN)
+                mSensorNetworkService!!.send(SensorNetworkProtocol.MAP)
+                Thread.sleep(CMD_SEND_INTERVAL.toLong())
+                mSensorNetworkService!!.send(SensorNetworkProtocol.RSC)
+            } catch (e: Exception) {
+                Log.e(TAG, e.toString())
+            }
+
+            updateButtonText(update)
+
+            if (mSensorNetworkService != null) {
+                mSensorNetworkServiceBound = true
+            } else {
+
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+    }
+
     private val mEdgeServiceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName,
@@ -245,12 +275,12 @@ class CliActivity : MessageListenerActivity() {
             val binder = service as EdgeService.EdgeServiceBinder
             mEdgeService = binder.getService()
             if (mEdgeService != null) {
+                mEdgeServiceBound = true
                 log("Edge computing started")
                 mEdgeService?.test("Hello")
             } else {
                 log("Failed to start edge computing")
             }
-            mEdgeServiceBound = true
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -297,19 +327,8 @@ class CliActivity : MessageListenerActivity() {
 
     public override fun onDestroy() {
         super.onDestroy()
-        mDriver?.stop()
+        stopCommunication()
         unregisterReceiver(mUsbReceiver)
     }
 
-    companion object {
-
-        val DEFAULT_BAUDRATE = 9600  // 9600kbps
-        val SCHEDULER_BAUDRATE = 115200  // 115200kbps
-        val CMD_SEND_INTERVAL = 250  // 250msec
-
-        private val TAG = "CLI"
-
-        private val sButtonOpenOpen = "Open"
-        private val sButtonOpenClose = "Close"
-    }
 }

@@ -10,7 +10,7 @@ interface ISensorNetworkDriver {
     /*
     * sets callback method that receives messages one by one from Handler/Looper
     * */
-    fun setReadListener(messageListenerActivity: MessageListenerActivity)
+    fun setMessageHandler(messageListenerActivity: MessageListenerActivity)
 
     /*
     * opens the device driver
@@ -20,7 +20,7 @@ interface ISensorNetworkDriver {
     /*
     * writes a message to the device driver
     * */
-    fun write(message: String)
+    fun send(message: String)
 
     /*
     * stops running the device driver
