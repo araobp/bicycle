@@ -1,25 +1,19 @@
-package jp.araobp.iot.cli.sensor_network.impl
+package jp.araobp.iot.sensor_network
 
 import android.os.Handler
 import android.os.Message
 import android.util.Log
-import jp.araobp.iot.cli.sensor_network.SensorNetworkService
 
-import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.sensor_network.Util
-import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
-
-class DriverSimulatorService : SensorNetworkService() {
+class DriverSimulatorServiceImpl : SensorNetworkService() {
     private var mMessageListenerActivity: MessageListenerActivity? = null
     private var mHandler: Handler? = null
 
     private val mUtil = Util()
 
-    private var mStarted = false
-    private var mOpened = false
     private var mValue = 1000
     private var mSleep = TIMER * mValue
 
+    private var mDriverStatus = DriverStatus(opened = false, started = false)
 
     override fun onCreate() {
         super.onCreate()
@@ -28,7 +22,7 @@ class DriverSimulatorService : SensorNetworkService() {
         try {
             Thread(Runnable {
                 while (true) {
-                    if (mHandler != null && mOpened && mStarted) {
+                    if (mHandler != null && mDriverStatus.opened && mDriverStatus.started) {
                         try {
                             Thread.sleep(mSleep.toLong())
                         } catch (e: InterruptedException) {
@@ -50,7 +44,7 @@ class DriverSimulatorService : SensorNetworkService() {
         super.onDestroy()
     }
 
-    override fun setMessageHandler(messageListenerActivity: MessageListenerActivity) {
+    override fun setMessageListenerActivity(messageListenerActivity: MessageListenerActivity) {
         this.mMessageListenerActivity = messageListenerActivity
         try {
             mHandler = object : Handler() {
@@ -66,18 +60,18 @@ class DriverSimulatorService : SensorNetworkService() {
     }
 
     override fun open(baudrate: Int): Boolean {
-        mOpened = true
+        mDriverStatus.opened = true
         return true
     }
 
     override fun send(message: String) {
-        if (mOpened) {
+        if (mDriverStatus.opened) {
             mUtil.returnResponse("#" + message)
             val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             when (cmd[0]) {
-                SensorNetworkProtocol.WHO -> mUtil.returnResponse("$:WHO:$DEVICE_NAME")
-                SensorNetworkProtocol.STA -> mStarted = true
-                SensorNetworkProtocol.STP -> mStarted = false
+                SensorNetworkProtocol.WHO -> mUtil.returnResponse("$:WHO:${DEVICE_NAME}")
+                SensorNetworkProtocol.STA -> mDriverStatus.started = true
+                SensorNetworkProtocol.STP -> mDriverStatus.started = false
                 SensorNetworkProtocol.GET -> mUtil.returnResponse("$:GET:" + mValue.toString())
                 SensorNetworkProtocol.SET -> try {
                     mValue = Integer.parseInt(cmd[1])
@@ -87,18 +81,22 @@ class DriverSimulatorService : SensorNetworkService() {
                     Log.e(TAG, e.toString())
                 }
 
-                SensorNetworkProtocol.MAP -> mUtil.returnResponse("$:MAP:$sDevices")
-                SensorNetworkProtocol.RSC -> mUtil.returnResponse("$:RSC:$sSchedule")
+                SensorNetworkProtocol.MAP -> mUtil.returnResponse("$:MAP:${sDevices}")
+                SensorNetworkProtocol.RSC -> mUtil.returnResponse("$:RSC:${sSchedule}")
             }
         }
     }
 
     override fun stop() {
-        mStarted = false
+        mDriverStatus.started = false
     }
 
     override fun close() {
-        mOpened = false
+        mDriverStatus.opened = false
+    }
+
+    override fun status(): DriverStatus {
+        return mDriverStatus
     }
 
     companion object {

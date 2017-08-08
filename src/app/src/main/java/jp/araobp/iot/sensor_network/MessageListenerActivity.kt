@@ -1,4 +1,4 @@
-package jp.araobp.iot.messaging
+package jp.araobp.iot.sensor_network
 
 import android.app.Activity
 

@@ -1,15 +1,16 @@
-package jp.araobp.iot.cli.sensor_network
+package jp.araobp.iot.sensor_network
 
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import jp.araobp.iot.messaging.MessageListenerActivity
 
 abstract class SensorNetworkService: Service() {
 
-    val mBinder: IBinder = ServiceBinder()
+    data class DriverStatus(var opened: Boolean = false, var started: Boolean = false)
+
+    private val mBinder: IBinder = ServiceBinder()
 
     val TAG_Parent = "SensorNetworkService"
 
@@ -31,7 +32,7 @@ abstract class SensorNetworkService: Service() {
     /*
     * sets callback method that receives messages one by one from Handler/Looper
     * */
-    abstract fun setMessageHandler(messageListenerActivity: MessageListenerActivity)
+    abstract fun setMessageListenerActivity(messageListenerActivity: MessageListenerActivity)
 
     /*
     * opens the device driver
@@ -53,4 +54,8 @@ abstract class SensorNetworkService: Service() {
     * */
     abstract fun close()
 
+    /*
+    * returns current driver status
+    * */
+    abstract fun status(): DriverStatus
 }

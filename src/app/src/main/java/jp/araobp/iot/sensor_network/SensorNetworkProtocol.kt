@@ -1,4 +1,4 @@
-package jp.araobp.iot.cli.protocol
+package jp.araobp.iot.sensor_network
 
 /*
 * Plug&Play protocol

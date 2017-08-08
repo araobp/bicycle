@@ -1,4 +1,4 @@
-package jp.araobp.iot.cli.sensor_network.impl
+package jp.araobp.iot.sensor_network
 
 import android.os.Handler
 import android.os.Message
@@ -7,9 +7,6 @@ import android.util.Log
 import com.ftdi.j2xx.D2xxManager
 import com.ftdi.j2xx.FT_Device
 
-import jp.araobp.iot.cli.sensor_network.SensorNetworkService
-import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.sensor_network.Util
 import kotlin.experimental.or
 
 
@@ -18,7 +15,7 @@ import kotlin.experimental.or
 * FTDI device driver
 *
 * */
-class FtdiDriverService : SensorNetworkService() {
+class FtdiDriverServiceImpl : SensorNetworkService() {
 
     private val TAG = "CLI"
 
@@ -35,8 +32,9 @@ class FtdiDriverService : SensorNetworkService() {
     private var mMessageListenerActivity: MessageListenerActivity? = null
 
     private var mUtil: Util? = null
+    private var mDriverStatus = DriverStatus(opened = false, started = false)
 
-    override fun setMessageHandler(messageListenerActivity: MessageListenerActivity) {
+    override fun setMessageListenerActivity(messageListenerActivity: MessageListenerActivity) {
         mMessageListenerActivity = messageListenerActivity
         mUtil = Util()
         try {
@@ -188,6 +186,7 @@ class FtdiDriverService : SensorNetworkService() {
         }
 
         if (mFtdiDevice!!.isOpen) {
+            mDriverStatus.opened = true
             if (!mReaderIsRunning) {
                 stateChanged = true
                 setConfig(baudrate, 8.toByte(), 1.toByte(), 0.toByte(), 0.toByte())
@@ -219,6 +218,12 @@ class FtdiDriverService : SensorNetworkService() {
 
             val writeByte = data.toByteArray()
             mFtdiDevice!!.write(writeByte, data.length)
+
+            val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            when (cmd[0]) {
+                SensorNetworkProtocol.STA -> mDriverStatus.started = true
+                SensorNetworkProtocol.STP -> mDriverStatus.started = false
+            }
         }
     }
 
@@ -227,6 +232,7 @@ class FtdiDriverService : SensorNetworkService() {
     * */
     override fun stop() {
         mReaderIsRunning = false
+        mDriverStatus.started = false
     }
 
     /*
@@ -236,7 +242,12 @@ class FtdiDriverService : SensorNetworkService() {
         mReaderIsRunning = false
         if (mFtdiDevice != null) {
             mFtdiDevice!!.close()
+            mDriverStatus.opened = false
         }
+    }
+
+    override fun status(): DriverStatus {
+        return mDriverStatus
     }
 
     companion object {

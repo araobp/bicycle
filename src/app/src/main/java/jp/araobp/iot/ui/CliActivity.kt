@@ -1,4 +1,4 @@
-package jp.araobp.iot.cli
+package jp.araobp.iot.ui
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -17,14 +17,14 @@ import android.widget.ToggleButton
 
 import java.util.ArrayList
 
-import jp.araobp.iot.cli.sensor_network.impl.FtdiDriverService
-import jp.araobp.iot.messaging.MessageListenerActivity
-import jp.araobp.iot.cli.sensor_network.impl.DriverSimulatorService
-import jp.araobp.iot.cli.protocol.SensorNetworkProtocol
+import jp.araobp.iot.sensor_network.FtdiDriverServiceImpl
+import jp.araobp.iot.sensor_network.MessageListenerActivity
+import jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl
+import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 import jp.araobp.iot.edge_computing.EdgeService
 import android.content.ComponentName
 import android.content.ServiceConnection
-import jp.araobp.iot.cli.sensor_network.SensorNetworkService
+import jp.araobp.iot.sensor_network.SensorNetworkService
 
 /*
 * Sensor Network CLI
@@ -50,9 +50,6 @@ class CliActivity : MessageListenerActivity() {
 
     private var mResponseLoggingEnabled = false
 
-    private var mOpened = false
-    private var mStarted = false
-
     internal var mTimerScaler = "unknown"
 
     private var mSensorNetworkService: SensorNetworkService? = null
@@ -77,11 +74,11 @@ class CliActivity : MessageListenerActivity() {
 
     private fun startCommunication() {
         log("start communication")
-        var intent: Intent? = null
+        val intent: Intent?
         if (mCheckBoxSimualtor!!.isChecked) {
-            intent = Intent(this, DriverSimulatorService::class.java)!!
+            intent = Intent(this, DriverSimulatorServiceImpl::class.java)!!
         } else {
-            intent = Intent(this, FtdiDriverService::class.java)!!
+            intent = Intent(this, FtdiDriverServiceImpl::class.java)!!
         }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -93,8 +90,8 @@ class CliActivity : MessageListenerActivity() {
         }
     }
 
-    private fun updateButtonText(on: Boolean) {
-        if (on) {
+    private fun updateButtonText(opened: Boolean) {
+        if (opened) {
             mButtonOpen!!.text = sButtonOpenClose
             mButtonWrite!!.isEnabled = true
         } else {
@@ -114,8 +111,8 @@ class CliActivity : MessageListenerActivity() {
                 //startCommunication()
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
                 mSensorNetworkService?.close()
-                mSwitch!!.isChecked = false
-                updateButtonText(false)
+                mSwitch!!.isChecked = mSensorNetworkService!!.status().started
+                updateButtonText(mSensorNetworkService!!.status().opened)
             }
         }
     }
@@ -154,15 +151,10 @@ class CliActivity : MessageListenerActivity() {
         mButtonOpen!!.setOnClickListener {
             if (mButtonOpen!!.text == sButtonOpenOpen) {
                 startCommunication()
-                mOpened = true
-                if (mStarted) {
-                    mSwitch!!.isChecked = true
-                }
             } else {
                 mSensorNetworkService?.close()
-                mOpened = false
                 updateButtonText(false)
-                if (mStarted) {
+                if (mSensorNetworkService!!.status().started) {
                     mSwitch!!.isChecked = false
                 }
                 stopCommunication()
@@ -192,12 +184,10 @@ class CliActivity : MessageListenerActivity() {
                     log("Switch on")
                     mSensorNetworkService!!.send(SensorNetworkProtocol.STA)
                     mSwitch!!.isChecked = true
-                    mStarted = true
                 } else {
                     log("Switch off")
-                    if (mOpened) {
+                    if (mSensorNetworkService!!.status().opened) {
                         mSensorNetworkService!!.send(SensorNetworkProtocol.STP)
-                        mStarted = false
                     }
                     mSwitch!!.isChecked = false
                 }
@@ -239,9 +229,9 @@ class CliActivity : MessageListenerActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as SensorNetworkService.ServiceBinder
             mSensorNetworkService = binder.getService()
-            mSensorNetworkService!!.setMessageHandler(this@CliActivity)
-            var update: Boolean = mSensorNetworkService!!.open(mBaudrate)
-            log(if (update) "Sensor network connected" else "Unable to connect sensor network")
+            mSensorNetworkService!!.setMessageListenerActivity(this@CliActivity)
+            mSensorNetworkService!!.open(mBaudrate)
+            log(if (mSensorNetworkService!!.status().opened) "Sensor network connected" else "Unable to connect sensor network")
             try {
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
                 mSensorNetworkService!!.send(SensorNetworkProtocol.GET)
@@ -254,7 +244,10 @@ class CliActivity : MessageListenerActivity() {
                 Log.e(TAG, e.toString())
             }
 
-            updateButtonText(update)
+            if (mSensorNetworkService!!.status().started) {
+                mSwitch!!.isChecked = true
+            }
+            updateButtonText(mSensorNetworkService!!.status().opened)
 
             if (mSensorNetworkService != null) {
                 mSensorNetworkServiceBound = true

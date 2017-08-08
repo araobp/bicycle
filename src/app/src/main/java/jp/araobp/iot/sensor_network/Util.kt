@@ -1,4 +1,4 @@
-package jp.araobp.iot.cli.sensor_network
+package jp.araobp.iot.sensor_network
 
 import android.os.Handler
 import android.os.Message
