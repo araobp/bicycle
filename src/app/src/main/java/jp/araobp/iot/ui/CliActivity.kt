@@ -85,6 +85,7 @@ class CliActivity : MessageListenerActivity() {
 
     private fun stopCommunication() {
         if (mSensorNetworkService != null) {
+            unbindService(mSensorNetworkServiceConnection)
             val intent = Intent(this, SensorNetworkService::class.java)
             stopService(intent)
         }
