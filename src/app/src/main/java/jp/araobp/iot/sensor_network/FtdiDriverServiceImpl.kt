@@ -1,7 +1,5 @@
 package jp.araobp.iot.sensor_network
 
-import android.os.Handler
-import android.os.Message
 import android.util.Log
 
 import com.ftdi.j2xx.D2xxManager
@@ -28,30 +26,9 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     private val mCharBuf = CharArray(READBUF_SIZE)
     private var mReadLen = 0
 
-    private var mHandler: Handler? = null
-    private var mMessageListenerActivity: MessageListenerActivity? = null
+    private var mRxHandlerActivity: RxHandlerActivity? = null
 
-    private var mUtil: Util? = null
     private var mDriverStatus = DriverStatus(opened = false, started = false)
-
-    override fun setMessageListenerActivity(messageListenerActivity: MessageListenerActivity) {
-        mMessageListenerActivity = messageListenerActivity
-        mUtil = Util()
-        try {
-            mD2xxManager = D2xxManager.getInstance(messageListenerActivity.applicationContext)
-            mHandler = object : Handler() {
-                override fun handleMessage(msg: Message) {
-                    if (mMessageListenerActivity != null) {
-                        mMessageListenerActivity!!.onMessage(msg.obj as String)
-                    }
-                }
-            }
-            mUtil!!.setHandler(mHandler!!)
-        } catch (e: D2xxManager.D2xxException) {
-            Log.e(TAG, e.toString())
-        }
-
-    }
 
     /*
     * set FTDI device config
@@ -60,6 +37,7 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         val dataBitsByte: Byte
         val stopBitsByte: Byte
         val parityByte: Byte
+
         if (!mFtdiDevice!!.isOpen) {
             Log.e(TAG, "setConfig: device not open")
             return
@@ -131,9 +109,7 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
                         mCharBuf[offset++] = c
                         if (c == sDelimiter) {
                             if (offset >= 3) {
-                                val msg = Message.obtain()
-                                msg.obj = String(mCharBuf, 0, offset - 1)
-                                mHandler!!.sendMessage(msg)
+                                rx(String(mCharBuf, 0, offset - 1))
                             }
                             offset = 0
                         }
@@ -153,6 +129,8 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     override fun open(baudrate: Int): Boolean {
         var stateChanged = false
 
+        mD2xxManager = D2xxManager.getInstance(mRxHandlerActivity!!.applicationContext)
+
         if (mFtdiDevice != null) {
             if (mFtdiDevice!!.isOpen) {
                 if (!mReaderIsRunning) {
@@ -166,7 +144,7 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
             }
         }
 
-        var devCount = mD2xxManager!!.createDeviceInfoList(mMessageListenerActivity)
+        var devCount = mD2xxManager!!.createDeviceInfoList(mRxHandlerActivity)
 
         Log.d(TAG, "Device number : " + Integer.toString(devCount))
 
@@ -178,10 +156,10 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         }
 
         if (mFtdiDevice == null) {
-            mFtdiDevice = mD2xxManager!!.openByIndex(mMessageListenerActivity, 0)
+            mFtdiDevice = mD2xxManager!!.openByIndex(mRxHandlerActivity, 0)
         } else {
             synchronized(mFtdiDevice as FT_Device) {
-                mFtdiDevice = mD2xxManager!!.openByIndex(mMessageListenerActivity, 0)
+                mFtdiDevice = mD2xxManager!!.openByIndex(mRxHandlerActivity, 0)
             }
         }
 
@@ -200,16 +178,16 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     }
 
     /*
-    * Sends message to FTDI device
+    * transmits a message to FTDI device
     * */
-    override fun send(message: String) {
+    override fun tx(message: String) {
         val data = message + DELIMITER
         if (mFtdiDevice == null) {
             return
         }
 
         synchronized(mFtdiDevice as FT_Device) {
-            if (mFtdiDevice!!.isOpen == false) {
+            if (!mFtdiDevice!!.isOpen) {
                 Log.e(TAG, "onClickWrite : device is not open")
                 return
             }

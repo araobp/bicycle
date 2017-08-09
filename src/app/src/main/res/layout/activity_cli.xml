@@ -65,13 +65,12 @@
         android:padding="@dimen/padding"
         android:orientation="horizontal">
 
-        <ToggleButton
-            android:id="@+id/toggleButtonEdge"
+        <Button
+            android:id="@+id/buttonVisualizer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding"
-            android:textOff="Edge"
-            android:textOn="Edge"
+            android:text="Visualizer"
             android:textSize="@dimen/button_text_size" />
 
         <ToggleButton

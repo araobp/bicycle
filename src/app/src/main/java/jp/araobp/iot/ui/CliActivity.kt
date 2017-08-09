@@ -18,10 +18,9 @@ import android.widget.ToggleButton
 import java.util.ArrayList
 
 import jp.araobp.iot.sensor_network.FtdiDriverServiceImpl
-import jp.araobp.iot.sensor_network.MessageListenerActivity
+import jp.araobp.iot.sensor_network.RxHandlerActivity
 import jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl
 import jp.araobp.iot.sensor_network.SensorNetworkProtocol
-import jp.araobp.iot.edge_computing.EdgeService
 import android.content.ComponentName
 import android.content.ServiceConnection
 import jp.araobp.iot.sensor_network.SensorNetworkService
@@ -31,7 +30,7 @@ import jp.araobp.iot.sensor_network.SensorNetworkService
 *
 * @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
 * */
-class CliActivity : MessageListenerActivity() {
+class CliActivity : RxHandlerActivity() {
 
     private var mBaudrate = 0
 
@@ -40,7 +39,6 @@ class CliActivity : MessageListenerActivity() {
     private var mButtonOpen: Button? = null
     private var mButtonWrite: Button? = null
     private var mToggleButtonLog: ToggleButton? = null
-    private var mToggleButtonEdge: ToggleButton? = null
     private var mCheckBoxBaudrate9600: CheckBox? = null
     private var mCheckBoxSimualtor: CheckBox? = null
     private var mSwitch: Switch? = null
@@ -48,15 +46,10 @@ class CliActivity : MessageListenerActivity() {
     private var mTextViewDevices: TextView? = null
     private val mListSchedules = ArrayList<TextView>()
 
-    private var mResponseLoggingEnabled = false
-
     internal var mTimerScaler = "unknown"
 
     private var mSensorNetworkService: SensorNetworkService? = null
     private var mSensorNetworkServiceBound = false
-
-    private var mEdgeService: EdgeService? = null
-    private var mEdgeServiceBound = false
 
     private val sButtonOpenOpen = "Open"
     private val sButtonOpenClose = "Close"
@@ -128,7 +121,6 @@ class CliActivity : MessageListenerActivity() {
         mButtonOpen = findViewById(R.id.buttonOpen) as Button
         mButtonWrite = findViewById(R.id.buttonWrite) as Button
         mToggleButtonLog = findViewById(R.id.toggleButtonLog) as ToggleButton
-        mToggleButtonEdge = findViewById(R.id.toggleButtonEdge) as ToggleButton
 
         mCheckBoxBaudrate9600 = findViewById(R.id.checkBoxBaudrate9600) as CheckBox
         mCheckBoxSimualtor = findViewById(R.id.checkBoxSimulator) as CheckBox
@@ -164,7 +156,7 @@ class CliActivity : MessageListenerActivity() {
 
         mButtonWrite!!.setOnClickListener {
             val writeString = mEditText!!.text.toString().toUpperCase()
-            mSensorNetworkService?.send(writeString)
+            mSensorNetworkService?.tx(writeString)
             mEditText!!.setText("")
         }
 
@@ -183,29 +175,14 @@ class CliActivity : MessageListenerActivity() {
             if (mSensorNetworkService != null) {
                 if (isChecked) {
                     log("Switch on")
-                    mSensorNetworkService!!.send(SensorNetworkProtocol.STA)
+                    mSensorNetworkService!!.tx(SensorNetworkProtocol.STA)
                     mSwitch!!.isChecked = true
                 } else {
                     log("Switch off")
                     if (mSensorNetworkService!!.status().opened) {
-                        mSensorNetworkService!!.send(SensorNetworkProtocol.STP)
+                        mSensorNetworkService!!.tx(SensorNetworkProtocol.STP)
                     }
                     mSwitch!!.isChecked = false
-                }
-            }
-        }
-
-        mToggleButtonEdge!!.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                log("Edge computing enabled")
-                // Bind to LocalService
-                val intent = Intent(this, EdgeService::class.java)
-                bindService(intent, mEdgeServiceConnection, Context.BIND_AUTO_CREATE)
-            } else {
-                log("Edge computing disabled")
-                if (mEdgeServiceBound) {
-                    unbindService(mEdgeServiceConnection)
-                    mEdgeServiceBound = false
                 }
             }
         }
@@ -213,10 +190,10 @@ class CliActivity : MessageListenerActivity() {
         mToggleButtonLog!!.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 log("Logging enabled")
-                mResponseLoggingEnabled = true
+                mSensorNetworkService?.enabled = true;
             } else {
                 log("Logging disabled")
-                mResponseLoggingEnabled = false
+                mSensorNetworkService?.enabled = false;
             }
         }
 
@@ -230,17 +207,17 @@ class CliActivity : MessageListenerActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as SensorNetworkService.ServiceBinder
             mSensorNetworkService = binder.getService()
-            mSensorNetworkService!!.setMessageListenerActivity(this@CliActivity)
+            mSensorNetworkService!!.setRxHandlerActivity(this@CliActivity)
             mSensorNetworkService!!.open(mBaudrate)
             log(if (mSensorNetworkService!!.status().opened) "Sensor network connected" else "Unable to connect sensor network")
             try {
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mSensorNetworkService!!.send(SensorNetworkProtocol.GET)
+                mSensorNetworkService!!.tx(SensorNetworkProtocol.GET)
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mSensorNetworkService!!.send(SensorNetworkProtocol.SCN)
-                mSensorNetworkService!!.send(SensorNetworkProtocol.MAP)
+                mSensorNetworkService!!.tx(SensorNetworkProtocol.SCN)
+                mSensorNetworkService!!.tx(SensorNetworkProtocol.MAP)
                 Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mSensorNetworkService!!.send(SensorNetworkProtocol.RSC)
+                mSensorNetworkService!!.tx(SensorNetworkProtocol.RSC)
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
             }
@@ -262,36 +239,15 @@ class CliActivity : MessageListenerActivity() {
         }
     }
 
-    private val mEdgeServiceConnection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName,
-                                        service: IBinder) {
-            val binder = service as EdgeService.EdgeServiceBinder
-            mEdgeService = binder.getService()
-            if (mEdgeService != null) {
-                mEdgeServiceBound = true
-                log("Edge computing started")
-                mEdgeService?.test("Hello")
-            } else {
-                log("Failed to start edge computing")
-            }
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            mEdgeServiceBound = false
-        }
-    }
-
     public override fun onStart() {
         super.onStart()
     }
 
-    override fun onMessage(message: String) {
-        if (mResponseLoggingEnabled) {
-            log(message)
-        }
-        if (message.startsWith("$")) {
-            val response = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    override fun onRx(message: SensorNetworkService.SensorData) {
+        log(message.rawData)
+        var data = message.rawData
+        if (data.startsWith("$")) {
+            val response = data.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             when (response[1]) {
                 SensorNetworkProtocol.STA -> {
                     mTimerScaler = response[2]
@@ -313,10 +269,6 @@ class CliActivity : MessageListenerActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (mEdgeServiceBound) {
-            unbindService(mEdgeServiceConnection)
-            mEdgeServiceBound = false
-        }
     }
 
     public override fun onDestroy() {

@@ -17,4 +17,15 @@ object SensorNetworkProtocol {
     const val MAP = "MAP"
     const val SCN = "SCN"
 
+    const val FLOAT             = "FLOAT"
+    const val INT8_T            = "INT8_T"
+    const val UINT8_T           = "UINT8_T"
+    const val INT16_T           = "INT16_T"
+    const val UINT16_T          = "UINT16_T"
+
+    const val AQM1602XA_RN_GBW  = 16
+    const val A1324LUA_T        = 17
+    const val HDC1000           = 18
+    const val KXR94_2050        = 19
+
 }

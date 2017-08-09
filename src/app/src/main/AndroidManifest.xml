@@ -47,11 +47,6 @@
             android:enabled="true"
             android:exported="true">
         </service>
-        <service
-            android:name="jp.araobp.iot.edge_computing.EdgeService"
-            android:enabled="true"
-            android:exported="true">
-        </service>
     </application>
 
 </manifest>
