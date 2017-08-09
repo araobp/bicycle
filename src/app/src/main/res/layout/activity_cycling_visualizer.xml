@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_green_light"
+    android:orientation="vertical"
+    tools:context="jp.araobp.iot.ui.CyclingVisualizerActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:background="@android:color/holo_green_dark"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewSpeedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="200sp"
+            android:padding="@dimen/padding"
+            android:text="Speed"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewSpeedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/background_dark"
+            android:gravity="right"
+            android:padding="@dimen/padding"
+            android:text="0.0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textSpeedUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="80sp"
+            android:padding="@dimen/padding"
+            android:text="km/h"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:background="@android:color/holo_green_dark"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewTempLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="200sp"
+            android:padding="@dimen/padding"
+            android:text="Temperature"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewTempValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/background_dark"
+            android:gravity="right"
+            android:padding="@dimen/padding"
+            android:text="0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textTempUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="80sp"
+            android:padding="@dimen/padding"
+            android:text="℃"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:background="@android:color/holo_green_dark"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewHumidLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="200sp"
+            android:padding="@dimen/padding"
+            android:text="Humidity"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewHumidValue"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/background_dark"
+            android:gravity="right"
+            android:padding="@dimen/padding"
+            android:text="0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textHumidUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="80sp"
+            android:padding="@dimen/padding"
+            android:text="%"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:background="@android:color/holo_green_dark"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewAccelLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="90sp"
+            android:padding="@dimen/padding"
+            android:text="Accel."
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewAccelLabelX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="35sp"
+            android:padding="@dimen/padding"
+            android:text="X"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewAccelValueX"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/background_dark"
+            android:gravity="right"
+            android:padding="@dimen/padding"
+            android:text="0.0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewAccelLabelY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="35sp"
+            android:padding="@dimen/padding"
+            android:text="Y"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewAccelValueY"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/background_dark"
+            android:gravity="right"
+            android:padding="@dimen/padding"
+            android:text="0.0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewAccelLabelZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="35sp"
+            android:padding="@dimen/padding"
+            android:text="Z"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textViewAccelValueZ"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/background_dark"
+            android:gravity="right"
+            android:padding="@dimen/padding"
+            android:text="0.0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textAccelUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:minWidth="80sp"
+            android:padding="@dimen/padding"
+            android:text="G"
+            android:layout_weight="1"
+            android:textColor="@android:color/background_light"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

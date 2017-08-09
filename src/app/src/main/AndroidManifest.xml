@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="jp.araobp.iot.ui.CliActivity"
+            android:name=".CliActivity"
             android:configChanges="orientation"
             android:label="@string/app_name_cli"
             android:launchMode="singleTask">
@@ -37,16 +37,25 @@
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
+        <activity
+            android:name=".CyclingVisualizerActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name_cycling_visualizer"
+            android:launchMode="singleTask">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CliActivity" />
+        </activity>
+
         <service
             android:name="jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true" />
         <service
             android:name="jp.araobp.iot.sensor_network.FtdiDriverServiceImpl"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true" />
+
     </application>
 
 </manifest>

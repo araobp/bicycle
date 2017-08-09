@@ -45,6 +45,7 @@ class CliActivity : RxHandlerActivity() {
     private var mTextViewScaler: TextView? = null
     private var mTextViewDevices: TextView? = null
     private val mListSchedules = ArrayList<TextView>()
+    private var mButtonVisualizerCycling: Button? = null
 
     internal var mTimerScaler = "unknown"
 
@@ -53,6 +54,7 @@ class CliActivity : RxHandlerActivity() {
 
     private val sButtonOpenOpen = "Open"
     private val sButtonOpenClose = "Close"
+
     private val TAG = "CLI"
 
     companion object {
@@ -131,6 +133,8 @@ class CliActivity : RxHandlerActivity() {
 
         mTextViewDevices = findViewById(R.id.textViewDevices) as TextView
 
+        mButtonVisualizerCycling = findViewById(R.id.buttonVisualizerCycling) as Button
+
         mListSchedules.add(findViewById(R.id.textViewSchedule1) as TextView)
         mListSchedules.add(findViewById(R.id.textViewSchedule2) as TextView)
         mListSchedules.add(findViewById(R.id.textViewSchedule3) as TextView)
@@ -195,6 +199,11 @@ class CliActivity : RxHandlerActivity() {
                 log("Logging disabled")
                 mSensorNetworkService?.enabled = false;
             }
+        }
+
+        mButtonVisualizerCycling!!.setOnClickListener {
+            val intent = Intent(this@CliActivity, CyclingVisualizerActivity::class.java)
+            startActivity(intent)
         }
 
         val filter = IntentFilter()
