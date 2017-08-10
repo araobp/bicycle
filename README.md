@@ -10,11 +10,17 @@ I stopped using RasPi/Arduino for IoT prototyping, and I started thinking of a c
 
 ## Android apps
 
-![screenshot_cli](./doc/screenshot_cli.png)
-
-## Use case: bicycle
+### Use case: bicycle
 
 I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network). It is like a cheap version of [CANopen](https://www.can-cia.org/canopen/) :-)
+
+### CLI Activity
+
+![screenshot_cli](./doc/screenshot_cli.png)
+
+### Cycling Activity
+
+![screenshot_cycling](./doc/screenshot_cycling.png)
 
 ### Technical requirements
 
