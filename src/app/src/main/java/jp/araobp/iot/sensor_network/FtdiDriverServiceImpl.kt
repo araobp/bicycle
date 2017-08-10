@@ -26,8 +26,6 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     private val mCharBuf = CharArray(READBUF_SIZE)
     private var mReadLen = 0
 
-    private var mRxHandlerActivity: RxHandlerActivity? = null
-
     private var mDriverStatus = DriverStatus(opened = false, started = false)
 
     /*

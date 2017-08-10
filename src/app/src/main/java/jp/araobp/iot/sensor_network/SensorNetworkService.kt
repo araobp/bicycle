@@ -20,7 +20,7 @@ abstract class SensorNetworkService: Service() {
     var enabled = false
 
     private var mRxHandler: Handler? = null
-    private var mRxHandlerActivity: RxHandlerActivity? = null
+    protected var mRxHandlerActivity: RxHandlerActivity? = null
 
     private val mEdgeComputing: EdgeComputing = Cycling()
 
