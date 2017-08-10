@@ -8,16 +8,14 @@ class DriverSimulatorServiceImpl : SensorNetworkService() {
     private var mValue = 300
     private var mSleep = TIMER * mValue
 
-    private var mDriverStatus = DriverStatus(opened = false, started = false)
-
     override fun onCreate() {
         super.onCreate()
 
         mSleep = TIMER * mValue
         try {
-            thread {
+            thread(start = true) {
                 while (true) {
-                    if (mDriverStatus.opened && mDriverStatus.started) {
+                    if (driverStatus.opened && driverStatus.started) {
                         try {
                             Thread.sleep(mSleep.toLong())
                         } catch (e: InterruptedException) {
@@ -36,19 +34,19 @@ class DriverSimulatorServiceImpl : SensorNetworkService() {
         super.onDestroy()
     }
 
-    override fun open(baudrate: Int): Boolean {
-        mDriverStatus.opened = true
+    override fun _open(baudrate: Int): Boolean {
+        driverStatus.opened = true
         return true
     }
 
-    override fun tx(message: String) {
-        if (mDriverStatus.opened) {
+    override fun _tx(message: String) {
+        if (driverStatus.opened) {
             rx("#" + message)
             val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             when (cmd[0]) {
                 SensorNetworkProtocol.WHO -> rx("$:WHO:${DEVICE_NAME}")
-                SensorNetworkProtocol.STA -> mDriverStatus.started = true
-                SensorNetworkProtocol.STP -> mDriverStatus.started = false
+                SensorNetworkProtocol.STA -> driverStatus.started = true
+                SensorNetworkProtocol.STP -> driverStatus.started = false
                 SensorNetworkProtocol.GET -> rx("$:GET:" + mValue.toString())
                 SensorNetworkProtocol.SET -> try {
                     mValue = Integer.parseInt(cmd[1])
@@ -64,16 +62,8 @@ class DriverSimulatorServiceImpl : SensorNetworkService() {
         }
     }
 
-    override fun stop() {
-        mDriverStatus.started = false
-    }
-
-    override fun close() {
-        mDriverStatus.opened = false
-    }
-
-    override fun status(): DriverStatus {
-        return mDriverStatus
+    override fun _close() {
+        driverStatus.opened = false
     }
 
     companion object {

@@ -15,18 +15,12 @@ import kotlin.experimental.or
 * */
 class FtdiDriverServiceImpl : SensorNetworkService() {
 
-    private val TAG = "CLI"
-
     private var mD2xxManager: D2xxManager? = null
     private var mFtdiDevice: FT_Device? = null
-
-    private var mReaderIsRunning = false
 
     private val mReadBuf = ByteArray(READBUF_SIZE)
     private val mCharBuf = CharArray(READBUF_SIZE)
     private var mReadLen = 0
-
-    private var mDriverStatus = DriverStatus(opened = false, started = false)
 
     /*
     * set FTDI device config
@@ -86,12 +80,7 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         var len: Int
         var offset = 0
         var c: Char
-        mReaderIsRunning = true
         while (true) {
-            if (!mReaderIsRunning) {
-                break
-            }
-
             synchronized(mFtdiDevice as FT_Device) {
                 len = mFtdiDevice!!.queueStatus
                 if (len > 0) {
@@ -119,66 +108,42 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     }
 
     /*
-    * Opens FTDI device and start reader thread
+    * opens FTDI device and start reader thread
     *
     * @parameter baudrate baud rate
-    * @return true if reader thread's state is changed
+    * @return true if FTDI device is opened successfully
     * */
-    override fun open(baudrate: Int): Boolean {
-        var stateChanged = false
-
+    override fun _open(baudrate: Int): Boolean {
+        var opened = false
         mD2xxManager = D2xxManager.getInstance(mRxHandlerActivity!!.applicationContext)
 
-        if (mFtdiDevice != null) {
-            if (mFtdiDevice!!.isOpen) {
-                if (!mReaderIsRunning) {
-                    stateChanged = true
-                    setConfig(baudrate, 8.toByte(), 1.toByte(), 0.toByte(), 0.toByte())
-                    mFtdiDevice!!.purge((D2xxManager.FT_PURGE_TX or D2xxManager.FT_PURGE_RX).toByte())
-                    mFtdiDevice!!.restartInTask()
-                    Thread(mReader).start()
-                }
-                return stateChanged
-            }
-        }
-
         var devCount = mD2xxManager!!.createDeviceInfoList(mRxHandlerActivity)
-
         Log.d(TAG, "Device number : " + Integer.toString(devCount))
 
         val deviceList = arrayOfNulls<D2xxManager.FtDeviceInfoListNode>(devCount)
         mD2xxManager!!.getDeviceInfoList(devCount, deviceList)
 
         if (devCount <= 0) {
-            return stateChanged
-        }
-
-        if (mFtdiDevice == null) {
-            mFtdiDevice = mD2xxManager!!.openByIndex(mRxHandlerActivity, 0)
+            opened = false
         } else {
-            synchronized(mFtdiDevice as FT_Device) {
-                mFtdiDevice = mD2xxManager!!.openByIndex(mRxHandlerActivity, 0)
-            }
-        }
-
-        if (mFtdiDevice!!.isOpen) {
-            mDriverStatus.opened = true
-            if (!mReaderIsRunning) {
-                stateChanged = true
+            mFtdiDevice = mD2xxManager!!.openByIndex(mRxHandlerActivity, 0)
+            if (mFtdiDevice!!.isOpen) {
                 setConfig(baudrate, 8.toByte(), 1.toByte(), 0.toByte(), 0.toByte())
                 mFtdiDevice!!.purge((D2xxManager.FT_PURGE_TX or D2xxManager.FT_PURGE_RX).toByte())
                 mFtdiDevice!!.restartInTask()
                 Thread(mReader).start()
+                opened = true
+            } else {
+                opened = false
             }
         }
-
-        return stateChanged
+        return opened
     }
 
     /*
     * transmits a message to FTDI device
     * */
-    override fun tx(message: String) {
+    override fun _tx(message: String) {
         val data = message + DELIMITER
         if (mFtdiDevice == null) {
             return
@@ -194,36 +159,16 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
 
             val writeByte = data.toByteArray()
             mFtdiDevice!!.write(writeByte, data.length)
-
-            val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            when (cmd[0]) {
-                SensorNetworkProtocol.STA -> mDriverStatus.started = true
-                SensorNetworkProtocol.STP -> mDriverStatus.started = false
-            }
         }
-    }
-
-    /*
-    * Stops reader thread
-    * */
-    override fun stop() {
-        mReaderIsRunning = false
-        mDriverStatus.started = false
     }
 
     /*
     * Stops reader thread and closes FTDI device
     * */
-    override fun close() {
-        mReaderIsRunning = false
+    override fun _close() {
         if (mFtdiDevice != null) {
             mFtdiDevice!!.close()
-            mDriverStatus.opened = false
         }
-    }
-
-    override fun status(): DriverStatus {
-        return mDriverStatus
     }
 
     companion object {

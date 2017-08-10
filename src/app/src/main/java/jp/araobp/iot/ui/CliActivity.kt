@@ -20,7 +20,6 @@ import java.util.ArrayList
 import jp.araobp.iot.sensor_network.FtdiDriverServiceImpl
 import jp.araobp.iot.sensor_network.RxHandlerActivity
 import jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl
-import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 import android.content.ComponentName
 import android.content.ServiceConnection
 import jp.araobp.iot.sensor_network.SensorNetworkService
@@ -60,7 +59,6 @@ class CliActivity : RxHandlerActivity() {
     companion object {
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
         const val SCHEDULER_BAUDRATE = 115200  // 115200kbps
-        const val CMD_SEND_INTERVAL = 250  // 250msec
     }
 
     private fun log(message: String) {
@@ -69,6 +67,7 @@ class CliActivity : RxHandlerActivity() {
 
     private fun startCommunication() {
         log("start communication")
+        mSwitch!!.isChecked = false
         val intent: Intent?
         if (mCheckBoxSimualtor!!.isChecked) {
             intent = Intent(this, DriverSimulatorServiceImpl::class.java)!!
@@ -80,6 +79,7 @@ class CliActivity : RxHandlerActivity() {
 
     private fun stopCommunication() {
         if (mSensorNetworkService != null) {
+            mSensorNetworkService!!.close()
             unbindService(mSensorNetworkServiceConnection)
             val intent = Intent(this, SensorNetworkService::class.java)
             stopService(intent)
@@ -106,9 +106,9 @@ class CliActivity : RxHandlerActivity() {
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED == action) {
                 //startCommunication()
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
-                mSensorNetworkService?.close()
-                mSwitch!!.isChecked = mSensorNetworkService!!.status().started
-                updateButtonText(mSensorNetworkService!!.status().opened)
+                stopCommunication()
+                mSwitch!!.isChecked = false
+                updateButtonText(false)
             }
         }
     }
@@ -149,9 +149,8 @@ class CliActivity : RxHandlerActivity() {
             if (mButtonOpen!!.text == sButtonOpenOpen) {
                 startCommunication()
             } else {
-                mSensorNetworkService?.close()
                 updateButtonText(false)
-                if (mSensorNetworkService!!.status().started) {
+                if (mSensorNetworkService!!.driverStatus.started) {
                     mSwitch!!.isChecked = false
                 }
                 stopCommunication()
@@ -179,12 +178,12 @@ class CliActivity : RxHandlerActivity() {
             if (mSensorNetworkService != null) {
                 if (isChecked) {
                     log("Switch on")
-                    mSensorNetworkService!!.tx(SensorNetworkProtocol.STA)
+                    mSensorNetworkService!!.startScheduler()
                     mSwitch!!.isChecked = true
                 } else {
                     log("Switch off")
-                    if (mSensorNetworkService!!.status().opened) {
-                        mSensorNetworkService!!.tx(SensorNetworkProtocol.STP)
+                    if (mSensorNetworkService!!.driverStatus.opened) {
+                        mSensorNetworkService!!.stopScheduler()
                     }
                     mSwitch!!.isChecked = false
                 }
@@ -194,10 +193,10 @@ class CliActivity : RxHandlerActivity() {
         mToggleButtonLog!!.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 log("Logging enabled")
-                mSensorNetworkService?.enabled = true;
+                mSensorNetworkService?.enableLogging(true)
             } else {
                 log("Logging disabled")
-                mSensorNetworkService?.enabled = false;
+                mSensorNetworkService?.enableLogging(false)
             }
         }
 
@@ -218,23 +217,13 @@ class CliActivity : RxHandlerActivity() {
             mSensorNetworkService = binder.getService()
             mSensorNetworkService!!.setRxHandlerActivity(this@CliActivity)
             mSensorNetworkService!!.open(mBaudrate)
-            log(if (mSensorNetworkService!!.status().opened) "Sensor network connected" else "Unable to connect sensor network")
-            try {
-                Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mSensorNetworkService!!.tx(SensorNetworkProtocol.GET)
-                Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mSensorNetworkService!!.tx(SensorNetworkProtocol.SCN)
-                mSensorNetworkService!!.tx(SensorNetworkProtocol.MAP)
-                Thread.sleep(CMD_SEND_INTERVAL.toLong())
-                mSensorNetworkService!!.tx(SensorNetworkProtocol.RSC)
-            } catch (e: Exception) {
-                Log.e(TAG, e.toString())
-            }
+            log(if (mSensorNetworkService!!.driverStatus.opened) "Sensor network connected" else "Unable to connect sensor network")
+            mSensorNetworkService!!.schedulerInfo()
 
-            if (mSensorNetworkService!!.status().started) {
+            if (mSensorNetworkService!!.driverStatus.started) {
                 mSwitch!!.isChecked = true
             }
-            updateButtonText(mSensorNetworkService!!.status().opened)
+            updateButtonText(mSensorNetworkService!!.driverStatus.opened)
 
             if (mSensorNetworkService != null) {
                 mSensorNetworkServiceBound = true
@@ -254,25 +243,19 @@ class CliActivity : RxHandlerActivity() {
 
     override fun onRx(message: SensorNetworkService.SensorData) {
         log(message.rawData)
-        var data = message.rawData
-        if (data.startsWith("$")) {
-            val response = data.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            when (response[1]) {
-                SensorNetworkProtocol.STA -> {
-                    mTimerScaler = response[2]
-                    mTextViewScaler!!.text = mTimerScaler
-                }
-                SensorNetworkProtocol.MAP -> {
-                    mTextViewDevices!!.text = ""
-                    mTextViewDevices!!.append(response[2])
-                }
-                SensorNetworkProtocol.RSC -> {
-                    val schs = response[2].split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    for (i in schs.indices) {
-                        mListSchedules[i].text = schs[i]
-                    }
-                }
+        when(message.schedulerInfo?.infoType) {
+            SensorNetworkService.InfoType.TIMER_SCALER ->
+                    mTextViewScaler?.text = message.schedulerInfo?.timerScaler.toString()
+            SensorNetworkService.InfoType.DEVICE_MAP ->
+                    mTextViewDevices?.text = message.schedulerInfo?.deviceMap?.
+                            map { it.toString() }?.joinToString(",")
+            SensorNetworkService.InfoType.SCHEDULE -> {
+                var i:Int = 0
+                message.schedulerInfo?.schedule?.
+                        map { mListSchedules[i++].text = it.map { it.toString()}.joinToString(",") }
             }
+            SensorNetworkService.InfoType.STARTED -> mSwitch!!.isChecked = true
+            SensorNetworkService.InfoType.STOPPED -> mSwitch!!.isChecked = false
         }
     }
 
