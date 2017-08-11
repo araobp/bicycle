@@ -209,7 +209,7 @@ class CliActivity : SensorDataHandlerActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as SensorNetworkService.ServiceBinder
             mSensorNetworkService = binder.getService()
-            mSensorNetworkService!!.setRxHandlerActivity(this@CliActivity)
+            mSensorNetworkService!!.setSensorDataHandlerActivity(this@CliActivity)
             mSensorNetworkService!!.openDevice(mBaudrate)
             log(if (mSensorNetworkService!!.driverStatus.opened) "Sensor network connected" else "Unable to connect sensor network")
             mSensorNetworkService!!.fetchSchedulerInfo()

@@ -62,9 +62,11 @@ abstract class SensorNetworkService: Service() {
     }
 
     /**
-    * sets callback method that receives messages one by one from Handler/Looper
-    */
-    fun setRxHandlerActivity(sensorDataHandlerActivity: SensorDataHandlerActivity) {
+     * sets callback method that receives messages one by one from Handler/Looper
+     *
+     * @see SensorDataHandlerActivity
+     */
+    fun setSensorDataHandlerActivity(sensorDataHandlerActivity: SensorDataHandlerActivity) {
         mSensorDataHandlerActivity = sensorDataHandlerActivity
         mRxHandler = object : Handler() {
             override fun handleMessage(msg: Message) {
@@ -76,8 +78,8 @@ abstract class SensorNetworkService: Service() {
     }
 
     /**
-    * receives data from the sensor network and parses it
-    */
+     * receives data from the sensor network and parses it
+     */
     protected fun rx(message: String) {
         var timestamp = System.currentTimeMillis()
         var sensorData = SensorData(timestamp = timestamp, rawData = message)
@@ -138,8 +140,8 @@ abstract class SensorNetworkService: Service() {
     }
 
     /**
-    * opens the device driver
-    */
+     * opens the device driver
+     */
     abstract fun open(baudrate: Int): Boolean
     fun openDevice(baudrate: Int) {
         var opened = open(baudrate)
@@ -147,8 +149,8 @@ abstract class SensorNetworkService: Service() {
     }
 
     /**
-    * transmits data to the sensor network
-    */
+     * transmits data to the sensor network
+     */
     abstract fun tx(message: String)
     fun transmit(message: String) {
         tx(message)
@@ -159,8 +161,8 @@ abstract class SensorNetworkService: Service() {
     }
 
     /**
-    * closes the device driver
-    */
+     * closes the device driver
+     */
     abstract fun close()
     fun closeDevice() {
         close()
