@@ -10,6 +10,9 @@ import android.util.Log
 import jp.araobp.iot.edge_computing.Cycling
 import jp.araobp.iot.edge_computing.EdgeComputing
 
+/**
+ * Sensor network service
+ */
 abstract class SensorNetworkService: Service() {
 
     data class DriverStatus(var opened: Boolean = false, var started: Boolean = false)
@@ -19,7 +22,7 @@ abstract class SensorNetworkService: Service() {
     val TAG = "SensorNetworkService"
 
     private var mRxHandler: Handler? = null
-    protected var mRxHandlerActivity: RxHandlerActivity? = null
+    protected var mSensorDataHandlerActivity: SensorDataHandlerActivity? = null
 
     private val mEdgeComputing: EdgeComputing = Cycling()
 
@@ -58,23 +61,23 @@ abstract class SensorNetworkService: Service() {
         return mBinder
     }
 
-    /*
+    /**
     * sets callback method that receives messages one by one from Handler/Looper
-    * */
-    fun setRxHandlerActivity(rxHandlerActivity: RxHandlerActivity) {
-        mRxHandlerActivity = rxHandlerActivity
+    */
+    fun setRxHandlerActivity(sensorDataHandlerActivity: SensorDataHandlerActivity) {
+        mSensorDataHandlerActivity = sensorDataHandlerActivity
         mRxHandler = object : Handler() {
             override fun handleMessage(msg: Message) {
-                if (mRxHandlerActivity != null) {
-                    mRxHandlerActivity!!.onRx(msg.obj as SensorData)
+                if (mSensorDataHandlerActivity != null) {
+                    mSensorDataHandlerActivity!!.onSensorData(msg.obj as SensorData)
                 }
             }
         }
     }
 
-    /*
-    * sends a received message to the handler
-    * */
+    /**
+    * receives data from the sensor network and parses it
+    */
     protected fun rx(message: String) {
         var timestamp = System.currentTimeMillis()
         var sensorData = SensorData(timestamp = timestamp, rawData = message)
@@ -91,7 +94,7 @@ abstract class SensorNetworkService: Service() {
                 sensorData.deviceId = response[0].substring(1).toInt()
                 sensorData.type = response[1]
                 sensorData.data = response[2].split(",".toRegex()).toList()
-                mEdgeComputing.onRx(sensorData)
+                mEdgeComputing.onSensorData(sensorData)
                 if (mLoggingEnabled) {
                     sendMessage(sensorData)
                 }
@@ -134,60 +137,75 @@ abstract class SensorNetworkService: Service() {
         }
     }
 
-    /*
+    /**
     * opens the device driver
-    * */
-    abstract fun _open(baudrate: Int): Boolean
-    fun open(baudrate: Int) {
-        var opened = _open(baudrate)
+    */
+    abstract fun open(baudrate: Int): Boolean
+    fun openDevice(baudrate: Int) {
+        var opened = open(baudrate)
         driverStatus.opened = opened
     }
 
-    /*
-    * writes a message to the device driver
-    * */
-    abstract fun _tx(message: String)
-    fun tx(message: String) {
-        _tx(message)
+    /**
+    * transmits data to the sensor network
+    */
+    abstract fun tx(message: String)
+    fun transmit(message: String) {
+        tx(message)
         when (message.substring(startIndex = 0, endIndex = 2)) {
             SensorNetworkProtocol.STA -> driverStatus.started = true
             SensorNetworkProtocol.STP -> driverStatus.started = false
         }
     }
 
-    /*
+    /**
     * closes the device driver
-    * */
-    abstract fun _close()
-    fun close() {
-        _close()
+    */
+    abstract fun close()
+    fun closeDevice() {
+        close()
         driverStatus.opened = false
     }
 
-    fun schedulerInfo() {
+    /**
+     * fetches scheduler-related info from the sensor network
+     *
+     * @see SensorData
+     * @see rx
+     */
+    fun fetchSchedulerInfo() {
         try {
             Thread.sleep(CMD_SEND_INTERVAL)
-            tx(SensorNetworkProtocol.GET)
+            transmit(SensorNetworkProtocol.GET)
             Thread.sleep(CMD_SEND_INTERVAL)
-            tx(SensorNetworkProtocol.SCN)
-            tx(SensorNetworkProtocol.MAP)
+            transmit(SensorNetworkProtocol.SCN)
+            transmit(SensorNetworkProtocol.MAP)
             Thread.sleep(CMD_SEND_INTERVAL)
-            tx(SensorNetworkProtocol.RSC)
+            transmit(SensorNetworkProtocol.RSC)
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
         }
     }
 
+    /**
+     * starts running the sensor network
+     */
     fun startScheduler() {
-        tx(SensorNetworkProtocol.STA)
+        transmit(SensorNetworkProtocol.STA)
         driverStatus.started = true
     }
 
+    /**
+     * stops running the sensor network
+     */
     fun stopScheduler() {
-        tx(SensorNetworkProtocol.STP)
+        transmit(SensorNetworkProtocol.STP)
         driverStatus.started = false
     }
 
+    /**
+     * sends sensor data to SensorDataHandlerActivity
+     */
     fun enableLogging(enabled: Boolean) {
         mLoggingEnabled = enabled
     }

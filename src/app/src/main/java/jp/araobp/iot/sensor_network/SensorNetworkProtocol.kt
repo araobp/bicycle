@@ -1,10 +1,10 @@
 package jp.araobp.iot.sensor_network
 
-/*
+/**
 * Plug&Play protocol
 *
 * @see <a href="https://github.com/araobp/sensor-network">https://github.com/araobp/sensor-network</a>
-* */
+*/
 object SensorNetworkProtocol {
 
     const val STA = "STA"

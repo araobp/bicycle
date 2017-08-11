@@ -4,6 +4,6 @@ import jp.araobp.iot.sensor_network.SensorNetworkService
 
 interface EdgeComputing {
 
-    fun onRx(sensorData: SensorNetworkService.SensorData)
+    fun onSensorData(sensorData: SensorNetworkService.SensorData)
 
 }

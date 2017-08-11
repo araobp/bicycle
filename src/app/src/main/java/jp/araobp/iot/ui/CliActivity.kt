@@ -18,18 +18,18 @@ import android.widget.ToggleButton
 import java.util.ArrayList
 
 import jp.araobp.iot.sensor_network.FtdiDriverServiceImpl
-import jp.araobp.iot.sensor_network.RxHandlerActivity
+import jp.araobp.iot.sensor_network.SensorDataHandlerActivity
 import jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl
 import android.content.ComponentName
 import android.content.ServiceConnection
 import jp.araobp.iot.sensor_network.SensorNetworkService
 
-/*
+/**
 * Sensor Network CLI
 *
 * @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
-* */
-class CliActivity : RxHandlerActivity() {
+*/
+class CliActivity : SensorDataHandlerActivity() {
 
     private var mBaudrate = 0
 
@@ -65,7 +65,7 @@ class CliActivity : RxHandlerActivity() {
         mTextView!!.append(message + "\n")
     }
 
-    private fun startCommunication() {
+    private fun startSensorNetworkService() {
         log("start communication")
         mSwitch!!.isChecked = false
         val intent: Intent?
@@ -77,16 +77,16 @@ class CliActivity : RxHandlerActivity() {
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    private fun stopCommunication() {
+    private fun stopSensorNetworkService() {
         if (mSensorNetworkService != null) {
-            mSensorNetworkService!!.close()
+            mSensorNetworkService!!.closeDevice()
             unbindService(mSensorNetworkServiceConnection)
             val intent = Intent(this, SensorNetworkService::class.java)
             stopService(intent)
         }
     }
 
-    private fun updateButtonText(opened: Boolean) {
+    private fun toggleButtonText(opened: Boolean) {
         if (opened) {
             mButtonOpen!!.text = sButtonOpenClose
             mButtonWrite!!.isEnabled = true
@@ -97,18 +97,18 @@ class CliActivity : RxHandlerActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        //startCommunication()
+        //startSensorNetworkService()
     }
 
     internal var mUsbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED == action) {
-                //startCommunication()
+                //startSensorNetworkService()
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
-                stopCommunication()
+                stopSensorNetworkService()
                 mSwitch!!.isChecked = false
-                updateButtonText(false)
+                toggleButtonText(false)
             }
         }
     }
@@ -143,34 +143,28 @@ class CliActivity : RxHandlerActivity() {
         mListSchedules.add(findViewById(R.id.textViewSchedule6) as TextView)
         mListSchedules.add(findViewById(R.id.textViewSchedule7) as TextView)
 
-        updateButtonText(false)
+        toggleButtonText(false)
 
         mButtonOpen!!.setOnClickListener {
             if (mButtonOpen!!.text == sButtonOpenOpen) {
-                startCommunication()
+                startSensorNetworkService()
             } else {
-                updateButtonText(false)
-                if (mSensorNetworkService!!.driverStatus.started) {
-                    mSwitch!!.isChecked = false
-                }
-                stopCommunication()
+                toggleButtonText(false)
+                mSwitch!!.isChecked = !mSensorNetworkService!!.driverStatus.started
+                stopSensorNetworkService()
             }
         }
 
         mButtonWrite!!.setOnClickListener {
             val writeString = mEditText!!.text.toString().toUpperCase()
-            mSensorNetworkService?.tx(writeString)
+            mSensorNetworkService?.transmit(writeString)
             mEditText!!.setText("")
         }
 
         mBaudrate = if (mCheckBoxBaudrate9600!!.isChecked) DEFAULT_BAUDRATE else SCHEDULER_BAUDRATE
 
-        mCheckBoxBaudrate9600!!.setOnCheckedChangeListener { _, _ ->
-            if (mCheckBoxBaudrate9600!!.isChecked) {
-                mBaudrate = DEFAULT_BAUDRATE
-            } else {
-                mBaudrate = SCHEDULER_BAUDRATE
-            }
+        mCheckBoxBaudrate9600!!.setOnCheckedChangeListener { _, isChecked ->
+            mBaudrate = if (isChecked) DEFAULT_BAUDRATE else SCHEDULER_BAUDRATE
             Log.d(TAG, Integer.toString(mBaudrate))
         }
 
@@ -216,14 +210,14 @@ class CliActivity : RxHandlerActivity() {
             val binder = service as SensorNetworkService.ServiceBinder
             mSensorNetworkService = binder.getService()
             mSensorNetworkService!!.setRxHandlerActivity(this@CliActivity)
-            mSensorNetworkService!!.open(mBaudrate)
+            mSensorNetworkService!!.openDevice(mBaudrate)
             log(if (mSensorNetworkService!!.driverStatus.opened) "Sensor network connected" else "Unable to connect sensor network")
-            mSensorNetworkService!!.schedulerInfo()
+            mSensorNetworkService!!.fetchSchedulerInfo()
 
             if (mSensorNetworkService!!.driverStatus.started) {
                 mSwitch!!.isChecked = true
             }
-            updateButtonText(mSensorNetworkService!!.driverStatus.opened)
+            toggleButtonText(mSensorNetworkService!!.driverStatus.opened)
 
             if (mSensorNetworkService != null) {
                 mSensorNetworkServiceBound = true
@@ -241,7 +235,7 @@ class CliActivity : RxHandlerActivity() {
         super.onStart()
     }
 
-    override fun onRx(message: SensorNetworkService.SensorData) {
+    override fun onSensorData(message: SensorNetworkService.SensorData) {
         log(message.rawData)
         when(message.schedulerInfo?.infoType) {
             SensorNetworkService.InfoType.TIMER_SCALER ->
@@ -265,7 +259,7 @@ class CliActivity : RxHandlerActivity() {
 
     public override fun onDestroy() {
         super.onDestroy()
-        stopCommunication()
+        stopSensorNetworkService()
         unregisterReceiver(mUsbReceiver)
     }
 

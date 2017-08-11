@@ -7,12 +7,10 @@ import com.ftdi.j2xx.FT_Device
 
 import kotlin.experimental.or
 
-
-
-/*
+/**
 * FTDI device driver
 *
-* */
+*/
 class FtdiDriverServiceImpl : SensorNetworkService() {
 
     private var mD2xxManager: D2xxManager? = null
@@ -22,21 +20,16 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     private val mCharBuf = CharArray(READBUF_SIZE)
     private var mReadLen = 0
 
-    /*
-    * set FTDI device config
-    * */
+    /**
+    * sets FTDI device config
+    */
     private fun setConfig(baudrate: Int, dataBits: Byte, stopBits: Byte, parity: Byte, flowControl: Byte) {
         val dataBitsByte: Byte
         val stopBitsByte: Byte
         val parityByte: Byte
-
-        if (!mFtdiDevice!!.isOpen) {
-            Log.e(TAG, "setConfig: device not open")
-            return
-        }
+        val flowCtrlSetting: Short
 
         mFtdiDevice!!.setBitMode(0.toByte(), D2xxManager.FT_BITMODE_RESET)
-
         mFtdiDevice!!.setBaudRate(baudrate)
 
         when (dataBits) {
@@ -59,10 +52,8 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
             4.toByte() -> parityByte = D2xxManager.FT_PARITY_SPACE
             else -> parityByte = D2xxManager.FT_PARITY_NONE
         }
-
         mFtdiDevice!!.setDataCharacteristics(dataBitsByte, stopBitsByte, parityByte)
 
-        val flowCtrlSetting: Short
         when (flowControl) {
             0.toByte() -> flowCtrlSetting = D2xxManager.FT_FLOW_NONE
             1.toByte() -> flowCtrlSetting = D2xxManager.FT_FLOW_RTS_CTS
@@ -70,7 +61,6 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
             3.toByte() -> flowCtrlSetting = D2xxManager.FT_FLOW_XON_XOFF
             else -> flowCtrlSetting = D2xxManager.FT_FLOW_NONE
         }
-
         mFtdiDevice!!.setFlowControl(flowCtrlSetting, 0x0b.toByte(), 0x0d.toByte())
     }
 
@@ -81,43 +71,41 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         var offset = 0
         var c: Char
         while (true) {
-            synchronized(mFtdiDevice as FT_Device) {
-                len = mFtdiDevice!!.queueStatus
-                if (len > 0) {
-                    mReadLen = len
-                    if (mReadLen > READBUF_SIZE) {
-                        mReadLen = READBUF_SIZE
-                    }
-                    mFtdiDevice!!.read(mReadBuf, mReadLen)
+            len = mFtdiDevice!!.queueStatus
+            if (len > 0) {
+                mReadLen = len
+                if (mReadLen > READBUF_SIZE) {
+                    mReadLen = READBUF_SIZE
+                }
+                mFtdiDevice!!.read(mReadBuf, mReadLen)
 
-                    i = 0
-                    while (i < mReadLen) {
-                        c = mReadBuf[i].toChar()
-                        mCharBuf[offset++] = c
-                        if (c == sDelimiter) {
-                            if (offset >= 3) {
-                                rx(String(mCharBuf, 0, offset - 1))
-                            }
-                            offset = 0
+                i = 0
+                while (i < mReadLen) {
+                    c = mReadBuf[i].toChar()
+                    mCharBuf[offset++] = c
+                    if (c == sDelimiter) {
+                        if (offset >= 3) {
+                            rx(String(mCharBuf, 0, offset - 1))
                         }
-                        i++
+                        offset = 0
                     }
+                    i++
                 }
             }
         }
     }
 
-    /*
+    /**
     * opens FTDI device and start reader thread
     *
     * @parameter baudrate baud rate
     * @return true if FTDI device is opened successfully
-    * */
-    override fun _open(baudrate: Int): Boolean {
+    */
+    override fun open(baudrate: Int): Boolean {
         var opened = false
-        mD2xxManager = D2xxManager.getInstance(mRxHandlerActivity!!.applicationContext)
+        mD2xxManager = D2xxManager.getInstance(mSensorDataHandlerActivity!!.applicationContext)
 
-        var devCount = mD2xxManager!!.createDeviceInfoList(mRxHandlerActivity)
+        var devCount = mD2xxManager!!.createDeviceInfoList(mSensorDataHandlerActivity)
         Log.d(TAG, "Device number : " + Integer.toString(devCount))
 
         val deviceList = arrayOfNulls<D2xxManager.FtDeviceInfoListNode>(devCount)
@@ -126,10 +114,10 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         if (devCount <= 0) {
             opened = false
         } else {
-            mFtdiDevice = mD2xxManager!!.openByIndex(mRxHandlerActivity, 0)
+            mFtdiDevice = mD2xxManager!!.openByIndex(mSensorDataHandlerActivity, 0)
             if (mFtdiDevice!!.isOpen) {
                 setConfig(baudrate, 8.toByte(), 1.toByte(), 0.toByte(), 0.toByte())
-                mFtdiDevice!!.purge((D2xxManager.FT_PURGE_TX or D2xxManager.FT_PURGE_RX).toByte())
+                mFtdiDevice!!.purge(D2xxManager.FT_PURGE_TX or D2xxManager.FT_PURGE_RX)
                 mFtdiDevice!!.restartInTask()
                 Thread(mReader).start()
                 opened = true
@@ -140,10 +128,10 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         return opened
     }
 
-    /*
+    /**
     * transmits a message to FTDI device
-    * */
-    override fun _tx(message: String) {
+    */
+    override fun tx(message: String) {
         val data = message + DELIMITER
         if (mFtdiDevice == null) {
             return
@@ -151,7 +139,7 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
 
         synchronized(mFtdiDevice as FT_Device) {
             if (!mFtdiDevice!!.isOpen) {
-                Log.e(TAG, "onClickWrite : device is not open")
+                Log.e(TAG, "onClickWrite : device is not openDevice")
                 return
             }
 
@@ -162,20 +150,17 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
         }
     }
 
-    /*
+    /**
     * Stops reader thread and closes FTDI device
-    * */
-    override fun _close() {
+    */
+    override fun close() {
         if (mFtdiDevice != null) {
             mFtdiDevice!!.close()
         }
     }
 
     companion object {
-
-        // Size of read buffer (the number of characters)
         val READBUF_SIZE = 1024
-
         val DELIMITER = "\n"
         private val sDelimiter = '\n'
     }

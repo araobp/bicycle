@@ -34,12 +34,12 @@ class DriverSimulatorServiceImpl : SensorNetworkService() {
         super.onDestroy()
     }
 
-    override fun _open(baudrate: Int): Boolean {
+    override fun open(baudrate: Int): Boolean {
         driverStatus.opened = true
         return true
     }
 
-    override fun _tx(message: String) {
+    override fun tx(message: String) {
         if (driverStatus.opened) {
             rx("#" + message)
             val cmd = message.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -62,7 +62,7 @@ class DriverSimulatorServiceImpl : SensorNetworkService() {
         }
     }
 
-    override fun _close() {
+    override fun close() {
         driverStatus.opened = false
     }
 

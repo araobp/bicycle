@@ -19,7 +19,7 @@ class Cycling: EdgeComputing {
         }
     }
 
-    override fun onRx(sensorData: SensorNetworkService.SensorData) {
+    override fun onSensorData(sensorData: SensorNetworkService.SensorData) {
         fifoQueue.add(sensorData)
     }
 
