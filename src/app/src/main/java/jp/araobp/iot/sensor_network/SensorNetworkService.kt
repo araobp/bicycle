@@ -142,7 +142,7 @@ abstract class SensorNetworkService: Service() {
     /**
      * opens the device driver
      */
-    abstract fun open(baudrate: Int): Boolean
+    protected abstract fun open(baudrate: Int): Boolean
     fun openDevice(baudrate: Int) {
         var opened = open(baudrate)
         driverStatus.opened = opened
@@ -151,7 +151,7 @@ abstract class SensorNetworkService: Service() {
     /**
      * transmits data to the sensor network
      */
-    abstract fun tx(message: String)
+    protected abstract fun tx(message: String)
     fun transmit(message: String) {
         tx(message)
         when (message.substring(startIndex = 0, endIndex = 2)) {
@@ -163,7 +163,7 @@ abstract class SensorNetworkService: Service() {
     /**
      * closes the device driver
      */
-    abstract fun close()
+    protected abstract fun close()
     fun closeDevice() {
         close()
         driverStatus.opened = false
@@ -212,7 +212,7 @@ abstract class SensorNetworkService: Service() {
         mLoggingEnabled = enabled
     }
 
-    companion object {
+    private companion object {
         const val CMD_SEND_INTERVAL = 250L  // 250msec
     }
 }
