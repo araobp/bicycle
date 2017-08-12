@@ -3,7 +3,7 @@ package jp.araobp.iot.sensor_network
 import android.util.Log
 import kotlin.concurrent.thread
 
-class DriverSimulatorServiceImpl : SensorNetworkService() {
+class DriverSimulatorServiceImpl: SensorNetworkService() {
 
     private var mValue = 300
     private var mSleep = TIMER * mValue
@@ -22,6 +22,7 @@ class DriverSimulatorServiceImpl : SensorNetworkService() {
                             Log.e(TAG, e.toString())
                         }
                         rx("%19:FLOAT:-0.01,0.03,-0.01")
+                        //rx("%17:UINT8_T:0")
                     }
                 }
             }

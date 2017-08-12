@@ -3,12 +3,11 @@ package jp.araobp.iot.sensor_network
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
-import android.os.Handler
 import android.os.IBinder
-import android.os.Message
 import android.util.Log
 import jp.araobp.iot.edge_computing.Cycling
 import jp.araobp.iot.edge_computing.EdgeComputing
+import org.greenrobot.eventbus.EventBus
 
 /**
  * Sensor network service
@@ -21,30 +20,13 @@ abstract class SensorNetworkService: Service() {
 
     val TAG = "SensorNetworkService"
 
-    private var mSensorDataHandler: Handler? = null
-    protected var mSensorDataHandlerActivity: SensorDataHandlerActivity? = null
-
     private val mEdgeComputing: EdgeComputing = Cycling()
-
-    data class SensorData(var timestamp: Long,
-                          var rawData: String,
-                          var deviceId: Int? = null,
-                          var type: String? = null,
-                          var data: List<String>? = null,
-                          var schedulerInfo: SchedulerInfo? = null)
-
-    data class SchedulerInfo(var infoType: InfoType? = null,
-                             var timerScaler: Int? = 0,
-                             var deviceMap: List<Int>? = null,
-                             var schedule: List<List<Int>>? = null)
-
-    enum class InfoType {
-        TIMER_SCALER, DEVICE_MAP, SCHEDULE, STARTED, STOPPED
-    }
 
     var driverStatus = DriverStatus(opened = false, started = false)
 
     private var mLoggingEnabled = false
+
+    private val eventBus = EventBus.getDefault()
 
     inner class ServiceBinder : Binder() {
         fun getService(): SensorNetworkService {
@@ -62,34 +44,12 @@ abstract class SensorNetworkService: Service() {
     }
 
     /**
-     * sets callback method that receives messages one by one from Handler/Looper
-     *
-     * @see SensorDataHandlerActivity
-     */
-    fun setSensorDataHandler(sensorDataHandlerActivity: SensorDataHandlerActivity) {
-        mSensorDataHandlerActivity = sensorDataHandlerActivity
-        mSensorDataHandler = object : Handler() {
-            override fun handleMessage(msg: Message) {
-                if (mSensorDataHandlerActivity != null) {
-                    mSensorDataHandlerActivity!!.onSensorData(msg.obj as SensorData)
-                }
-            }
-        }
-    }
-
-    /**
      * receives data from the sensor network and parses it
      */
     protected fun rx(message: String) {
         var timestamp = System.currentTimeMillis()
-        var sensorData = SensorData(timestamp = timestamp, rawData = message)
+        var sensorData = Event.SensorData(timestamp = timestamp, rawData = message)
         val response = message.split(":".toRegex()).toList()
-
-        fun sendMessage(msg: SensorData) {
-            val msg = Message.obtain()
-            msg.obj = sensorData
-            mSensorDataHandler?.sendMessage(msg)
-        }
 
         when (message.substring(startIndex = 0, endIndex = 1)) {
             "%" -> {
@@ -98,35 +58,35 @@ abstract class SensorNetworkService: Service() {
                 sensorData.data = response[2].split(",".toRegex()).toList()
                 mEdgeComputing.onSensorData(sensorData)
                 if (mLoggingEnabled) {
-                    sendMessage(sensorData)
+                    eventBus.post(sensorData)
                 }
             }
             "#" -> {
                 when (message.substring(startIndex = 1, endIndex = 3)) {
                     SensorNetworkProtocol.STA -> {
-                        sensorData.schedulerInfo = SchedulerInfo(infoType = InfoType.STARTED)
+                        sensorData.schedulerInfo = Event.SchedulerInfo(infoType = Event.InfoType.STARTED)
                         driverStatus.started = true
                     }
                     SensorNetworkProtocol.STP -> {
-                        sensorData.schedulerInfo = SchedulerInfo(infoType = InfoType.STOPPED)
+                        sensorData.schedulerInfo = Event.SchedulerInfo(infoType = Event.InfoType.STOPPED)
                         driverStatus.started = false
                     }
                 }
-                sendMessage(sensorData)
+                eventBus.post(sensorData)
             }
             "$" -> {
                 when (response[1]) {
-                    SensorNetworkProtocol.GET -> sensorData.schedulerInfo = SchedulerInfo(
-                            infoType = InfoType.TIMER_SCALER,
+                    SensorNetworkProtocol.GET -> sensorData.schedulerInfo = Event.SchedulerInfo(
+                            infoType = Event.InfoType.TIMER_SCALER,
                             timerScaler = response[2].toInt()
                     )
-                    SensorNetworkProtocol.MAP -> sensorData.schedulerInfo = SchedulerInfo(
-                            infoType = InfoType.DEVICE_MAP,
+                    SensorNetworkProtocol.MAP -> sensorData.schedulerInfo = Event.SchedulerInfo(
+                            infoType = Event.InfoType.DEVICE_MAP,
                             deviceMap = response[2].split(",".toRegex()).toList().
                                     map { it.toInt() }.toList()
                     )
-                    SensorNetworkProtocol.RSC -> sensorData.schedulerInfo = SchedulerInfo(
-                            infoType = InfoType.SCHEDULE,
+                    SensorNetworkProtocol.RSC -> sensorData.schedulerInfo = Event.SchedulerInfo(
+                            infoType = Event.InfoType.SCHEDULE,
                             schedule = response[2].
                                     split("\\|".toRegex()).toList().
                                     map {
@@ -134,7 +94,7 @@ abstract class SensorNetworkService: Service() {
                                     }.toList()
                     )
                 }
-                sendMessage(sensorData)
+                eventBus.post(sensorData)
             }
         }
     }

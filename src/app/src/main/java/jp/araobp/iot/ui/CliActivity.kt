@@ -1,5 +1,6 @@
 package jp.araobp.iot.ui
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -18,18 +19,23 @@ import android.widget.ToggleButton
 import java.util.ArrayList
 
 import jp.araobp.iot.sensor_network.FtdiDriverServiceImpl
-import jp.araobp.iot.sensor_network.SensorDataHandlerActivity
 import jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl
 import android.content.ComponentName
 import android.content.ServiceConnection
+import jp.araobp.iot.sensor_network.Event
 import jp.araobp.iot.sensor_network.SensorNetworkService
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import org.greenrobot.eventbus.EventBus
+
+
 
 /**
 * Sensor Network CLI
 *
 * @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
 */
-class CliActivity : SensorDataHandlerActivity() {
+class CliActivity : Activity() {
 
     private var mBaudrate = 0
 
@@ -70,9 +76,9 @@ class CliActivity : SensorDataHandlerActivity() {
         mSwitch!!.isChecked = false
         val intent: Intent?
         if (mCheckBoxSimualtor!!.isChecked) {
-            intent = Intent(this, DriverSimulatorServiceImpl::class.java)!!
+            intent = Intent(this, DriverSimulatorServiceImpl::class.java)
         } else {
-            intent = Intent(this, FtdiDriverServiceImpl::class.java)!!
+            intent = Intent(this, FtdiDriverServiceImpl::class.java)
         }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -209,7 +215,6 @@ class CliActivity : SensorDataHandlerActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as SensorNetworkService.ServiceBinder
             mSensorNetworkService = binder.getService()
-            mSensorNetworkService!!.setSensorDataHandler(this@CliActivity)
             mSensorNetworkService!!.openDevice(mBaudrate)
             log(if (mSensorNetworkService!!.driverStatus.opened) "Sensor network connected" else "Unable to connect sensor network")
             mSensorNetworkService!!.fetchSchedulerInfo()
@@ -233,28 +238,31 @@ class CliActivity : SensorDataHandlerActivity() {
 
     public override fun onStart() {
         super.onStart()
+        EventBus.getDefault().register(this)
     }
 
-    override fun onSensorData(message: SensorNetworkService.SensorData) {
+    public override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onSensorData(message: Event.SensorData) {
         log(message.rawData)
         when(message.schedulerInfo?.infoType) {
-            SensorNetworkService.InfoType.TIMER_SCALER ->
+            Event.InfoType.TIMER_SCALER ->
                     mTextViewScaler?.text = message.schedulerInfo?.timerScaler.toString()
-            SensorNetworkService.InfoType.DEVICE_MAP ->
+            Event.InfoType.DEVICE_MAP ->
                     mTextViewDevices?.text = message.schedulerInfo?.deviceMap?.
                             map { it.toString() }?.joinToString(",")
-            SensorNetworkService.InfoType.SCHEDULE -> {
+            Event.InfoType.SCHEDULE -> {
                 var i:Int = 0
                 message.schedulerInfo?.schedule?.
                         map { mListSchedules[i++].text = it.map { it.toString()}.joinToString(",") }
             }
-            SensorNetworkService.InfoType.STARTED -> mSwitch!!.isChecked = true
-            SensorNetworkService.InfoType.STOPPED -> mSwitch!!.isChecked = false
+            Event.InfoType.STARTED -> mSwitch!!.isChecked = true
+            Event.InfoType.STOPPED -> mSwitch!!.isChecked = false
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
     }
 
     public override fun onDestroy() {

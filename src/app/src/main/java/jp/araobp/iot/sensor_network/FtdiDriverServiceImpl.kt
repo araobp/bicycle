@@ -11,7 +11,7 @@ import kotlin.experimental.or
 * FTDI device driver
 *
 */
-class FtdiDriverServiceImpl : SensorNetworkService() {
+class FtdiDriverServiceImpl: SensorNetworkService() {
 
     private var mD2xxManager: D2xxManager? = null
     private var mFtdiDevice: FT_Device? = null
@@ -103,26 +103,22 @@ class FtdiDriverServiceImpl : SensorNetworkService() {
     */
     override fun open(baudrate: Int): Boolean {
         var opened = false
-        mD2xxManager = D2xxManager.getInstance(mSensorDataHandlerActivity!!.applicationContext)
+        mD2xxManager = D2xxManager.getInstance(this.applicationContext)
 
-        var devCount = mD2xxManager!!.createDeviceInfoList(mSensorDataHandlerActivity)
+        var devCount = mD2xxManager!!.createDeviceInfoList(this)
         Log.d(TAG, "Device number : " + Integer.toString(devCount))
 
         val deviceList = arrayOfNulls<D2xxManager.FtDeviceInfoListNode>(devCount)
         mD2xxManager!!.getDeviceInfoList(devCount, deviceList)
 
-        if (devCount <= 0) {
-            opened = false
-        } else {
-            mFtdiDevice = mD2xxManager!!.openByIndex(mSensorDataHandlerActivity, 0)
+        if (devCount > 0) {
+            mFtdiDevice = mD2xxManager!!.openByIndex(this, 0)
             if (mFtdiDevice!!.isOpen) {
                 setConfig(baudrate, 8.toByte(), 1.toByte(), 0.toByte(), 0.toByte())
                 mFtdiDevice!!.purge(D2xxManager.FT_PURGE_TX or D2xxManager.FT_PURGE_RX)
                 mFtdiDevice!!.restartInTask()
                 Thread(mReader).start()
                 opened = true
-            } else {
-                opened = false
             }
         }
         return opened
