@@ -1,9 +1,11 @@
-package jp.araobp.iot.sensor_network
+package jp.araobp.iot.sensor_network.service
 
 import android.util.Log
+import jp.araobp.iot.sensor_network.SensorNetworkProtocol
+import jp.araobp.iot.sensor_network.SensorNetworkService
 import kotlin.concurrent.thread
 
-class DriverSimulatorServiceImpl: SensorNetworkService() {
+class SensorNetworkSimulator : SensorNetworkService() {
 
     private var mValue = 300
     private var mSleep = TIMER * mValue
@@ -14,6 +16,7 @@ class DriverSimulatorServiceImpl: SensorNetworkService() {
         mSleep = TIMER * mValue
         try {
             thread(start = true) {
+                var next = 0
                 while (true) {
                     if (driverStatus.opened && driverStatus.started) {
                         try {
@@ -21,8 +24,12 @@ class DriverSimulatorServiceImpl: SensorNetworkService() {
                         } catch (e: InterruptedException) {
                             Log.e(TAG, e.toString())
                         }
-                        rx("%19:FLOAT:-0.01,0.03,-0.01")
-                        //rx("%17:UINT8_T:0")
+                        when(next) {
+                            0 -> rx("%17:UINT8_T:0")
+                            1 -> rx("%18:INT8_T:28,56")
+                            2 -> rx("%19:FLOAT:-0.01,0.03,-0.01")
+                        }
+                        next = if (next >= 2) 0 else next + 1
                     }
                 }
             }

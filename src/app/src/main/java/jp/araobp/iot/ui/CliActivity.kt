@@ -18,11 +18,11 @@ import android.widget.ToggleButton
 
 import java.util.ArrayList
 
-import jp.araobp.iot.sensor_network.FtdiDriverServiceImpl
-import jp.araobp.iot.sensor_network.DriverSimulatorServiceImpl
+import jp.araobp.iot.sensor_network.service.FtdiDriver
+import jp.araobp.iot.sensor_network.service.SensorNetworkSimulator
 import android.content.ComponentName
 import android.content.ServiceConnection
-import jp.araobp.iot.sensor_network.Event
+import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import jp.araobp.iot.sensor_network.SensorNetworkService
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -76,9 +76,9 @@ class CliActivity : Activity() {
         mSwitch!!.isChecked = false
         val intent: Intent?
         if (mCheckBoxSimualtor!!.isChecked) {
-            intent = Intent(this, DriverSimulatorServiceImpl::class.java)
+            intent = Intent(this, SensorNetworkSimulator::class.java)
         } else {
-            intent = Intent(this, FtdiDriverServiceImpl::class.java)
+            intent = Intent(this, FtdiDriver::class.java)
         }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -247,21 +247,21 @@ class CliActivity : Activity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onSensorData(message: Event.SensorData) {
+    fun onSensorData(message: SensorNetworkEvent.SensorData) {
         log(message.rawData)
         when(message.schedulerInfo?.infoType) {
-            Event.InfoType.TIMER_SCALER ->
+            SensorNetworkEvent.InfoType.TIMER_SCALER ->
                     mTextViewScaler?.text = message.schedulerInfo?.timerScaler.toString()
-            Event.InfoType.DEVICE_MAP ->
+            SensorNetworkEvent.InfoType.DEVICE_MAP ->
                     mTextViewDevices?.text = message.schedulerInfo?.deviceMap?.
                             map { it.toString() }?.joinToString(",")
-            Event.InfoType.SCHEDULE -> {
+            SensorNetworkEvent.InfoType.SCHEDULE -> {
                 var i:Int = 0
                 message.schedulerInfo?.schedule?.
                         map { mListSchedules[i++].text = it.map { it.toString()}.joinToString(",") }
             }
-            Event.InfoType.STARTED -> mSwitch!!.isChecked = true
-            Event.InfoType.STOPPED -> mSwitch!!.isChecked = false
+            SensorNetworkEvent.InfoType.STARTED -> mSwitch!!.isChecked = true
+            SensorNetworkEvent.InfoType.STOPPED -> mSwitch!!.isChecked = false
         }
     }
 

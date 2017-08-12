@@ -1,9 +1,10 @@
-package jp.araobp.iot.sensor_network
+package jp.araobp.iot.sensor_network.service
 
 import android.util.Log
 
 import com.ftdi.j2xx.D2xxManager
 import com.ftdi.j2xx.FT_Device
+import jp.araobp.iot.sensor_network.SensorNetworkService
 
 import kotlin.experimental.or
 
@@ -11,7 +12,7 @@ import kotlin.experimental.or
 * FTDI device driver
 *
 */
-class FtdiDriverServiceImpl: SensorNetworkService() {
+class FtdiDriver : SensorNetworkService() {
 
     private var mD2xxManager: D2xxManager? = null
     private var mFtdiDevice: FT_Device? = null

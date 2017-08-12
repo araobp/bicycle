@@ -1,6 +1,6 @@
 package jp.araobp.iot.sensor_network
 
-class Event {
+class SensorNetworkEvent {
     data class SensorData(var timestamp: Long,
                           var rawData: String,
                           var deviceId: Int? = null,

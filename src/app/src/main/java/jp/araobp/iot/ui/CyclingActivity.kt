@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
-import jp.araobp.iot.sensor_network.Event
+import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -50,7 +50,7 @@ class CyclingActivity : Activity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onProcessedData(processedData: Event.ProcessedData) {
+    fun onProcessedData(processedData: SensorNetworkEvent.ProcessedData) {
         Log.d(TAG, processedData.toString())
         when(processedData.deviceId) {
             SensorNetworkProtocol.KXR94_2050 -> {

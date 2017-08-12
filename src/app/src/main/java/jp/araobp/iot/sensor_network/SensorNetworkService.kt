@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import jp.araobp.iot.edge_computing.Cycling
+import jp.araobp.iot.edge_computing.logic.Cycling
 import jp.araobp.iot.edge_computing.EdgeComputing
 import org.greenrobot.eventbus.EventBus
 
@@ -48,7 +48,7 @@ abstract class SensorNetworkService: Service() {
      */
     protected fun rx(message: String) {
         var timestamp = System.currentTimeMillis()
-        var sensorData = Event.SensorData(timestamp = timestamp, rawData = message)
+        var sensorData = SensorNetworkEvent.SensorData(timestamp = timestamp, rawData = message)
         val response = message.split(":".toRegex()).toList()
 
         when (message.substring(startIndex = 0, endIndex = 1)) {
@@ -64,11 +64,11 @@ abstract class SensorNetworkService: Service() {
             "#" -> {
                 when (message.substring(startIndex = 1, endIndex = 3)) {
                     SensorNetworkProtocol.STA -> {
-                        sensorData.schedulerInfo = Event.SchedulerInfo(infoType = Event.InfoType.STARTED)
+                        sensorData.schedulerInfo = SensorNetworkEvent.SchedulerInfo(infoType = SensorNetworkEvent.InfoType.STARTED)
                         driverStatus.started = true
                     }
                     SensorNetworkProtocol.STP -> {
-                        sensorData.schedulerInfo = Event.SchedulerInfo(infoType = Event.InfoType.STOPPED)
+                        sensorData.schedulerInfo = SensorNetworkEvent.SchedulerInfo(infoType = SensorNetworkEvent.InfoType.STOPPED)
                         driverStatus.started = false
                     }
                 }
@@ -76,17 +76,17 @@ abstract class SensorNetworkService: Service() {
             }
             "$" -> {
                 when (response[1]) {
-                    SensorNetworkProtocol.GET -> sensorData.schedulerInfo = Event.SchedulerInfo(
-                            infoType = Event.InfoType.TIMER_SCALER,
+                    SensorNetworkProtocol.GET -> sensorData.schedulerInfo = SensorNetworkEvent.SchedulerInfo(
+                            infoType = SensorNetworkEvent.InfoType.TIMER_SCALER,
                             timerScaler = response[2].toInt()
                     )
-                    SensorNetworkProtocol.MAP -> sensorData.schedulerInfo = Event.SchedulerInfo(
-                            infoType = Event.InfoType.DEVICE_MAP,
+                    SensorNetworkProtocol.MAP -> sensorData.schedulerInfo = SensorNetworkEvent.SchedulerInfo(
+                            infoType = SensorNetworkEvent.InfoType.DEVICE_MAP,
                             deviceMap = response[2].split(",".toRegex()).toList().
                                     map { it.toInt() }.toList()
                     )
-                    SensorNetworkProtocol.RSC -> sensorData.schedulerInfo = Event.SchedulerInfo(
-                            infoType = Event.InfoType.SCHEDULE,
+                    SensorNetworkProtocol.RSC -> sensorData.schedulerInfo = SensorNetworkEvent.SchedulerInfo(
+                            infoType = SensorNetworkEvent.InfoType.SCHEDULE,
                             schedule = response[2].
                                     split("\\|".toRegex()).toList().
                                     map {
