@@ -39,7 +39,7 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - [Kotlin](https://kotlinlang.org/)
 
 ### IDE
-- Android: [Android Studio](https://developer.android.com/studio/index.html)
+- [Android Studio](https://developer.android.com/studio/index.html)
 
 ### Libraries
 - [Android Java D2XX driver](http://www.ftdichip.com/Drivers/D2XX.htm)
