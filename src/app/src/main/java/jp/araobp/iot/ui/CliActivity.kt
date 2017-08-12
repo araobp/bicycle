@@ -195,7 +195,7 @@ class CliActivity : SensorDataHandlerActivity() {
         }
 
         mButtonVisualizerCycling!!.setOnClickListener {
-            val intent = Intent(this@CliActivity, CyclingVisualizerActivity::class.java)
+            val intent = Intent(this@CliActivity, CyclingActivity::class.java)
             startActivity(intent)
         }
 
@@ -209,7 +209,7 @@ class CliActivity : SensorDataHandlerActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as SensorNetworkService.ServiceBinder
             mSensorNetworkService = binder.getService()
-            mSensorNetworkService!!.setSensorDataHandlerActivity(this@CliActivity)
+            mSensorNetworkService!!.setSensorDataHandler(this@CliActivity)
             mSensorNetworkService!!.openDevice(mBaudrate)
             log(if (mSensorNetworkService!!.driverStatus.opened) "Sensor network connected" else "Unable to connect sensor network")
             mSensorNetworkService!!.fetchSchedulerInfo()

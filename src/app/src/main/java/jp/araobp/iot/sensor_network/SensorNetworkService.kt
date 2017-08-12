@@ -21,7 +21,7 @@ abstract class SensorNetworkService: Service() {
 
     val TAG = "SensorNetworkService"
 
-    private var mRxHandler: Handler? = null
+    private var mSensorDataHandler: Handler? = null
     protected var mSensorDataHandlerActivity: SensorDataHandlerActivity? = null
 
     private val mEdgeComputing: EdgeComputing = Cycling()
@@ -66,9 +66,9 @@ abstract class SensorNetworkService: Service() {
      *
      * @see SensorDataHandlerActivity
      */
-    fun setSensorDataHandlerActivity(sensorDataHandlerActivity: SensorDataHandlerActivity) {
+    fun setSensorDataHandler(sensorDataHandlerActivity: SensorDataHandlerActivity) {
         mSensorDataHandlerActivity = sensorDataHandlerActivity
-        mRxHandler = object : Handler() {
+        mSensorDataHandler = object : Handler() {
             override fun handleMessage(msg: Message) {
                 if (mSensorDataHandlerActivity != null) {
                     mSensorDataHandlerActivity!!.onSensorData(msg.obj as SensorData)
@@ -88,7 +88,7 @@ abstract class SensorNetworkService: Service() {
         fun sendMessage(msg: SensorData) {
             val msg = Message.obtain()
             msg.obj = sensorData
-            mRxHandler?.sendMessage(msg)
+            mSensorDataHandler?.sendMessage(msg)
         }
 
         when (message.substring(startIndex = 0, endIndex = 1)) {

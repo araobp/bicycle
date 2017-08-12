@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/holo_green_light"
     android:orientation="vertical"
-    tools:context="jp.araobp.iot.ui.CyclingVisualizerActivity">
+    tools:context="jp.araobp.iot.ui.CyclingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
