@@ -37,7 +37,7 @@ import org.greenrobot.eventbus.EventBus
 */
 class CliActivity : Activity() {
 
-    private var mBaudrate = 0
+    private val TAG = javaClass.simpleName
 
     private var mTextView: TextView? = null
     private var mEditText: EditText? = null
@@ -52,15 +52,14 @@ class CliActivity : Activity() {
     private val mListSchedules = ArrayList<TextView>()
     private var mButtonVisualizerCycling: Button? = null
 
-    internal var mTimerScaler = "unknown"
+    private var mBaudrate = 0
+    private var mTimerScaler = "unknown"
 
     private var mSensorNetworkService: SensorNetworkService? = null
     private var mSensorNetworkServiceBound = false
 
     private val sButtonOpenOpen = "Open"
     private val sButtonOpenClose = "Close"
-
-    private val TAG = "CLI"
 
     companion object {
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
@@ -249,19 +248,19 @@ class CliActivity : Activity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSensorData(message: SensorNetworkEvent.SensorData) {
         log(message.rawData)
-        when(message.schedulerInfo?.infoType) {
-            SensorNetworkEvent.InfoType.TIMER_SCALER ->
+        when(message.schedulerInfo?.schedulerInfoType) {
+            SensorNetworkEvent.SchedulerInfoType.TIMER_SCALER ->
                     mTextViewScaler?.text = message.schedulerInfo?.timerScaler.toString()
-            SensorNetworkEvent.InfoType.DEVICE_MAP ->
+            SensorNetworkEvent.SchedulerInfoType.DEVICE_MAP ->
                     mTextViewDevices?.text = message.schedulerInfo?.deviceMap?.
                             map { it.toString() }?.joinToString(",")
-            SensorNetworkEvent.InfoType.SCHEDULE -> {
+            SensorNetworkEvent.SchedulerInfoType.SCHEDULE -> {
                 var i:Int = 0
                 message.schedulerInfo?.schedule?.
                         map { mListSchedules[i++].text = it.map { it.toString()}.joinToString(",") }
             }
-            SensorNetworkEvent.InfoType.STARTED -> mSwitch!!.isChecked = true
-            SensorNetworkEvent.InfoType.STOPPED -> mSwitch!!.isChecked = false
+            SensorNetworkEvent.SchedulerInfoType.STARTED -> mSwitch!!.isChecked = true
+            SensorNetworkEvent.SchedulerInfoType.STOPPED -> mSwitch!!.isChecked = false
         }
     }
 

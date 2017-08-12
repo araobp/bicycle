@@ -6,7 +6,8 @@ import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 
 class Cycling: EdgeComputing() {
-    private val TAG = "Cycling"
+
+    private val TAG = javaClass.simpleName
 
     override fun process(sensorData: SensorNetworkEvent.SensorData): SensorNetworkEvent.ProcessedData? {
         Log.d(TAG, sensorData.toString())

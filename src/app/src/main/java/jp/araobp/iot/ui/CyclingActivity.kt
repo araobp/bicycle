@@ -11,11 +11,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.EventBus
 
-
-
 class CyclingActivity : Activity() {
 
-    val TAG = "CyclingActivity"
+    val TAG = javaClass.simpleName
 
     var mTextViewAccelValueX: TextView? = null
     var mTextViewAccelValueY: TextView? = null
