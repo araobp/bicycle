@@ -6,7 +6,7 @@
 
 Once I used RasPi/Arduino for IoT prototyping, ending up with unsatisfying results: complicated physical wiring problems.
 
-I stopped using RasPi/Arduino for IoT prototyping, and I started thinking of a combination of [PIC16F1-based sensor network](https://github.com/araobp/sensor-network) and Android to simplify physical wiring.
+I stopped using RasPi/Arduino, and I started thinking of a combination of [PIC16F1-based sensor network](https://github.com/araobp/sensor-network) and Android to simplify physical wiring.
 
 ## Android apps
 
@@ -35,11 +35,15 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 ## Development tools
 
+### Programing language
+- [Kotlin](https://kotlinlang.org/)
+
 ### IDE
 - Android: [Android Studio](https://developer.android.com/studio/index.html)
 
-### FTDI driver
+### Libraries
 - [Android Java D2XX driver](http://www.ftdichip.com/Drivers/D2XX.htm)
+- [EventBus](http://greenrobot.org/eventbus/)
 
 ## Links
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
