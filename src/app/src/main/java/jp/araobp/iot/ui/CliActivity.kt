@@ -22,6 +22,11 @@ import jp.araobp.iot.sensor_network.service.FtdiDriver
 import jp.araobp.iot.sensor_network.service.SensorNetworkSimulator
 import android.content.ComponentName
 import android.content.ServiceConnection
+import android.location.Location
+import android.net.Uri
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnSuccessListener
 import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import jp.araobp.iot.sensor_network.SensorNetworkService
 import org.greenrobot.eventbus.Subscribe
@@ -50,7 +55,8 @@ class CliActivity : Activity() {
     private var mTextViewScaler: TextView? = null
     private var mTextViewDevices: TextView? = null
     private val mListSchedules = ArrayList<TextView>()
-    private var mButtonVisualizerCycling: Button? = null
+    private var mButtonCycling: Button? = null
+    private var mButtonMap: Button? = null
 
     private var mBaudrate = 0
     private var mTimerScaler = "unknown"
@@ -60,6 +66,8 @@ class CliActivity : Activity() {
 
     private val sButtonOpenOpen = "Open"
     private val sButtonOpenClose = "Close"
+
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
 
     companion object {
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
@@ -138,7 +146,8 @@ class CliActivity : Activity() {
 
         mTextViewDevices = findViewById(R.id.textViewDevices) as TextView
 
-        mButtonVisualizerCycling = findViewById(R.id.buttonVisualizerCycling) as Button
+        mButtonCycling = findViewById(R.id.buttonCycling) as Button
+        mButtonMap = findViewById(R.id.buttonMap) as Button
 
         mListSchedules.add(findViewById(R.id.textViewSchedule1) as TextView)
         mListSchedules.add(findViewById(R.id.textViewSchedule2) as TextView)
@@ -199,15 +208,27 @@ class CliActivity : Activity() {
             }
         }
 
-        mButtonVisualizerCycling!!.setOnClickListener {
+        mButtonCycling!!.setOnClickListener {
             val intent = Intent(this@CliActivity, CyclingActivity::class.java)
             startActivity(intent)
+        }
+
+        mButtonMap!!.setOnClickListener {
+            mFusedLocationClient!!.lastLocation!!.addOnSuccessListener(this, { location ->
+                val altitude = location.altitude.toString()
+                val longitude = location.longitude.toString()
+                val uri = Uri.parse("geo:%s,%s?z=13".format(altitude,longitude))
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            })
         }
 
         val filter = IntentFilter()
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
         registerReceiver(mUsbReceiver, filter)
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     private val mSensorNetworkServiceConnection = object: ServiceConnection {
