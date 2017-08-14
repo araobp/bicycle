@@ -1,5 +1,6 @@
 package jp.araobp.iot.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -24,6 +25,7 @@ import android.content.ComponentName
 import android.content.ServiceConnection
 import android.location.Location
 import android.net.Uri
+import android.support.v4.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
@@ -68,6 +70,7 @@ class CliActivity : Activity() {
     private val sButtonOpenClose = "Close"
 
     private var mFusedLocationClient: FusedLocationProviderClient? = null
+    val PERMISSION_LOCATION_CODE = 1
 
     companion object {
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
@@ -214,19 +217,23 @@ class CliActivity : Activity() {
         }
 
         mButtonMap!!.setOnClickListener {
-            mFusedLocationClient!!.lastLocation!!.addOnSuccessListener(this, { location ->
-                val altitude = location.altitude.toString()
+            mFusedLocationClient!!.lastLocation!!.addOnSuccessListener { location ->
+                val latitude = location.latitude.toString()
                 val longitude = location.longitude.toString()
-                val uri = Uri.parse("geo:%s,%s?z=13".format(altitude,longitude))
+                val uri = Uri.parse("geo:%s,%s?z=13".format(latitude,longitude))
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
-            })
+            }
         }
 
         val filter = IntentFilter()
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
         registerReceiver(mUsbReceiver, filter)
+
+        ActivityCompat.requestPermissions(this,
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_LOCATION_CODE)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
