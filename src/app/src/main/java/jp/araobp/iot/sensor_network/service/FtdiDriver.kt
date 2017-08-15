@@ -18,7 +18,7 @@ class FtdiDriver : SensorNetworkService() {
         private val TAG = javaClass.simpleName
         val READBUF_SIZE = 1024
         val DELIMITER = "\n"
-        private val sDelimiter = '\n'
+        private val mDelimiter = '\n'
     }
 
     private var mD2xxManager: D2xxManager? = null
@@ -91,7 +91,7 @@ class FtdiDriver : SensorNetworkService() {
                 while (i < mReadLen) {
                     c = mReadBuf[i].toChar()
                     mCharBuf[offset++] = c
-                    if (c == sDelimiter) {
+                    if (c == mDelimiter) {
                         if (offset >= 3) {
                             rx(String(mCharBuf, 0, offset - 1))
                         }
