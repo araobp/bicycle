@@ -1,12 +1,11 @@
-package jp.araobp.iot.edge_computing.plugin.cycling
+package jp.araobp.iot.edge_computing.plugin.template
 
 import android.util.Log
 import jp.araobp.iot.edge_computing.EdgeComputing
 import jp.araobp.iot.sensor_network.SensorNetworkEvent
-import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 import org.greenrobot.eventbus.EventBus
 
-class Cycling: EdgeComputing() {
+class Template: EdgeComputing() {
 
     companion object {
         private val TAG = javaClass.simpleName
@@ -29,20 +28,7 @@ class Cycling: EdgeComputing() {
         var timestamp = System.currentTimeMillis()
 
         when (sensorData.deviceId) {
-            SensorNetworkProtocol.KXR94_2050 -> {
-                var threeAxisData = sensorData.data?.map { it.toFloat() }?.toList()
-                processedData = ProcessedData(
-                        timestamp = timestamp,
-                        deviceId = sensorData.deviceId!!,
-                        data = threeAxisData)
-                mEventBus.post(processedData)
-            }
-            SensorNetworkProtocol.A1324LUA_T -> {
-
-            }
-            SensorNetworkProtocol.HDC1000 -> {
-
-            }
+            // TODO: implementation
         }
 
         if (processedData != null) {

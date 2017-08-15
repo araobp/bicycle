@@ -3,14 +3,22 @@
 
     <string name="app_name">SENSOR NETWORK</string>
     <string name="app_name_cli">CLI</string>
-    <string name="app_name_cycling_visualizer">CYCLING</string>
+    <string name="app_name_cycling">CYCLING</string>
+    <string name="app_name_template">TEMPLATE</string>
+
     <string name="action_settings">Settings</string>
     <string name="schedule_default">0,0,0,0</string>
     <string name="title_activity_maps">Map</string>
 
     <!-- Edge computing plug-in -->
+    <!-- Cycling -->
     <string name="edge_computing_plugin">jp.araobp.iot.edge_computing.plugin.cycling.Cycling</string>
     <string name="edge_computing_plugin_activity">jp.araobp.iot.edge_computing.plugin.cycling.CyclingActivity</string>
     <string name="edge_computing_plugin_button_name">Cycling</string>
+    <!-- Template
+    <string name="edge_computing_plugin">jp.araobp.iot.edge_computing.plugin.template.Template</string>
+    <string name="edge_computing_plugin_activity">jp.araobp.iot.edge_computing.plugin.template.TemplateActivity</string>
+    <string name="edge_computing_plugin_button_name">Template</string>
+    -->
 
 </resources>

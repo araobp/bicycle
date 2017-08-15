@@ -13,8 +13,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="jp.araobp.iot.launcher.CliActivity"
+            android:name=".CliActivity"
             android:configChanges="orientation"
             android:label="@string/app_name_cli"
             android:launchMode="singleTask">
@@ -42,7 +42,16 @@
         <activity
             android:name="jp.araobp.iot.edge_computing.plugin.cycling.CyclingActivity"
             android:configChanges="orientation"
-            android:label="@string/app_name_cycling_visualizer"
+            android:label="@string/app_name_cycling"
+            android:launchMode="singleTask">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="jp.araobp.iot.launcher.CliActivity" />
+        </activity>
+        <activity
+            android:name="jp.araobp.iot.edge_computing.plugin.cycling.TemplateActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name_template"
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -58,6 +67,7 @@
             android:enabled="true"
             android:exported="true" />
 
+        <activity android:name="jp.araobp.iot.edge_computing.plugin.template.TemplateActivity"></activity>
     </application>
 
 </manifest>

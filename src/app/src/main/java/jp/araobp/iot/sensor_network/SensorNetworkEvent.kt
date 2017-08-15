@@ -29,13 +29,4 @@ class SensorNetworkEvent {
     enum class SchedulerInfoType {
         TIMER_SCALER, DEVICE_MAP, SCHEDULE, STARTED, STOPPED
     }
-
-    /**
-     * Data processed by edge computing
-     *
-     * @see jp.araobp.iot.edge_computing.EdgeComputing
-     */
-    data class ProcessedData(var timestamp: Long,
-                             var deviceId: Int,
-                             var data: List<Any>?)
 }
