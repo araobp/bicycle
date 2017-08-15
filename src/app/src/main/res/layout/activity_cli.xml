@@ -66,11 +66,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/buttonCycling"
+            android:id="@+id/buttonEdge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding"
-            android:text="Cycling"
+            android:text="--"
             android:textSize="@dimen/button_text_size" />
 
         <Button
@@ -79,14 +79,6 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding"
             android:text="Map"
-            android:textSize="@dimen/button_text_size" />
-
-        <Button
-            android:id="@+id/buttonAnalyze"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding"
-            android:text="Analyze"
             android:textSize="@dimen/button_text_size" />
 
         <ToggleButton

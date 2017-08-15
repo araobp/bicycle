@@ -8,4 +8,9 @@
     <string name="schedule_default">0,0,0,0</string>
     <string name="title_activity_maps">Map</string>
 
+    <!-- Edge computing plug-in -->
+    <string name="edge_computing_plugin">jp.araobp.iot.edge_computing.plugin.cycling.Cycling</string>
+    <string name="edge_computing_plugin_activity">jp.araobp.iot.edge_computing.plugin.cycling.CyclingActivity</string>
+    <string name="edge_computing_plugin_button_name">Cycling</string>
+
 </resources>

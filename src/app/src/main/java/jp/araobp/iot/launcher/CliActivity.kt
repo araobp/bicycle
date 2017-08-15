@@ -1,4 +1,4 @@
-package jp.araobp.iot.ui
+package jp.araobp.iot.launcher
 
 import android.Manifest
 import android.app.Activity
@@ -51,7 +51,7 @@ class CliActivity : Activity() {
     private var mTextViewScaler: TextView? = null
     private var mTextViewDevices: TextView? = null
     private val mListSchedules = ArrayList<TextView>()
-    private var mButtonCycling: Button? = null
+    private var mButtonEdge: Button? = null
     private var mButtonMap: Button? = null
 
     private var mBaudrate = 0
@@ -65,14 +65,15 @@ class CliActivity : Activity() {
 
     private var mFusedLocationClient: FusedLocationProviderClient? = null
 
+    // Edge computing plug-in
+    private var mEdgeComputingClassName: String? = null
+
     companion object {
         private val TAG = javaClass.simpleName
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
         const val SCHEDULER_BAUDRATE = 115200  // 115200kbps
         const val PERMISSION_LOCATION_CODE = 1
 
-        // Edge computing class
-        const val EDGE_COMPUTING_CLASS_NAME = "jp.araobp.iot.edge_computing.logic.Cycling"
     }
 
     private fun log(message: String) {
@@ -85,10 +86,10 @@ class CliActivity : Activity() {
         val intent: Intent?
         if (mCheckBoxSimualtor!!.isChecked) {
             intent = Intent(this, SensorNetworkSimulator::class.java)
-            intent.putExtra("edge_computing_class", EDGE_COMPUTING_CLASS_NAME)
+            intent.putExtra("edge_computing_class", mEdgeComputingClassName)
         } else {
             intent = Intent(this, FtdiDriver::class.java)
-            intent.putExtra("edge_computing_class", EDGE_COMPUTING_CLASS_NAME)
+            intent.putExtra("edge_computing_class", mEdgeComputingClassName)
         }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -133,6 +134,10 @@ class CliActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cli)
 
+        mEdgeComputingClassName = this.resources.getString(R.string.edge_computing_plugin)
+        val mEdgeComputingActivityClassName = this.resources.getString(R.string.edge_computing_plugin_activity)
+        val mEdgeComputingActivityClass: Class<*> = Class.forName(mEdgeComputingActivityClassName)
+
         mTextView = findViewById(R.id.textViewRead) as TextView
         mEditText = findViewById(R.id.editTextWrite) as EditText
 
@@ -149,7 +154,8 @@ class CliActivity : Activity() {
 
         mTextViewDevices = findViewById(R.id.textViewDevices) as TextView
 
-        mButtonCycling = findViewById(R.id.buttonCycling) as Button
+        mButtonEdge = findViewById(R.id.buttonEdge) as Button
+        mButtonEdge!!.text = this.resources.getString(R.string.edge_computing_plugin_button_name)
         mButtonMap = findViewById(R.id.buttonMap) as Button
 
         mListSchedules.add(findViewById(R.id.textViewSchedule1) as TextView)
@@ -211,8 +217,9 @@ class CliActivity : Activity() {
             }
         }
 
-        mButtonCycling!!.setOnClickListener {
-            val intent = Intent(this@CliActivity, CyclingActivity::class.java)
+        mButtonEdge!!.setOnClickListener {
+            Log.d(TAG, "Edge computing class: " + mEdgeComputingActivityClass.toString())
+            val intent = Intent(this@CliActivity, mEdgeComputingActivityClass)
             startActivity(intent)
         }
 

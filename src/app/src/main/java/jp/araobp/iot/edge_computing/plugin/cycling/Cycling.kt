@@ -1,4 +1,4 @@
-package jp.araobp.iot.edge_computing.logic
+package jp.araobp.iot.edge_computing.plugin.cycling
 
 import android.util.Log
 import jp.araobp.iot.edge_computing.EdgeComputing
