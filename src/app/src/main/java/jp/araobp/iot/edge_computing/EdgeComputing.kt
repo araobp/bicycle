@@ -11,10 +11,12 @@ import kotlin.concurrent.thread
  */
 abstract class EdgeComputing {
 
-    private val TAG = javaClass.simpleName
+    companion object {
+        private val TAG = javaClass.simpleName
+    }
 
     private val mWorkQueue = LinkedBlockingDeque<SensorNetworkEvent.SensorData>()
-    protected val eventBus = EventBus.getDefault()
+    protected val mEventBus = EventBus.getDefault()
 
     init {
         thread(start=true) {
@@ -22,7 +24,7 @@ abstract class EdgeComputing {
                 var processedData: SensorNetworkEvent.ProcessedData? = process(mWorkQueue.take())
                 if (processedData != null) {
                     Log.d(TAG, processedData.toString())
-                    eventBus.post(processedData)
+                    mEventBus.post(processedData)
                 }
             }
         }

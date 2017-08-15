@@ -14,6 +14,13 @@ import kotlin.experimental.or
 */
 class FtdiDriver : SensorNetworkService() {
 
+    companion object {
+        private val TAG = javaClass.simpleName
+        val READBUF_SIZE = 1024
+        val DELIMITER = "\n"
+        private val sDelimiter = '\n'
+    }
+
     private var mD2xxManager: D2xxManager? = null
     private var mFtdiDevice: FT_Device? = null
 
@@ -154,11 +161,5 @@ class FtdiDriver : SensorNetworkService() {
         if (mFtdiDevice != null) {
             mFtdiDevice!!.close()
         }
-    }
-
-    companion object {
-        val READBUF_SIZE = 1024
-        val DELIMITER = "\n"
-        private val sDelimiter = '\n'
     }
 }

@@ -5,24 +5,27 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import jp.araobp.iot.edge_computing.logic.Cycling
 import jp.araobp.iot.edge_computing.EdgeComputing
 import org.greenrobot.eventbus.EventBus
+import kotlin.reflect.full.primaryConstructor
 
 /**
  * Sensor network service
  */
 abstract class SensorNetworkService: Service() {
 
-    val TAG = javaClass.simpleName
+    companion object {
+        private val TAG = javaClass.simpleName
+        const val CMD_SEND_INTERVAL = 250L  // 250msec
+    }
 
     data class DriverStatus(var opened: Boolean = false, var started: Boolean = false)
     var driverStatus = DriverStatus(opened = false, started = false)
 
     private val mBinder: IBinder = ServiceBinder()
-    private val mEdgeComputing: EdgeComputing = Cycling()
+    private var mEdgeComputing: EdgeComputing? = null
     private var mLoggingEnabled = false
-    private val eventBus = EventBus.getDefault()
+    private val mEventBus = EventBus.getDefault()
 
     inner class ServiceBinder : Binder() {
         fun getService(): SensorNetworkService {
@@ -36,6 +39,9 @@ abstract class SensorNetworkService: Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        val EDGE_COMPUTING_CLASS = intent.extras["edge_computing_class"] as String
+        val sEdgeComputingClass = Class.forName(EDGE_COMPUTING_CLASS).kotlin
+        mEdgeComputing = sEdgeComputingClass.primaryConstructor!!.call() as EdgeComputing
         return mBinder
     }
 
@@ -52,9 +58,9 @@ abstract class SensorNetworkService: Service() {
                 sensorData.deviceId = response[0].substring(1).toInt()
                 sensorData.type = response[1]
                 sensorData.data = response[2].split(",".toRegex()).toList()
-                mEdgeComputing.onSensorData(sensorData)
+                mEdgeComputing?.onSensorData(sensorData)
                 if (mLoggingEnabled) {
-                    eventBus.post(sensorData)
+                    mEventBus.post(sensorData)
                 }
             }
             "#" -> {
@@ -68,7 +74,7 @@ abstract class SensorNetworkService: Service() {
                         driverStatus.started = false
                     }
                 }
-                eventBus.post(sensorData)
+                mEventBus.post(sensorData)
             }
             "$" -> {
                 when (response[1]) {
@@ -90,7 +96,7 @@ abstract class SensorNetworkService: Service() {
                                     }.toList()
                     )
                 }
-                eventBus.post(sensorData)
+                mEventBus.post(sensorData)
             }
         }
     }
@@ -168,7 +174,4 @@ abstract class SensorNetworkService: Service() {
         mLoggingEnabled = enabled
     }
 
-    private companion object {
-        const val CMD_SEND_INTERVAL = 250L  // 250msec
-    }
 }

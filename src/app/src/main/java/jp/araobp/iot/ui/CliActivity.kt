@@ -23,19 +23,15 @@ import jp.araobp.iot.sensor_network.service.FtdiDriver
 import jp.araobp.iot.sensor_network.service.SensorNetworkSimulator
 import android.content.ComponentName
 import android.content.ServiceConnection
-import android.location.Location
 import android.net.Uri
 import android.support.v4.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.OnSuccessListener
 import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import jp.araobp.iot.sensor_network.SensorNetworkService
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.EventBus
-
-
 
 /**
 * Sensor Network CLI
@@ -43,8 +39,6 @@ import org.greenrobot.eventbus.EventBus
 * @see <a href="https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md">https://github.com/araobp/sensor-network/blob/master/doc/PROTOCOL.md</a>
 */
 class CliActivity : Activity() {
-
-    private val TAG = javaClass.simpleName
 
     private var mTextView: TextView? = null
     private var mEditText: EditText? = null
@@ -66,15 +60,19 @@ class CliActivity : Activity() {
     private var mSensorNetworkService: SensorNetworkService? = null
     private var mSensorNetworkServiceBound = false
 
-    private val sButtonOpenOpen = "Open"
-    private val sButtonOpenClose = "Close"
+    private val mButtonOpenOpen = "Open"
+    private val mButtonOpenClose = "Close"
 
     private var mFusedLocationClient: FusedLocationProviderClient? = null
-    val PERMISSION_LOCATION_CODE = 1
 
     companion object {
+        private val TAG = javaClass.simpleName
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
         const val SCHEDULER_BAUDRATE = 115200  // 115200kbps
+        const val PERMISSION_LOCATION_CODE = 1
+
+        // Edge computing class
+        const val EDGE_COMPUTING_CLASS_NAME = "jp.araobp.iot.edge_computing.logic.Cycling"
     }
 
     private fun log(message: String) {
@@ -87,8 +85,10 @@ class CliActivity : Activity() {
         val intent: Intent?
         if (mCheckBoxSimualtor!!.isChecked) {
             intent = Intent(this, SensorNetworkSimulator::class.java)
+            intent.putExtra("edge_computing_class", EDGE_COMPUTING_CLASS_NAME)
         } else {
             intent = Intent(this, FtdiDriver::class.java)
+            intent.putExtra("edge_computing_class", EDGE_COMPUTING_CLASS_NAME)
         }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -104,10 +104,10 @@ class CliActivity : Activity() {
 
     private fun toggleButtonText(opened: Boolean) {
         if (opened) {
-            mButtonOpen!!.text = sButtonOpenClose
+            mButtonOpen!!.text = mButtonOpenClose
             mButtonWrite!!.isEnabled = true
         } else {
-            mButtonOpen!!.text = sButtonOpenOpen
+            mButtonOpen!!.text = mButtonOpenOpen
             mButtonWrite!!.isEnabled = false
         }
     }
@@ -163,7 +163,7 @@ class CliActivity : Activity() {
         toggleButtonText(false)
 
         mButtonOpen!!.setOnClickListener {
-            if (mButtonOpen!!.text == sButtonOpenOpen) {
+            if (mButtonOpen!!.text == mButtonOpenOpen) {
                 startSensorNetworkService()
             } else {
                 toggleButtonText(false)
@@ -297,5 +297,4 @@ class CliActivity : Activity() {
         stopSensorNetworkService()
         unregisterReceiver(mUsbReceiver)
     }
-
 }

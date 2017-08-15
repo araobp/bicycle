@@ -13,7 +13,9 @@ import org.greenrobot.eventbus.EventBus
 
 class CyclingActivity : Activity() {
 
-    val TAG = javaClass.simpleName
+    companion object {
+        private val TAG = javaClass.simpleName
+    }
 
     var mTextViewAccelValueX: TextView? = null
     var mTextViewAccelValueY: TextView? = null

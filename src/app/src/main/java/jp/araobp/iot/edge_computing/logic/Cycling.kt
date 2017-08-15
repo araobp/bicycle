@@ -7,7 +7,9 @@ import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 
 class Cycling: EdgeComputing() {
 
-    private val TAG = javaClass.simpleName
+    companion object {
+        private val TAG = javaClass.simpleName
+    }
 
     override fun process(sensorData: SensorNetworkEvent.SensorData): SensorNetworkEvent.ProcessedData? {
         Log.d(TAG, sensorData.toString())
@@ -21,7 +23,7 @@ class Cycling: EdgeComputing() {
                         timestamp = timestamp,
                         deviceId = sensorData.deviceId!!,
                         data = threeAxisData)
-                eventBus.post(processedData)
+                mEventBus.post(processedData)
             }
             SensorNetworkProtocol.A1324LUA_T -> {
 
