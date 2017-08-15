@@ -4,11 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.TextView
-import jp.araobp.iot.edge_computing.plugin.template.Template
-import jp.araobp.iot.sensor_network.SensorNetworkEvent
-import jp.araobp.iot.sensor_network.SensorNetworkProtocol
-import jp.araobp.iot.launcher.R
+import jp.araobp.iot.cli.R
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.EventBus

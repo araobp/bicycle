@@ -1,4 +1,4 @@
-package jp.araobp.iot.launcher
+package jp.araobp.iot.cli
 
 import android.Manifest
 import android.app.Activity

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jp.araobp.iot.launcher"
+    package="jp.araobp.iot.cli"
     android:versionCode="1"
     android:versionName="0.01">
 
@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CliActivity"
+            android:name="jp.araobp.iot.cli.CliActivity"
             android:configChanges="orientation"
             android:label="@string/app_name_cli"
             android:launchMode="singleTask">
@@ -46,16 +46,16 @@
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="jp.araobp.iot.launcher.CliActivity" />
+                android:value="jp.araobp.iot.cli.CliActivity" />
         </activity>
         <activity
-            android:name="jp.araobp.iot.edge_computing.plugin.cycling.TemplateActivity"
+            android:name="jp.araobp.iot.edge_computing.plugin.template.TemplateActivity"
             android:configChanges="orientation"
             android:label="@string/app_name_template"
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="jp.araobp.iot.launcher.CliActivity" />
+                android:value="jp.araobp.iot.cli.CliActivity" />
         </activity>
 
         <service
@@ -67,7 +67,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name="jp.araobp.iot.edge_computing.plugin.template.TemplateActivity"></activity>
     </application>
 
 </manifest>
