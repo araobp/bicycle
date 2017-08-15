@@ -8,6 +8,15 @@ Once I used RasPi/Arduino for IoT prototyping, ending up with unsatisfying resul
 
 I stopped using RasPi/Arduino, and I started thinking of a combination of [PIC16F1-based sensor network](https://github.com/araobp/sensor-network) and Android to simplify physical wiring.
 
+## Architecture
+
+This is a framework for developing IoT applications on Android supporting feature enhancements:
+
+- [Plug-in](https://github.com/araobp/sensor-network-android/tree/master/src/app/src/main/java/jp/araobp/iot/edge_computing/plugin)
+- Flow-based programming (to be supported in the future)
+
+I use [EventBus](http://greenrobot.org/eventbus/) to support messaging among components within the applications.
+
 ## Android apps
 
 ### Use case: bicycle
