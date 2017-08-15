@@ -18,6 +18,29 @@ This is a framework for developing IoT applications on Android supporting dynami
 
 I use [EventBus](http://greenrobot.org/eventbus/) to support messaging among components within the application on Android.
 
+### Swapping Plug-in
+
+At the moment, modify strings.xml manually to replace the current plug-in with another one:
+```
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Edge computing plug-in -->
+    <!-- Cycling -->
+    <string name="edge_computing_plugin">jp.araobp.iot.edge_computing.plugin.cycling.Cycling</string>
+    <string name="edge_computing_plugin_activity">jp.araobp.iot.edge_computing.plugin.cycling.CyclingActivity</string>
+    <string name="edge_computing_plugin_button_name">Cycling</string>
+    <!-- Template
+    <string name="edge_computing_plugin">jp.araobp.iot.edge_computing.plugin.template.Template</string>
+    <string name="edge_computing_plugin_activity">jp.araobp.iot.edge_computing.plugin.template.TemplateActivity</string>
+    <string name="edge_computing_plugin_button_name">Template</string>
+    -->
+
+</resources>
+```
+
+In the future, I will add a more dynamic way to swap plug-in.
+
 ## Android apps
 
 ### Use case: bicycle
