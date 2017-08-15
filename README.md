@@ -13,7 +13,7 @@ I stopped using RasPi/Arduino, and I started thinking of a combination of [PIC16
 This is a framework for developing IoT applications on Android supporting dynamic feature enhancements:
 
 - [(Physical) sensor network and sensor blocks with plug&play protocol](https://github.com/araobp/sensor-network)
-- CLI and FTDI device driver
+- CLI and FTDI device driver (and BLE device driver to be supported in the future)
 - [Edge computing components plug-in](https://github.com/araobp/sensor-network-android/tree/master/src/app/src/main/java/jp/araobp/iot/edge_computing/plugin)
 - Flow-based programming (to be supported in the future)
 
