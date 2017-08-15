@@ -13,8 +13,13 @@ I stopped using RasPi/Arduino, and I started thinking of a combination of [PIC16
 This is a framework for developing IoT applications on Android supporting dynamic feature enhancements:
 
 - [(Physical) sensor network and sensor devices with plug&play protocol](https://github.com/araobp/sensor-network)
+- CLI and FTDI device driver
 - [Edge computing components plug-in](https://github.com/araobp/sensor-network-android/tree/master/src/app/src/main/java/jp/araobp/iot/edge_computing/plugin)
 - Flow-based programming (to be supported in the future)
+
+CLI is also positioned as a main UI to launch other activities (plug-in etc).
+
+Sensor network simulator is provided for debugging applications on Android w/o a physical sensor network.
 
 I use [EventBus](http://greenrobot.org/eventbus/) to support messaging among components within the application on Android.
 
