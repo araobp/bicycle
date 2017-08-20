@@ -23,6 +23,19 @@ Sensor network simulator is provided for debugging applications on Android w/o a
 
 I use [EventBus](http://greenrobot.org/eventbus/) to support messaging among components within the application on Android.
 
+### Sensor list
+
+My smartphone is equipped with built-in sensors. I add a sensor network to my smart phone to add other sensors.
+
+|Sensor                   |Built-in|Add-on  |
+|-------------------------|--------+--------+
+|Three-axis Accelerometer | Y      | Y      |
+|Orientation sensor       | Y      | N      |
+|Magnetic sensor          | Y      | N      |
+|Temperature              | N      | Y      |
+|Humidity                 | N      | Y      |
+|GPS                      | Y      | N      |
+
 ### Swapping Plug-in
 
 At the moment, modify strings.xml manually to replace the current plug-in with another one:
