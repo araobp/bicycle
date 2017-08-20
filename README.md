@@ -28,7 +28,7 @@ I use [EventBus](http://greenrobot.org/eventbus/) to support messaging among com
 My smartphone is equipped with built-in sensors. I add a sensor network to my smart phone to add other sensors.
 
 |Sensor                   |Built-in|Add-on  |
-|-------------------------|--------+--------+
+|-------------------------|--------|--------|
 |Three-axis Accelerometer | Y      | Y      |
 |Orientation sensor       | Y      | N      |
 |Magnetic sensor          | Y      | N      |
