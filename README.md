@@ -30,6 +30,7 @@ My smartphone is equipped with built-in sensors. I add a sensor network to my sm
 |Sensor                   |Built-in|Add-on  |
 |-------------------------|--------|--------|
 |Three-axis Accelerometer | Y      | Y      |
+|Speed (hall sensor)      | N      | Y      |
 |Orientation sensor       | Y      | N      |
 |Magnetic sensor          | Y      | N      |
 |Temperature              | N      | Y      |
