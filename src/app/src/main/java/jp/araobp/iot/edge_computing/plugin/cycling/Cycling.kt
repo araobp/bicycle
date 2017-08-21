@@ -30,17 +30,37 @@ class Cycling: EdgeComputing() {
 
         when (sensorData.deviceId) {
             SensorNetworkProtocol.KXR94_2050 -> {
-                var threeAxisData = sensorData.data?.map { it.toFloat() }?.toList()
                 processedData = ProcessedData(
                         timestamp = timestamp,
                         deviceId = sensorData.deviceId!!,
-                        data = threeAxisData)
-                mEventBus.post(processedData)
+                        data = sensorData.data)
             }
             SensorNetworkProtocol.A1324LUA_T -> {
 
             }
             SensorNetworkProtocol.HDC1000 -> {
+                processedData = ProcessedData(
+                        timestamp = timestamp,
+                        deviceId = sensorData.deviceId!!,
+                        data = sensorData.data)
+            }
+            SensorNetworkProtocol.AMBIENT_TEMPERATURE -> {
+                processedData = ProcessedData(
+                        timestamp = timestamp,
+                        deviceId = sensorData.deviceId!!,
+                        data = sensorData.data)
+            }
+            SensorNetworkProtocol.RELATIVE_HUMIDITY -> {
+                processedData = ProcessedData(
+                        timestamp = timestamp,
+                        deviceId = sensorData.deviceId!!,
+                        data = sensorData.data)
+            }
+            SensorNetworkProtocol.ACCELEROMETER -> {
+                processedData = ProcessedData(
+                        timestamp = timestamp,
+                        deviceId = sensorData.deviceId!!,
+                        data = sensorData.data)
 
             }
         }

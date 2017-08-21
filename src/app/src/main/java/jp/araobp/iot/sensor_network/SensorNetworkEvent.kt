@@ -12,7 +12,7 @@ class SensorNetworkEvent {
                           var rawData: String,
                           var deviceId: Int? = null,
                           var type: String? = null,
-                          var data: List<String>? = null,
+                          var data: List<Any>? = null,
                           var schedulerInfo: SchedulerInfo? = null)
 
     /**
