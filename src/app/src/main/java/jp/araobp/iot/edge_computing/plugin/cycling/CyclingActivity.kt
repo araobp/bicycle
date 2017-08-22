@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.EventBus
 class CyclingActivity : Activity() {
 
     companion object {
-        private val TAG = javaClass.simpleName
+        private val TAG = "CyclingActivity"
     }
 
     var mTextViewTemp: TextView? = null
@@ -23,6 +23,9 @@ class CyclingActivity : Activity() {
     var mTextViewAccelValueX: TextView? = null
     var mTextViewAccelValueY: TextView? = null
     var mTextViewAccelValueZ: TextView? = null
+
+    var mTextViewLatitude: TextView? = null
+    var mTextViewLongitude: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +38,9 @@ class CyclingActivity : Activity() {
         mTextViewAccelValueX = findViewById(R.id.textViewAccelValueX) as TextView
         mTextViewAccelValueY = findViewById(R.id.textViewAccelValueY) as TextView
         mTextViewAccelValueZ = findViewById(R.id.textViewAccelValueZ) as TextView
+
+        mTextViewLatitude = findViewById(R.id.textViewLatitudeValue) as TextView
+        mTextViewLongitude = findViewById(R.id.textViewLogitudeValue) as TextView
 
     }
 
@@ -61,7 +67,7 @@ class CyclingActivity : Activity() {
         Log.d(TAG, processedData.toString())
         when(processedData.deviceId) {
             SensorNetworkProtocol.KXR94_2050 -> {
-                var data: List<Any>? = processedData.data
+                var data: List<Any?>? = processedData.data
                 if (data != null) {
                     mTextViewAccelValueX?.text = data[0].toString()
                     mTextViewAccelValueY?.text = data[1].toString()
@@ -69,23 +75,37 @@ class CyclingActivity : Activity() {
                 }
             }
             SensorNetworkProtocol.AMBIENT_TEMPERATURE -> {
-                var data: List<Any>? = processedData.data
+                var data: List<Any?>? = processedData.data
                 if (data != null) {
                     mTextViewTemp?.text = data[0].toString()
                 }
             }
             SensorNetworkProtocol.RELATIVE_HUMIDITY -> {
-                var data: List<Any>? = processedData.data
+                var data: List<Any?>? = processedData.data
                 if (data != null) {
                     mTextViewHumid?.text = data[0].toString()
                 }
             }
+            SensorNetworkProtocol.HDC1000 -> {
+                var data: List<Any?>? = processedData.data
+                if (data != null) {
+                    mTextViewTemp?.text = data[0].toString()
+                    mTextViewHumid?.text = data[1].toString()
+                }
+            }
             SensorNetworkProtocol.ACCELEROMETER -> {
-                var data: List<Any>? = processedData.data
+                var data: List<Any?>? = processedData.data
                 if (data != null) {
                     mTextViewAccelValueX?.text = data[0].toString()
                     mTextViewAccelValueY?.text = data[1].toString()
                     mTextViewAccelValueZ?.text = data[2].toString()
+                }
+            }
+            SensorNetworkProtocol.FUSED_LOCATION -> {
+                var data: List<Any?>? = processedData.data
+                if (data != null) {
+                    mTextViewLatitude?.text = data[0].toString()
+                    mTextViewLongitude?.text = data[1].toString()
                 }
             }
         }

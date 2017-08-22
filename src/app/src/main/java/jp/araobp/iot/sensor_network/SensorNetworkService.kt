@@ -1,5 +1,6 @@
 package jp.araobp.iot.sensor_network
 
+import android.Manifest
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -9,7 +10,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Binder
 import android.os.IBinder
+import android.os.Looper
+import android.support.v4.app.ActivityCompat
 import android.util.Log
+import com.google.android.gms.location.*
+import jp.araobp.iot.cli.CliActivity
 import jp.araobp.iot.edge_computing.EdgeComputing
 import org.greenrobot.eventbus.EventBus
 import kotlin.reflect.full.primaryConstructor
@@ -36,6 +41,8 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     private var mLoggingEnabled = false
     private val mEventBus = EventBus.getDefault()
 
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
+
     inner class ServiceBinder : Binder() {
         fun getService(): SensorNetworkService {
             return this@SensorNetworkService
@@ -54,15 +61,45 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         mEdgeComputing = sEdgeComputingClass.primaryConstructor!!.call() as EdgeComputing
 
         val mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val temperature: Sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
-        val humidity: Sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
-        val accelerometer: Sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        mSensorManager.registerListener(this, temperature, BUILTIN_SENSOR_TEMPERATURE_INTERVAL)
-        mSensorManager.registerListener(this, humidity, BUILTIN_SENSOR_HUMIDITY_INTERVAL)
-        mSensorManager.registerListener(this, accelerometer, BUILTIN_SENSOR_ACCELEROMETER_INTERVAL)
+        val temperature: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        val humidity: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
+        val accelerometer: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        temperature?.let{
+            mSensorManager.registerListener(this, temperature,
+                    BUILTIN_SENSOR_TEMPERATURE_INTERVAL, BUILTIN_SENSOR_TEMPERATURE_INTERVAL)
+        }
+        humidity?.let {
+            mSensorManager.registerListener(this, humidity,
+                    BUILTIN_SENSOR_HUMIDITY_INTERVAL, BUILTIN_SENSOR_HUMIDITY_INTERVAL)
+        }
+        accelerometer?.let {
+            mSensorManager.registerListener(this, accelerometer,
+                    BUILTIN_SENSOR_ACCELEROMETER_INTERVAL, BUILTIN_SENSOR_ACCELEROMETER_INTERVAL)
+        }
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val locationCallback : LocationCallback = object: LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                var timestamp = System.currentTimeMillis()
+                var sensorData = SensorNetworkEvent.SensorData(timestamp = timestamp, rawData = locationResult.toString())
+                sensorData.deviceId = SensorNetworkProtocol.FUSED_LOCATION
+                sensorData.data = listOf(locationResult?.lastLocation?.latitude, locationResult?.lastLocation?.longitude)
+                sensorData.type = SensorNetworkProtocol.DOUBLE
+                Log.d("onLocationResult", locationResult.toString())
+                mEdgeComputing?.onSensorData(sensorData)
+            }
+        }
+
+        mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, locationCallback, null)
 
         return mBinder
     }
+
+    val mLocationRequest: LocationRequest = LocationRequest().
+            setFastestInterval(5000).
+            setInterval(5000).
+            setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
     /**
      * receives data from the sensor network and parses it
@@ -131,6 +168,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+        //event.values.forEach { Log.d(TAG, it.toString()) }
         if (driverStatus.started) {
             var sensorData = SensorNetworkEvent.SensorData(timestamp = event.timestamp, rawData = event.values[0].toString())
             when (event.sensor.type) {

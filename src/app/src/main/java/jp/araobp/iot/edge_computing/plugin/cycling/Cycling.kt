@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.EventBus
 class Cycling: EdgeComputing() {
 
     companion object {
-        private val TAG = javaClass.simpleName
+        private val TAG = "Cycling"
     }
 
     /**
@@ -19,14 +19,13 @@ class Cycling: EdgeComputing() {
      */
     data class ProcessedData(var timestamp: Long,
                              var deviceId: Int,
-                             var data: List<Any>?)
+                             var data: List<Any?>?)
 
     val mEventBus = EventBus.getDefault()
 
     override fun process(sensorData: SensorNetworkEvent.SensorData) {
-        Log.d(TAG, sensorData.toString())
         var processedData: ProcessedData? = null
-        var timestamp = System.currentTimeMillis()
+        var timestamp = sensorData.timestamp
 
         when (sensorData.deviceId) {
             SensorNetworkProtocol.KXR94_2050 -> {
@@ -63,10 +62,16 @@ class Cycling: EdgeComputing() {
                         data = sensorData.data)
 
             }
+            SensorNetworkProtocol.FUSED_LOCATION -> {
+                processedData = ProcessedData(
+                        timestamp = timestamp,
+                        deviceId = sensorData.deviceId!!,
+                        data = sensorData.data
+                )
+            }
         }
-
+        Log.d(TAG, processedData.toString())
         if (processedData != null) {
-            Log.d(TAG, processedData.toString())
             mEventBus.post(processedData)
         }
     }

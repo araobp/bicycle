@@ -227,7 +227,7 @@ class CliActivity : Activity() {
             mFusedLocationClient!!.lastLocation!!.addOnSuccessListener { location ->
                 val latitude = location.latitude.toString()
                 val longitude = location.longitude.toString()
-                val uri = Uri.parse("geo:%s,%s?z=13".format(latitude,longitude))
+                val uri = Uri.parse("geo:$latitude,$longitude?z=13")
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             }
@@ -239,7 +239,7 @@ class CliActivity : Activity() {
         registerReceiver(mUsbReceiver, filter)
 
         ActivityCompat.requestPermissions(this,
-                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_LOCATION_CODE)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

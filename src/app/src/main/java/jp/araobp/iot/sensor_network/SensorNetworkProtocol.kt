@@ -22,6 +22,7 @@ object SensorNetworkProtocol {
     const val UINT8_T           = "UINT8_T"
     const val INT16_T           = "INT16_T"
     const val UINT16_T          = "UINT16_T"
+    const val DOUBLE            = "DOUBLE"  // for android-built-in sensors
 
     // Sensors on the sensor network
     const val AQM1602XA_RN_GBW  = 16
@@ -33,5 +34,6 @@ object SensorNetworkProtocol {
     const val AMBIENT_TEMPERATURE = 64
     const val RELATIVE_HUMIDITY = 65
     const val ACCELEROMETER = 66
+    const val FUSED_LOCATION = 67
 
 }
