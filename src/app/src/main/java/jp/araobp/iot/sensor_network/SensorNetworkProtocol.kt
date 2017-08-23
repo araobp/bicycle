@@ -29,6 +29,7 @@ object SensorNetworkProtocol {
     const val A1324LUA_T        = 17
     const val HDC1000           = 18
     const val KXR94_2050        = 19
+    const val SHT31_DIS         = 20
 
     // Android-built-in sensors
     const val AMBIENT_TEMPERATURE = 64

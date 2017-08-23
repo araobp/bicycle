@@ -111,6 +111,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
 
         when (message.substring(startIndex = 0, endIndex = 1)) {
             "%" -> {
+                Log.d(TAG, response[0])
                 sensorData.deviceId = response[0].substring(1).toInt()
                 sensorData.type = response[1]
                 val dataStringList: List<String> = response[2].split(",".toRegex()).toList()

@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 
 class SensorNetworkSimulator : SensorNetworkService() {
 
-    private var mValue = 300
+    private var mValue = 12
     private var mSleep = TIMER * mValue
 
     override fun onCreate() {
@@ -25,11 +25,14 @@ class SensorNetworkSimulator : SensorNetworkService() {
                             Log.e(TAG, e.toString())
                         }
                         when(next) {
-                            0 -> rx("%17:UINT8_T:0")
-                            1 -> rx("%18:INT8_T:28,56")
-                            2 -> rx("%19:FLOAT:-0.01,0.03,-0.01")
+                            0 -> rx("%${SensorNetworkProtocol.A1324LUA_T}:UINT8_T:0")
+                            1 -> rx("%${SensorNetworkProtocol.HDC1000}:INT8_T:28,56")
+                            2 -> rx("%${SensorNetworkProtocol.KXR94_2050}:FLOAT:-0.01,0.03,-0.01")
+                            3 -> rx("%${SensorNetworkProtocol.A1324LUA_T}:UINT8_T:1")
+                            4 -> rx("%${SensorNetworkProtocol.HDC1000}:INT8_T:28,56")
+                            5 -> rx("%${SensorNetworkProtocol.KXR94_2050}:FLOAT:-0.01,0.03,-0.01")
                         }
-                        next = if (next >= 2) 0 else next + 1
+                        next = if (next >= 5) 0 else next + 1
                     }
                 }
             }

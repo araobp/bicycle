@@ -17,30 +17,36 @@ class CyclingActivity : Activity() {
         private val TAG = "CyclingActivity"
     }
 
-    var mTextViewTemp: TextView? = null
-    var mTextViewHumid: TextView? = null
+    var mTextViewSpeedValue: TextView? = null
+    var mTextViewRpmValue: TextView? = null
+
+    var mTextViewTempValue: TextView? = null
+    var mTextViewHumidValue: TextView? = null
 
     var mTextViewAccelValueX: TextView? = null
     var mTextViewAccelValueY: TextView? = null
     var mTextViewAccelValueZ: TextView? = null
 
-    var mTextViewLatitude: TextView? = null
-    var mTextViewLongitude: TextView? = null
+    var mTextViewLatitudeValue: TextView? = null
+    var mTextViewLongitudeValue: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cycling)
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        mTextViewHumid = findViewById(R.id.textViewHumidValue) as TextView
-        mTextViewTemp = findViewById(R.id.textViewTempValue) as TextView
+        mTextViewSpeedValue = findViewById(R.id.textViewSpeedValue) as TextView
+        mTextViewRpmValue = findViewById(R.id.textViewRpmValue) as TextView
+
+        mTextViewHumidValue = findViewById(R.id.textViewHumidValue) as TextView
+        mTextViewTempValue = findViewById(R.id.textViewTempValue) as TextView
 
         mTextViewAccelValueX = findViewById(R.id.textViewAccelValueX) as TextView
         mTextViewAccelValueY = findViewById(R.id.textViewAccelValueY) as TextView
         mTextViewAccelValueZ = findViewById(R.id.textViewAccelValueZ) as TextView
 
-        mTextViewLatitude = findViewById(R.id.textViewLatitudeValue) as TextView
-        mTextViewLongitude = findViewById(R.id.textViewLogitudeValue) as TextView
+        mTextViewLatitudeValue = findViewById(R.id.textViewLatitudeValue) as TextView
+        mTextViewLongitudeValue = findViewById(R.id.textViewLogitudeValue) as TextView
 
     }
 
@@ -66,6 +72,13 @@ class CyclingActivity : Activity() {
     fun onProcessedData(processedData: Cycling.ProcessedData) {
         Log.d(TAG, processedData.toString())
         when(processedData.deviceId) {
+            SensorNetworkProtocol.A1324LUA_T -> {
+                var data: List<Any?>? = processedData.data
+                if (data != null) {
+                    mTextViewRpmValue?.text = data[0].toString()
+                    mTextViewSpeedValue?.text = data[1].toString()
+                }
+            }
             SensorNetworkProtocol.KXR94_2050 -> {
                 var data: List<Any?>? = processedData.data
                 if (data != null) {
@@ -77,20 +90,20 @@ class CyclingActivity : Activity() {
             SensorNetworkProtocol.AMBIENT_TEMPERATURE -> {
                 var data: List<Any?>? = processedData.data
                 if (data != null) {
-                    mTextViewTemp?.text = data[0].toString()
+                    mTextViewTempValue?.text = data[0].toString()
                 }
             }
             SensorNetworkProtocol.RELATIVE_HUMIDITY -> {
                 var data: List<Any?>? = processedData.data
                 if (data != null) {
-                    mTextViewHumid?.text = data[0].toString()
+                    mTextViewHumidValue?.text = data[0].toString()
                 }
             }
             SensorNetworkProtocol.HDC1000 -> {
                 var data: List<Any?>? = processedData.data
                 if (data != null) {
-                    mTextViewTemp?.text = data[0].toString()
-                    mTextViewHumid?.text = data[1].toString()
+                    mTextViewTempValue?.text = data[0].toString()
+                    mTextViewHumidValue?.text = data[1].toString()
                 }
             }
             SensorNetworkProtocol.ACCELEROMETER -> {
@@ -104,8 +117,8 @@ class CyclingActivity : Activity() {
             SensorNetworkProtocol.FUSED_LOCATION -> {
                 var data: List<Any?>? = processedData.data
                 if (data != null) {
-                    mTextViewLatitude?.text = data[0].toString()
-                    mTextViewLongitude?.text = data[1].toString()
+                    mTextViewLatitudeValue?.text = data[0].toString()
+                    mTextViewLongitudeValue?.text = data[1].toString()
                 }
             }
         }
