@@ -60,6 +60,22 @@ At the moment, modify strings.xml manually to replace the current plug-in with a
 
 In the future, I will add a more dynamic way to swap plug-in.
 
+### Enabling built-in sensors
+
+Again, modify strings.xml manually to enable/disable built-in sensors:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Built-in sensors -->
+    <string name="enable_ambient_temperature">true</string>
+    <string name="enable_relative_humidity">true</string>
+    <string name="enable_accelerometer">false</string>
+
+</resources>
+```
+
 ## Android apps
 
 ### Use case: bicycle
@@ -101,3 +117,4 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
 - [Dragon board (Quallcomm)](https://developer.qualcomm.com/hardware/dragonboard-410c)
 - [CANopen](https://www.can-cia.org/canopen/)
+- [BLE module that I purchased in Akihabara, Tokyo](http://akizukidenshi.com/catalog/g/gK-11102/)
