@@ -1,5 +1,6 @@
 package jp.araobp.iot.sensor_network.service
 
+import android.content.Context
 import android.util.Log
 import jp.araobp.iot.sensor_network.SensorNetworkProtocol
 import jp.araobp.iot.sensor_network.SensorNetworkService
@@ -69,6 +70,7 @@ class SensorNetworkSimulator : SensorNetworkService() {
 
                 SensorNetworkProtocol.MAP -> rx("$:MAP:${sDevices}")
                 SensorNetworkProtocol.RSC -> rx("$:RSC:${sSchedule}")
+                SensorNetworkProtocol.DSP -> Log.d(TAG, "\"$message\" to LCD")
             }
         }
     }
@@ -79,7 +81,7 @@ class SensorNetworkSimulator : SensorNetworkService() {
 
     companion object {
 
-        private val TAG = "Simulator"
+        private val TAG = "SensorNetworkSimulator"
         private val sDevices = "16,18,19"
         private val sSchedule = "0,0,0,0|19,0,0,0|0,0,0,0|0,0,0,0|0,0,0,0|18,0,0,0|0,0,0,0"
 

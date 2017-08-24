@@ -68,13 +68,18 @@ class CliActivity : Activity() {
     // Edge computing plug-in
     private var mEdgeComputingClassName: String? = null
 
+
     companion object {
         private val TAG = javaClass.simpleName
         const val DEFAULT_BAUDRATE = 9600  // 9600kbps
         const val SCHEDULER_BAUDRATE = 115200  // 115200kbps
         const val PERMISSION_LOCATION_CODE = 1
-
+        const val AMBIENT_TEMPERATURE = "ambient temperature"
+        const val RELATIVE_HUMIDITY = "relative humidity"
+        const val ACCELEROMETER = "acceleromter"
     }
+
+    private var mBuiltInSensors: Map<String, Boolean>? = null
 
     private fun log(message: String) {
         mTextView!!.append(message + "\n")
@@ -91,6 +96,7 @@ class CliActivity : Activity() {
             intent = Intent(this, FtdiDriver::class.java)
             intent.putExtra("edge_computing_class", mEdgeComputingClassName)
         }
+        mBuiltInSensors!!.forEach { intent.putExtra(it.key ,it.value) }
         bindService(intent, mSensorNetworkServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
@@ -134,7 +140,17 @@ class CliActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cli)
 
+        fun toBoolean(s: String): Boolean {
+            return (s == "true")
+        }
+
         mEdgeComputingClassName = this.resources.getString(R.string.edge_computing_plugin)
+        mBuiltInSensors = mapOf(
+                AMBIENT_TEMPERATURE to this.resources.getString(R.string.enable_ambient_temperature).toBoolean(),
+                RELATIVE_HUMIDITY to this.resources.getString(R.string.enable_relative_humidity).toBoolean(),
+                ACCELEROMETER to this.resources.getString(R.string.enable_accelerometer).toBoolean()
+        )
+
         val mEdgeComputingActivityClassName = this.resources.getString(R.string.edge_computing_plugin_activity)
         val mEdgeComputingActivityClass: Class<*> = Class.forName(mEdgeComputingActivityClassName)
 

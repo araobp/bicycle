@@ -10,13 +10,13 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Binder
 import android.os.IBinder
-import android.os.Looper
-import android.support.v4.app.ActivityCompat
 import android.util.Log
 import com.google.android.gms.location.*
 import jp.araobp.iot.cli.CliActivity
 import jp.araobp.iot.edge_computing.EdgeComputing
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import kotlin.reflect.full.primaryConstructor
 
 /**
@@ -33,8 +33,9 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         const val BUILTIN_SENSOR_ACCELEROMETER_INTERVAL = 500_000  // 500msec
     }
 
-    data class DriverStatus(var opened: Boolean = false, var started: Boolean = false)
-    var driverStatus = DriverStatus(opened = false, started = false)
+    data class DriverStatus(var opened: Boolean = false, var started: Boolean = false, var currentDeviceId: Int = 0)
+
+    var driverStatus = DriverStatus(opened = false, started = false, currentDeviceId = 0)
 
     private val mBinder: IBinder = ServiceBinder()
     private var mEdgeComputing: EdgeComputing? = null
@@ -61,25 +62,32 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         mEdgeComputing = sEdgeComputingClass.primaryConstructor!!.call() as EdgeComputing
 
         val mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val temperature: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
-        val humidity: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
-        val accelerometer: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        temperature?.let{
-            mSensorManager.registerListener(this, temperature,
-                    BUILTIN_SENSOR_TEMPERATURE_INTERVAL, BUILTIN_SENSOR_TEMPERATURE_INTERVAL)
+
+        if (intent.extras[CliActivity.AMBIENT_TEMPERATURE] == true) {
+            val temperature: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+            temperature?.let {
+                mSensorManager.registerListener(this, temperature,
+                        BUILTIN_SENSOR_TEMPERATURE_INTERVAL, BUILTIN_SENSOR_TEMPERATURE_INTERVAL)
+            }
         }
-        humidity?.let {
-            mSensorManager.registerListener(this, humidity,
-                    BUILTIN_SENSOR_HUMIDITY_INTERVAL, BUILTIN_SENSOR_HUMIDITY_INTERVAL)
+        if (intent.extras[CliActivity.RELATIVE_HUMIDITY] == true) {
+            val humidity: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
+            humidity?.let {
+                mSensorManager.registerListener(this, humidity,
+                        BUILTIN_SENSOR_HUMIDITY_INTERVAL, BUILTIN_SENSOR_HUMIDITY_INTERVAL)
+            }
         }
-        accelerometer?.let {
-            mSensorManager.registerListener(this, accelerometer,
-                    BUILTIN_SENSOR_ACCELEROMETER_INTERVAL, BUILTIN_SENSOR_ACCELEROMETER_INTERVAL)
+        if (intent.extras[CliActivity.ACCELEROMETER] == true) {
+            val accelerometer: Sensor? = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+            accelerometer?.let {
+                mSensorManager.registerListener(this, accelerometer,
+                        BUILTIN_SENSOR_ACCELEROMETER_INTERVAL, BUILTIN_SENSOR_ACCELEROMETER_INTERVAL)
+            }
         }
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        val locationCallback : LocationCallback = object: LocationCallback() {
+        val locationCallback: LocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 var timestamp = System.currentTimeMillis()
                 var sensorData = SensorNetworkEvent.SensorData(timestamp = timestamp, rawData = locationResult.toString())
@@ -92,6 +100,8 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         }
 
         mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, locationCallback, null)
+
+        EventBus.getDefault().register(this)
 
         return mBinder
     }
@@ -115,11 +125,11 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
                 sensorData.deviceId = response[0].substring(1).toInt()
                 sensorData.type = response[1]
                 val dataStringList: List<String> = response[2].split(",".toRegex()).toList()
-                when(sensorData.type) {
-                    SensorNetworkProtocol.FLOAT -> sensorData.data = dataStringList.map{ it.toFloat() }.toList()
+                when (sensorData.type) {
+                    SensorNetworkProtocol.FLOAT -> sensorData.data = dataStringList.map { it.toFloat() }.toList()
                     SensorNetworkProtocol.INT8_T, SensorNetworkProtocol.UINT8_T,
                     SensorNetworkProtocol.INT16_T, SensorNetworkProtocol.UINT16_T
-                    -> sensorData.data = dataStringList.map{ it.toInt() }.toList()
+                    -> sensorData.data = dataStringList.map { it.toInt() }.toList()
                 }
                 mEdgeComputing?.onSensorData(sensorData)
                 if (mLoggingEnabled) {
@@ -198,6 +208,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * opens the device driver
      */
     protected abstract fun open(baudrate: Int): Boolean
+
     fun openDevice(baudrate: Int) {
         var opened = open(baudrate)
         driverStatus.opened = opened
@@ -207,6 +218,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * transmits data to the sensor network
      */
     protected abstract fun tx(message: String)
+
     fun transmit(message: String) {
         tx(message)
         when (message.substring(startIndex = 0, endIndex = 2)) {
@@ -219,6 +231,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * closes the device driver
      */
     protected abstract fun close()
+
     fun closeDevice() {
         close()
         driverStatus.opened = false
@@ -267,4 +280,24 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         mLoggingEnabled = enabled
     }
 
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    fun onDisplayMessage(displayMessage: SensorNetworkEvent.DisplayMessage) {
+        if (driverStatus.currentDeviceId != displayMessage.deviceId) {
+            transmit("${SensorNetworkProtocol.I2C}:${displayMessage.deviceId}")
+            Thread.sleep(CMD_SEND_INTERVAL)
+        }
+        when(displayMessage.deviceId) {
+            SensorNetworkProtocol.AQM1602XA_RN_GBW -> {
+                if (displayMessage.lines.size > 2 || displayMessage.lines.size == 0) {
+                    Log.e(TAG, "Illegal number of lines")
+                } else {
+                    val line1 = displayMessage.lines[0]
+                    val line2 = if (displayMessage.lines.size == 2) displayMessage.lines[1] else ""
+                    val cmd = "${SensorNetworkProtocol.DSP}:%-16s%-16s".format(line1, line2)
+                    transmit(cmd)
+                    Log.d(TAG, cmd)
+                }
+            }
+        }
+    }
 }

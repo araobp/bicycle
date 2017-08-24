@@ -21,4 +21,9 @@
     <string name="edge_computing_plugin_button_name">Template</string>
     -->
 
+    <!-- Built-in sensors -->
+    <string name="enable_ambient_temperature">true</string>
+    <string name="enable_relative_humidity">true</string>
+    <string name="enable_accelerometer">false</string>
+
 </resources>

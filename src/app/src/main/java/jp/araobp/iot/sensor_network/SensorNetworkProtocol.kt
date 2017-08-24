@@ -16,6 +16,7 @@ object SensorNetworkProtocol {
     const val WHO = "WHO"
     const val MAP = "MAP"
     const val SCN = "SCN"
+    const val DSP = "DSP"
 
     const val FLOAT             = "FLOAT"
     const val INT8_T            = "INT8_T"

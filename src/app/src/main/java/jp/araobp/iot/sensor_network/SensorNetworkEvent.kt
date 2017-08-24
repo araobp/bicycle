@@ -29,4 +29,12 @@ class SensorNetworkEvent {
     enum class SchedulerInfoType {
         TIMER_SCALER, DEVICE_MAP, SCHEDULE, STARTED, STOPPED
     }
+
+    /**
+     * Message to display on LCD
+     *
+     * 16 characters / 16 characters
+     */
+    data class DisplayMessage(var deviceId: Int, var lines: List<String>)
+
 }
