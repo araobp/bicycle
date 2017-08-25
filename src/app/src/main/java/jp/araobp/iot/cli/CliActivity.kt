@@ -306,9 +306,9 @@ class CliActivity : Activity() {
                     mTextViewDevices?.text = message.schedulerInfo?.deviceMap?.
                             map { it.toString() }?.joinToString(",")
             SensorNetworkEvent.SchedulerInfoType.SCHEDULE -> {
-                var i:Int = 0
+                var i = 0
                 message.schedulerInfo?.schedule?.
-                        map { mListSchedules[i++].text = it.map { it.toString()}.joinToString(",") }
+                        map { mListSchedules[i++].text = it.map{ it.toString() }.joinToString(",") }
             }
             SensorNetworkEvent.SchedulerInfoType.STARTED -> mSwitch!!.isChecked = true
             SensorNetworkEvent.SchedulerInfoType.STOPPED -> mSwitch!!.isChecked = false

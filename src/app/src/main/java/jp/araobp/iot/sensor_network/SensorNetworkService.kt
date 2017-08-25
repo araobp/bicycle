@@ -89,8 +89,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
 
         val locationCallback: LocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
-                var timestamp = System.currentTimeMillis()
-                var sensorData = SensorNetworkEvent.SensorData(timestamp = timestamp, rawData = locationResult.toString())
+                var sensorData = SensorNetworkEvent.SensorData(rawData = locationResult.toString())
                 sensorData.deviceId = SensorNetworkProtocol.FUSED_LOCATION
                 sensorData.data = listOf(locationResult?.lastLocation?.latitude, locationResult?.lastLocation?.longitude)
                 sensorData.type = SensorNetworkProtocol.DOUBLE
@@ -115,8 +114,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * receives data from the sensor network and parses it
      */
     protected fun rx(message: String) {
-        var timestamp = System.currentTimeMillis()
-        var sensorData = SensorNetworkEvent.SensorData(timestamp = timestamp, rawData = message)
+        var sensorData = SensorNetworkEvent.SensorData(rawData = message)
         val response = message.split(":".toRegex()).toList()
 
         when (message.substring(startIndex = 0, endIndex = 1)) {
@@ -288,7 +286,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         }
         when(displayMessage.deviceId) {
             SensorNetworkProtocol.AQM1602XA_RN_GBW -> {
-                if (displayMessage.lines.size > 2 || displayMessage.lines.size == 0) {
+                if (displayMessage.lines.size > 2 || displayMessage.lines.isEmpty()) {
                     Log.e(TAG, "Illegal number of lines")
                 } else {
                     val line1 = displayMessage.lines[0]

@@ -8,12 +8,13 @@ class SensorNetworkEvent {
     /**
      * Sensor data from sensor network
      */
-    data class SensorData(var timestamp: Long,
-                          var rawData: String,
+    data class SensorData(var timestamp: Long = System.currentTimeMillis(),
+                          var rawData: String = "",
                           var deviceId: Int? = null,
                           var type: String? = null,
                           var data: List<Any?>? = null,
-                          var schedulerInfo: SchedulerInfo? = null)
+                          var schedulerInfo: SchedulerInfo? = null,
+                          var reset: Boolean = false)
 
     /**
      * Scheduler info
