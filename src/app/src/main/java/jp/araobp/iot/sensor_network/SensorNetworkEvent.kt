@@ -32,9 +32,9 @@ class SensorNetworkEvent {
     }
 
     /**
-     * Message to display on LCD
+     * EventBus event to display message on LCD
      *
-     * 16 characters / 16 characters
+     * @param lines list of line1(max 16 characters) and line2(max 16 characters)
      */
     data class DisplayMessage(var deviceId: Int, var lines: List<String>)
 

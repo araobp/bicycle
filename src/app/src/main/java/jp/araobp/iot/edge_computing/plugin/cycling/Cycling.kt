@@ -43,6 +43,7 @@ class Cycling: EdgeComputing() {
         when (sensorData.deviceId) {
             SensorNetworkProtocol.KXR94_2050,
             SensorNetworkProtocol.HDC1000,
+            SensorNetworkProtocol.SHT31_DIS,
             SensorNetworkProtocol.AMBIENT_TEMPERATURE,
             SensorNetworkProtocol.RELATIVE_HUMIDITY,
             SensorNetworkProtocol.ACCELEROMETER,
@@ -52,7 +53,7 @@ class Cycling: EdgeComputing() {
                         deviceId = sensorData.deviceId!!,
                         data = sensorData.data)
             }
-            SensorNetworkProtocol.A1324LUA_T -> {
+            SensorNetworkProtocol.A1324LUA_T -> {  // Calculates RPM and speed
                 var rpm = 0.0
                 var speed = 0.0
                 var line1: String?

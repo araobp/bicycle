@@ -29,7 +29,7 @@ class FtdiDriver : SensorNetworkService() {
     private var mReadLen = 0
 
     /**
-    * sets FTDI device config
+    * Sets FTDI device config
     */
     private fun setConfig(baudrate: Int, dataBits: Byte, stopBits: Byte, parity: Byte, flowControl: Byte) {
         val dataBitsByte: Byte
@@ -104,7 +104,7 @@ class FtdiDriver : SensorNetworkService() {
     }
 
     /**
-    * opens FTDI device and start reader thread
+    * Opens FTDI device and start reader thread
     *
     * @parameter baudrate baud rate
     * @return true if FTDI device is opened successfully
@@ -133,7 +133,7 @@ class FtdiDriver : SensorNetworkService() {
     }
 
     /**
-    * transmits a message to FTDI device
+    * Transmits a message to FTDI device
     */
     override fun tx(message: String) {
         val data = message + DELIMITER

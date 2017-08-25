@@ -87,6 +87,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        // Call back func to receives location data and transfers it to edge computing functions
         val locationCallback: LocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 var sensorData = SensorNetworkEvent.SensorData(rawData = locationResult.toString())
@@ -111,7 +112,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
             setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
     /**
-     * receives data from the sensor network and parses it
+     * Receives data from the sensor network and parses it
      */
     protected fun rx(message: String) {
         var sensorData = SensorNetworkEvent.SensorData(rawData = message)
@@ -172,10 +173,16 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         }
     }
 
+    /**
+     * Receives onAccuracyChanged events from Android's sensor manager
+     */
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         Log.d(TAG, "sensor accuracy changed to " + accuracy.toString())
     }
 
+    /**
+     * Receives onSensorChanged events from Android's sensor manager
+     */
     override fun onSensorChanged(event: SensorEvent) {
         //event.values.forEach { Log.d(TAG, it.toString()) }
         if (driverStatus.started) {
@@ -202,8 +209,11 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         }
     }
 
+    // *** Commands to scheduler ******************************************************************
+    // Bound activities call these APIs to send commands to scheduler
+
     /**
-     * opens the device driver
+     * Opens the device driver
      */
     protected abstract fun open(baudrate: Int): Boolean
 
@@ -213,7 +223,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     }
 
     /**
-     * transmits data to the sensor network
+     * Transmits data to the sensor network
      */
     protected abstract fun tx(message: String)
 
@@ -226,7 +236,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     }
 
     /**
-     * closes the device driver
+     * Closes the device driver
      */
     protected abstract fun close()
 
@@ -236,7 +246,14 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     }
 
     /**
-     * fetches scheduler-related info from the sensor network
+     * Sends sensor data to SensorDataHandlerActivity
+     */
+    fun enableLogging(enabled: Boolean) {
+        mLoggingEnabled = enabled
+    }
+
+    /**
+     * Fetches scheduler-related info from the sensor network
      *
      * @see SensorData
      * @see rx
@@ -256,7 +273,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     }
 
     /**
-     * starts running the sensor network
+     * Starts running the sensor network
      */
     fun startScheduler() {
         transmit(SensorNetworkProtocol.STA)
@@ -264,20 +281,19 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     }
 
     /**
-     * stops running the sensor network
+     * Stops running the sensor network
      */
     fun stopScheduler() {
         transmit(SensorNetworkProtocol.STP)
         driverStatus.started = false
     }
 
-    /**
-     * sends sensor data to SensorDataHandlerActivity
-     */
-    fun enableLogging(enabled: Boolean) {
-        mLoggingEnabled = enabled
-    }
+    // *** Commands to actuators ******************************************************************
+    // Edge computing classes call these APIs to send commands to actuators
 
+    /**
+     * Displays message to LCD such as AQM1602XA_RN_GBW
+     */
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onDisplayMessage(displayMessage: SensorNetworkEvent.DisplayMessage) {
         if (driverStatus.currentDeviceId != displayMessage.deviceId) {

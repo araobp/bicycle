@@ -6,10 +6,11 @@ import kotlin.concurrent.thread
 
 
 /**
+ * Edge computing abstract class
  */
 abstract class EdgeComputing {
 
-    private val mWorkQueue = LinkedBlockingDeque<SensorNetworkEvent.SensorData>()
+    private val mReceiveQueue = LinkedBlockingDeque<SensorNetworkEvent.SensorData>()
 
     private val mPeriodicReset = mutableMapOf<Int, MutableList<Long>>()
 
@@ -18,12 +19,14 @@ abstract class EdgeComputing {
     }
 
     init {
+        // FIFO queue of sensor data
         thread(start=true) {
             while (true) {
-                process(mWorkQueue.take())
+                process(mReceiveQueue.take())
             }
         }
 
+        // sends reset signal to edge computing functions after expiration of reset check timer
         thread(start = true) {
             while (true) {
                 Thread.sleep(RESET_CHECK_PERIOD)
@@ -42,12 +45,21 @@ abstract class EdgeComputing {
     }
 
 
+    /**
+     * Receives sensor data and puts it into receive queue
+     */
     fun onSensorData(sensorData: SensorNetworkEvent.SensorData) {
-        mWorkQueue.add(sensorData)
+        mReceiveQueue.add(sensorData)
     }
 
+    /**
+     * Processes sensor data
+     */
     protected abstract fun process(sensorData: SensorNetworkEvent.SensorData)
 
+    /**
+     * Registers periodic reset check to specific device ID
+     */
     fun registerPeriodicReset(deviceId: Int, timer: Long) {
         mPeriodicReset[deviceId] = mutableListOf(timer, 0)
     }

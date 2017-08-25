@@ -99,7 +99,7 @@ class CyclingActivity : Activity() {
                     mTextViewHumidValue?.text = data[0].toString()
                 }
             }
-            SensorNetworkProtocol.HDC1000 -> {
+            SensorNetworkProtocol.HDC1000, SensorNetworkProtocol.SHT31_DIS -> {
                 var data: List<Any?>? = processedData.data
                 if (data != null) {
                     mTextViewTempValue?.text = data[0].toString()
