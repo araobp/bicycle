@@ -1,10 +1,8 @@
 package jp.araobp.iot.edge_computing
 
-import android.util.Log
 import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import java.util.concurrent.LinkedBlockingDeque
 import kotlin.concurrent.thread
-
 
 /**
  * Edge computing abstract class
@@ -44,7 +42,6 @@ abstract class EdgeComputing {
             }
         }
     }
-
 
     /**
      * Receives sensor data and puts it into receive queue

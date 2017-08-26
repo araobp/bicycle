@@ -209,9 +209,6 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         }
     }
 
-    // *** Commands to scheduler ******************************************************************
-    // Bound activities call these APIs to send commands to scheduler
-
     /**
      * Opens the device driver
      */
@@ -229,9 +226,11 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
 
     fun transmit(message: String) {
         tx(message)
-        when (message.substring(startIndex = 0, endIndex = 2)) {
-            SensorNetworkProtocol.STA -> driverStatus.started = true
-            SensorNetworkProtocol.STP -> driverStatus.started = false
+        if (driverStatus.currentDeviceId == SensorNetworkProtocol.SCHEDULER) {
+            when (message.substring(startIndex = 0, endIndex = 2)) {
+                SensorNetworkProtocol.STA -> driverStatus.started = true
+                SensorNetworkProtocol.STP -> driverStatus.started = false
+            }
         }
     }
 
@@ -252,6 +251,17 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
         mLoggingEnabled = enabled
     }
 
+    // *** Commands to scheduler ******************************************************************
+    // Bound activities call these APIs to send commands to scheduler
+
+    private fun resetI2cAddress() {
+        if (driverStatus.currentDeviceId != SensorNetworkProtocol.SCHEDULER) {
+            transmit("${SensorNetworkProtocol.I2C}:${SensorNetworkProtocol.SCHEDULER}")
+            driverStatus.currentDeviceId = SensorNetworkProtocol.SCHEDULER
+            Thread.sleep(CMD_SEND_INTERVAL)
+        }
+    }
+
     /**
      * Fetches scheduler-related info from the sensor network
      *
@@ -259,6 +269,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * @see rx
      */
     fun fetchSchedulerInfo() {
+        resetI2cAddress()
         try {
             Thread.sleep(CMD_SEND_INTERVAL)
             transmit(SensorNetworkProtocol.GET)
@@ -276,6 +287,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * Starts running the sensor network
      */
     fun startScheduler() {
+        resetI2cAddress()
         transmit(SensorNetworkProtocol.STA)
         driverStatus.started = true
     }
@@ -284,6 +296,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      * Stops running the sensor network
      */
     fun stopScheduler() {
+        resetI2cAddress()
         transmit(SensorNetworkProtocol.STP)
         driverStatus.started = false
     }
@@ -296,21 +309,23 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
      */
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onDisplayMessage(displayMessage: SensorNetworkEvent.DisplayMessage) {
-        if (driverStatus.currentDeviceId != displayMessage.deviceId) {
-            transmit("${SensorNetworkProtocol.I2C}:${displayMessage.deviceId}")
-            driverStatus.currentDeviceId = displayMessage.deviceId
-            Thread.sleep(CMD_SEND_INTERVAL)
-        }
-        when(displayMessage.deviceId) {
-            SensorNetworkProtocol.AQM1602XA_RN_GBW -> {
-                if (displayMessage.lines.size > 2 || displayMessage.lines.isEmpty()) {
-                    Log.e(TAG, "Illegal number of lines")
-                } else {
-                    val line1 = displayMessage.lines[0]
-                    val line2 = if (displayMessage.lines.size == 2) displayMessage.lines[1] else ""
-                    val cmd = "${SensorNetworkProtocol.DSP}:%-16s%-16s".format(line1, line2)
-                    transmit(cmd)
-                    Log.d(TAG, cmd)
+        if (driverStatus.started) {
+            if (driverStatus.currentDeviceId != displayMessage.deviceId) {
+                transmit("${SensorNetworkProtocol.I2C}:${displayMessage.deviceId}")
+                driverStatus.currentDeviceId = displayMessage.deviceId
+                Thread.sleep(CMD_SEND_INTERVAL)
+            }
+            when (displayMessage.deviceId) {
+                SensorNetworkProtocol.AQM1602XA_RN_GBW -> {
+                    if (displayMessage.lines.size > 2 || displayMessage.lines.isEmpty()) {
+                        Log.e(TAG, "Illegal number of lines")
+                    } else {
+                        val line1 = displayMessage.lines[0]
+                        val line2 = if (displayMessage.lines.size == 2) displayMessage.lines[1] else ""
+                        val cmd = "${SensorNetworkProtocol.DSP}:%-16s%-16s".format(line1, line2)
+                        transmit(cmd)
+                        Log.d(TAG, cmd)
+                    }
                 }
             }
         }

@@ -29,6 +29,7 @@ object SensorNetworkProtocol {
 
     // --- Device IDs -----------------------------------------------------------------------------
     // Sensors on the sensor network
+    const val SCHEDULER         = 0
     const val AQM1602XA_RN_GBW  = 16  // LCD & LED
     const val A1324LUA_T        = 17  // Hall sensor as speed sensor
     const val HDC1000           = 18  // Temperature and humidity sensor
