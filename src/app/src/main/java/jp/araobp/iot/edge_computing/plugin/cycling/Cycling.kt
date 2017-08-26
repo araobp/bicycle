@@ -11,7 +11,7 @@ class Cycling: EdgeComputing() {
     companion object {
         private val TAG = "Cycling"
         const val DIAMETER = 20 * 2.5  // 20 inch : 50 cm
-        const val SPEED_RESET_TIMER: Long = 2_000  // 2sec
+        const val SPEED_RESET_TIMER: Long = 2  // 2sec
     }
 
     /**
@@ -81,13 +81,15 @@ class Cycling: EdgeComputing() {
                                 data = listOf(rpm, speed))
                     }
                 }
-                line1 = "%-16s".format("SPEED: $speed km/h")
-                line2 = "%-16s".format("RPM: $rpm")
-                val displayMessage = SensorNetworkEvent.DisplayMessage(
-                                deviceId = SensorNetworkProtocol.AQM1602XA_RN_GBW,
-                                lines = listOf(line1, line2)
-                )
-                mEventBus.post(displayMessage)
+                if (processedData!= null) {
+                    line1 = "%-16s".format("SPEED: $speed km/h")
+                    line2 = "%-16s".format("RPM: $rpm")
+                    val displayMessage = SensorNetworkEvent.DisplayMessage(
+                            deviceId = SensorNetworkProtocol.AQM1602XA_RN_GBW,
+                            lines = listOf(line1, line2)
+                    )
+                    mEventBus.post(displayMessage)
+                }
             }
         }
         Log.d(TAG, processedData.toString())

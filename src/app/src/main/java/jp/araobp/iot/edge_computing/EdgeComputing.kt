@@ -1,5 +1,6 @@
 package jp.araobp.iot.edge_computing
 
+import android.util.Log
 import jp.araobp.iot.sensor_network.SensorNetworkEvent
 import java.util.concurrent.LinkedBlockingDeque
 import kotlin.concurrent.thread
@@ -49,6 +50,9 @@ abstract class EdgeComputing {
      * Receives sensor data and puts it into receive queue
      */
     fun onSensorData(sensorData: SensorNetworkEvent.SensorData) {
+        if (sensorData.deviceId in mPeriodicReset) {
+            mPeriodicReset[sensorData.deviceId]!![1] = 0
+        }
         mReceiveQueue.add(sensorData)
     }
 

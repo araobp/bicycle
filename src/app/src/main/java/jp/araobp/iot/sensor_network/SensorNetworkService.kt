@@ -298,6 +298,7 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
     fun onDisplayMessage(displayMessage: SensorNetworkEvent.DisplayMessage) {
         if (driverStatus.currentDeviceId != displayMessage.deviceId) {
             transmit("${SensorNetworkProtocol.I2C}:${displayMessage.deviceId}")
+            driverStatus.currentDeviceId = displayMessage.deviceId
             Thread.sleep(CMD_SEND_INTERVAL)
         }
         when(displayMessage.deviceId) {
