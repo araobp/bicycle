@@ -25,6 +25,13 @@ Sensor network simulator is provided for debugging applications on Android w/o a
 
 I use [EventBus](http://greenrobot.org/eventbus/) to support messaging among components within the application on Android.
 
+## Technical requirements
+
+- Very low power consumption
+- Cheap
+- Show current speed, acceleration, temperature and humidity on a character LCD
+- Save time-series data (speed, temperature, humidity, acceleration and location) onto Android smartphone
+
 ### Sensor list
 
 My smartphone is equipped with built-in sensors. I add a sensor network to my smart phone to add other sensors.
@@ -84,6 +91,8 @@ Again, modify strings.xml manually to enable/disable built-in sensors:
 
 I develop in-bicycle network using the output from [sensor-network](https://github.com/araobp/sensor-network). It is like a cheap version of [CANopen](https://www.can-cia.org/canopen/) :-)
 
+![network](./doc/network.jpg)
+
 ### CLI Activity
 
 ![screenshot_cli](./doc/screenshot_cli.png)
@@ -91,17 +100,6 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 ### Cycling Activity
 
 ![screenshot_cycling](./doc/screenshot_cycling.png)
-
-### Technical requirements
-
-- Very low power consumption
-- Cheap
-- Show current speed, acceleration, temperature and humidity on a character LCD
-- Save time-series data (speed, temperature, humidity, acceleration and location) onto Android smartphone
-
-### Thing: my bicycle
-
-![network](./doc/network.jpg)
 
 ## Development tools
 
