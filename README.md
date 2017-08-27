@@ -110,10 +110,15 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 ### IDE
 - [Android Studio](https://developer.android.com/studio/index.html)
+- [ADB](https://developer.android.com/studio/command-line/adb.html)
 
 ### Libraries
 - [Android Java D2XX driver](http://www.ftdichip.com/Drivers/D2XX.htm)
 - [EventBus](http://greenrobot.org/eventbus/)
+
+## How to debug it
+
+Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi following [the guide](https://developer.android.com/studio/command-line/adb.html). Or use the sensor network simulator included in this repo.
 
 ## Links
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
