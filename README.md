@@ -118,7 +118,16 @@ I develop in-bicycle network using the output from [sensor-network](https://gith
 
 ## How to debug it
 
-Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi following [the guide](https://developer.android.com/studio/command-line/adb.html). Or use the sensor network simulator included in this repo.
+Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi following [the guide](https://developer.android.com/studio/command-line/adb.html):
+
+```
+1. > adb tcpip 5555
+2. disconnect USB cable
+3. > adb connect <ip address of smartphone>:5555
+4. > adb logcal
+```
+
+Or use the sensor network simulator included in this repo.
 
 ## Links
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
