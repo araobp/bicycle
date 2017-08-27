@@ -25,6 +25,8 @@ object SensorNetworkProtocol {
     const val UINT8_T           = "UINT8_T"
     const val INT16_T           = "INT16_T"
     const val UINT16_T          = "UINT16_T"
+    const val NO_DATA           = "NO_DATA"
+
     const val DOUBLE            = "DOUBLE"  // for android-built-in sensors only
 
     // --- Device IDs -----------------------------------------------------------------------------

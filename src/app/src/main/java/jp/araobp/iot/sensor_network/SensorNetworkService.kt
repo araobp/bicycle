@@ -120,19 +120,21 @@ abstract class SensorNetworkService: Service(), SensorEventListener {
 
         when (message.substring(startIndex = 0, endIndex = 1)) {
             "%" -> {
-                Log.d(TAG, response[0])
+                Log.d(TAG, message + "/" + response.toString())
                 sensorData.deviceId = response[0].substring(1).toInt()
                 sensorData.type = response[1]
-                val dataStringList: List<String> = response[2].split(",".toRegex()).toList()
-                when (sensorData.type) {
-                    SensorNetworkProtocol.FLOAT -> sensorData.data = dataStringList.map { it.toFloat() }.toList()
-                    SensorNetworkProtocol.INT8_T, SensorNetworkProtocol.UINT8_T,
-                    SensorNetworkProtocol.INT16_T, SensorNetworkProtocol.UINT16_T
-                    -> sensorData.data = dataStringList.map { it.toInt() }.toList()
-                }
-                mEdgeComputing?.onSensorData(sensorData)
-                if (mLoggingEnabled) {
-                    mEventBus.post(sensorData)
+                if (sensorData.type != SensorNetworkProtocol.NO_DATA) {
+                    val dataStringList: List<String> = response[2].split(",".toRegex()).toList()
+                    when (sensorData.type) {
+                        SensorNetworkProtocol.FLOAT -> sensorData.data = dataStringList.map { it.toFloat() }.toList()
+                        SensorNetworkProtocol.INT8_T, SensorNetworkProtocol.UINT8_T,
+                        SensorNetworkProtocol.INT16_T, SensorNetworkProtocol.UINT16_T
+                        -> sensorData.data = dataStringList.map { it.toInt() }.toList()
+                    }
+                    mEdgeComputing?.onSensorData(sensorData)
+                    if (mLoggingEnabled) {
+                        mEventBus.post(sensorData)
+                    }
                 }
             }
             "#" -> {

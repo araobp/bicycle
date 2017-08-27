@@ -127,7 +127,7 @@ Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi 
 4. adb logcal
 ```
 
-Or use the sensor network simulator included in this repo.
+Or use the sensor network simulator included in this repo ![screen shot](./doc/simulator_with_ide.png)
 
 ## Links
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)

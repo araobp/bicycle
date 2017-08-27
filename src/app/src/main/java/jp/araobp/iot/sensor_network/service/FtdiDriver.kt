@@ -92,9 +92,7 @@ class FtdiDriver : SensorNetworkService() {
                     c = mReadBuf[i].toChar()
                     mCharBuf[offset++] = c
                     if (c == mDelimiter) {
-                        if (offset >= 3) {
-                            rx(String(mCharBuf, 0, offset - 1))
-                        }
+                        rx(String(mCharBuf, 0, offset - 1))
                         offset = 0
                     }
                     i++
