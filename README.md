@@ -135,6 +135,8 @@ I am developing a serial communication service between Microchip's RN4020 and An
 
 ![RN4020](./doc/RN4020.jpg)
 
+![Schematic](./doc/ble.jpg)
+
 ```
 [Scheduler]--UART--[RN4020] - - BLE - - [Android]
 
