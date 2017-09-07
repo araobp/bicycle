@@ -160,3 +160,4 @@ Refer to [the user's guide](http://ww1.microchip.com/downloads/en/DeviceDoc/7000
 - [Dragon board (Quallcomm)](https://developer.qualcomm.com/hardware/dragonboard-410c)
 - [CANopen](https://www.can-cia.org/canopen/)
 - [BLE module that I purchased in Akihabara, Tokyo](http://akizukidenshi.com/catalog/g/gK-11102/)
+- [IoT appliance based on Android from Buffalo](http://buffalo.jp/news/2017/09/06_01/)
