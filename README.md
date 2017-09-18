@@ -129,7 +129,7 @@ Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi 
 
 Or use the sensor network simulator included in this repo ![screen shot](./doc/simulator_with_ide.png)
 
-## Bluetooth Low Energy (Bluetooth 4.0)
+## Bluetooth Low Energy (Bluetooth 4.1)
 
 I am developing a serial communication service between Microchip's RN4020 and Android for this project:
 
