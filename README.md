@@ -129,32 +129,6 @@ Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi 
 
 Or use the sensor network simulator included in this repo ![screen shot](./doc/simulator_with_ide.png)
 
-## Bluetooth Low Energy (Bluetooth 4.1)
-
-I am developing a serial communication service between Microchip's RN4020 and Android for this project:
-
-![RN4020](./doc/RN4020.jpg)
-
-![Schematic](./doc/ble.jpg)
-
-```
-[Scheduler]--UART--[RN4020] - - BLE - - [Android]
-
-      Service "Serial"
-      +---------------------------+
-      | Characteristics           |
-      | +-----------------------+ |
-<-WV--- |         "RX"          | <- Write -
-      | +-----------------------+ |
-      | Characteristics           |
-      | +-----------------------+ |
--SHU--> |         "TX"          | - Read ->
-      | +-----------------------+ |
-      +---------------------------+
-```
-
-Refer to [the user's guide](http://ww1.microchip.com/downloads/en/DeviceDoc/70005191B.pdf#search=%27RN4020%27).
-
 ## Links
 - [My smart phone: ASUS ZenFone Lazer](https://www.asus.com/Phone/ZenFone-2-Laser-ZE500KL/)
 - [Dragon board (Quallcomm)](https://developer.qualcomm.com/hardware/dragonboard-410c)
