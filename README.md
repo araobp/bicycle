@@ -124,7 +124,7 @@ Since smartphone's USB port is occupied, connect adb to the smartphone via WiFi 
 1. adb tcpip 5555
 2. disconnect USB cable
 3. adb connect <ip address of smartphone>:5555
-4. adb logcal
+4. adb logcat
 ```
 
 Or use the sensor network simulator included in this repo ![screen shot](./doc/simulator_with_ide.png)
